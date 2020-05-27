@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OpunRoom</string>
+    <string name="nav_home">nav_home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Cpen navigation drawer</string>
+    <string name="action_settings">action_settings</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_menu1"
+            android:icon="@drawable/ic_brightness_5_black_24dp"
+            android:title="@string/nav_home"></item>
+        <item
+            android:id="@+id/nav_menu2"
+            android:icon="@drawable/ic_brightness_5_black_24dp"
+            android:title="CAMERA"></item>
+    </group>
+    <item android:title="Comms:">
+        <menu>
+    <item
+        android:id="@+id/nav_outer"
+        android:icon="@drawable/ic_brightness_5_black_24dp"
+        android:title="Outer Block"></item>
+        </menu>
+    </item>
+
+</menu>

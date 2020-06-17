@@ -1,7 +1,50 @@
 <resources>
-    <string name="app_name">OpunRoom</string>
+    <string name="app_name">OpunDoor</string>
+    <string name="app_name_2">opUndoor</string>
     <string name="nav_home">nav_home</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Cpen navigation drawer</string>
     <string name="action_settings">action_settings</string>
+    <string name="holidays_destination_hint">Select your field of work</string>
+
+    <!--    //Professions: -->
+    <string name="profession_1">Computers and Technology</string>
+    <string name="profession_2">Health Care and Allied Health</string>
+    <string name="profession_3">Education and Social Services</string>
+    <string name="profession_4">Arts and Communications</string>
+    <string name="profession_5">Trades and Transportation</string>
+    <string name="profession_6">Management, Business, and Finance</string>
+    <string name="profession_7">Architecture and Civil Engineering</string>
+    <string name="profession_8">Hospitality, Tourism, and the Service Industry</string>
+    <string name="profession_9">Law and Law Enforcement</string>
+    <string name="profession_10">Other</string>
+
+    <string-array name="professions">
+        <item>@string/profession_1</item>
+        <item>@string/profession_2</item>
+        <item>@string/profession_3</item>
+        <item>@string/profession_4</item>
+        <item>@string/profession_5</item>
+        <item>@string/profession_6</item>
+        <item>@string/profession_7</item>
+        <item>@string/profession_8</item>
+        <item>@string/profession_9</item>
+        <item>@string/profession_10</item>
+    </string-array>
+
+    <string name="ex_1">1-2 Years</string>
+    <string name="ex_2">2-5 Years</string>
+    <string name="ex_3">5-10 Years</string>
+    <string name="ex_4">10+ Years</string>
+    <string name="holidays_exp_hint">Total Work Experience</string>
+    <string name="permission_title">Permission Title</string>
+    <string name="permission_detail">Permission Description</string>
+    <string name="continue_and_learn">Set Summary</string>
+
+    <string-array name="experience">
+        <item>@string/ex_1</item>
+        <item>@string/ex_2</item>
+        <item>@string/ex_3</item>
+        <item>@string/ex_4</item>
+    </string-array>
 </resources>

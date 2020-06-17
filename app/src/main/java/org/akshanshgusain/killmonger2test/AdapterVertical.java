@@ -12,16 +12,25 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.akshanshgusain.killmonger2test.Network.Company;
+import org.akshanshgusain.killmonger2test.Network.Groups;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHolderV>{
-   private ArrayList<SingleVertical> mDataObjects;
+   private ArrayList<Company> mDataObjects;
    private Context mContext;
    private VerticalClickListener verticalClickListener;
-    public AdapterVertical(ArrayList<SingleVertical> mDataObjects, Context mContext) {
-        this.mDataObjects = mDataObjects;
+
+    public AdapterVertical(List<Company> mDataObjects, Context mContext) {
+        this.mDataObjects =(ArrayList<Company>) mDataObjects;
         this.mContext = mContext;
         this.verticalClickListener = (VerticalClickListener)mContext;
+    }
+    public void dataChanged(ArrayList<Company> groups){
+        this.mDataObjects=groups;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -32,11 +41,12 @@ public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHo
         return vhv;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolderV holder, int position) {
-        Glide.with(mContext).load(mDataObjects.get(position).getCompanyBanner()).into(holder.banner);
-        Glide.with(mContext).load(mDataObjects.get(position).getCoompanyDP()).into(holder.dp);
-        holder.name.setText(mDataObjects.get(position).getCompanyName());
+        Glide.with(mContext).load(mDataObjects.get(position).getCoverPicture()).into(holder.banner);
+        Glide.with(mContext).load(mDataObjects.get(position).getDisplayPicture()).into(holder.dp);
+        holder.name.setText(mDataObjects.get(position).getName());
     }
 
     @Override

@@ -53,7 +53,12 @@ public class TransitionActivity extends AppCompatActivity implements RestCalls.R
         if (response.get("status").equals("0")) {
             Log.d(TAG, "response: Error");
             Log.d(TAG, "response: Error" + response.get("message"));
-             binding.textViewDetails.setText(response.get("message"));
+            binding.textViewError1.setText("Email Already Registered");
+            binding.textViewDetails.setVisibility(View.VISIBLE);
+
+            binding.textViewError2.setText(response.get("message"));
+            binding.textViewDetails2.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -62,6 +67,7 @@ public class TransitionActivity extends AppCompatActivity implements RestCalls.R
         binding.progressBarUpdate.setVisibility(View.GONE);
         Log.d(TAG, "ErrorRequest : "+ response.get("VolleyError"));
         Log.d(TAG, "ErrorRequest (Exception): "+ response.get("exception"));
-        binding.textViewDetails.setText(response.get("message"));
+        binding.textViewError1.setText("Email Already Registered");
+        binding.textViewDetails.setVisibility(View.VISIBLE);
     }
 }

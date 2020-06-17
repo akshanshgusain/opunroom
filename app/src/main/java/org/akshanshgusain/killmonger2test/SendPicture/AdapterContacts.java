@@ -24,6 +24,7 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int HEADING_TYPE = 43;
     public static final int GROUP_TYPE = 45;
     public static final int SELF_TYPE = 44;
+    public static final int COMPANY_TYPE = 46;
 
     public AdapterContacts(List<SingleContact> groups, Context mContext) {
         this.groups = groups;
@@ -54,6 +55,9 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case SELF_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_send_list_story, parent, false);
                 return new ViewHolderContacts(view, adapterClickListener, SELF_TYPE);
+            case COMPANY_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_send_list_story, parent, false);
+                return new ViewHolderContacts(view, adapterClickListener, COMPANY_TYPE);
             default:
                 return null;
         }
@@ -68,13 +72,29 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case GROUP_TYPE:
 
+                //Glide.with(mContext).load(mContext.getDrawable(R.drawable.ic_group)).into(((ViewHolderContacts) holder).dp);
+                if(contact!=null){
+                    ((ViewHolderContacts) holder).name.setText(contact.username);
+                    if(contact.isSelected()){
+                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorBlack));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                    }else{
+                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
+                    }
+                }
+                break;
+            case COMPANY_TYPE:
+
                 Glide.with(mContext).load(contact.getImage()).into(((ViewHolderContacts) holder).dp);
                 if(contact!=null){
                     ((ViewHolderContacts) holder).name.setText(contact.username);
                     if(contact.isSelected()){
-                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorBlack));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
                     }else{
                         (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
                     }
                 }
                 break;
@@ -84,9 +104,11 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if(contact!=null){
                     ((ViewHolderContacts) holder).name.setText(contact.username);
                     if(contact.isSelected()){
-                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+                        (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorBlack));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
                     }else{
                         (  (ViewHolderContacts) holder).view.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                        (  (ViewHolderContacts) holder).name.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
                     }
                 }
                 break;

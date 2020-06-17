@@ -38,7 +38,7 @@ public class EnterDetailsActivity extends AppCompatActivity implements RestCalls
             @Override
             public void onFocusChange(View view, boolean b) {
                 //Call service to check whether or no the entered username is available
-                if (!b) {
+                if (!b && !binding.editTextUsername.getText().toString().isEmpty()) {
                     RestCalls restCall = new RestCalls(EnterDetailsActivity.this);
                     restCall.checkUserName(binding.editTextUsername.getText().toString().trim());
                 } else {
@@ -72,6 +72,9 @@ public class EnterDetailsActivity extends AppCompatActivity implements RestCalls
             binding.textViewPasswordErrors.setVisibility(View.VISIBLE);
             binding.textViewPasswordErrors.setText("Re-Enter Password");
         }
+       else if(!usernameAvailable){
+            binding.textViewUsernameAvailable.setText("Username Available");
+        }
        else if (binding.editTextPassword.length() < 0) {
             binding.textViewPasswordErrors.setVisibility(View.VISIBLE);
             binding.textViewPasswordErrors.setText("Password cannot be Empty");
@@ -82,7 +85,7 @@ public class EnterDetailsActivity extends AppCompatActivity implements RestCalls
             binding.textViewPasswordErrors.setText("Password does not match");
         }
       else{
-            Toast.makeText(this, "Works Fine", Toast.LENGTH_SHORT).show();
+
             binding.textViewPasswordErrors.setVisibility(View.GONE);
             binding.textViewUsernameAvailable.setVisibility(View.GONE);
 
@@ -101,10 +104,14 @@ public class EnterDetailsActivity extends AppCompatActivity implements RestCalls
         if (response.get("status").equals("1")) {
             binding.textViewUsernameAvailable.setVisibility(View.VISIBLE);
             binding.textViewUsernameAvailable.setText("Username Available");
+            binding.textViewUsernameAvailable.setTextColor(getResources().getColor(R.color.colorPositive));
+            usernameAvailable = true;
         }
         if (response.get("status").equals("0")) {
             binding.textViewUsernameAvailable.setVisibility(View.VISIBLE);
             binding.textViewUsernameAvailable.setText("Username Not Available");
+            binding.textViewUsernameAvailable.setTextColor(getResources().getColor(R.color.colorNegative));
+            usernameAvailable = false;
         }
     }
 

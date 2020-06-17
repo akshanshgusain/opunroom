@@ -4,10 +4,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -16,68 +24,438 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.akshanshgusain.killmonger2test.Application;
+import org.akshanshgusain.killmonger2test.Network.Company;
+import org.akshanshgusain.killmonger2test.Network.Company_Stories;
+import org.akshanshgusain.killmonger2test.Network.Friends;
+import org.akshanshgusain.killmonger2test.Network.Group_Stories;
+import org.akshanshgusain.killmonger2test.Network.Groups;
+import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.R;
 import org.akshanshgusain.killmonger2test.databinding.ActivityStoryViewerBinding;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class StoryViewerActivity extends AppCompatActivity {
-   private ActivityStoryViewerBinding binding;
-   ArrayList<String> stories;
+import jp.shts.android.storiesprogressview.StoriesProgressView;
+
+import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_F_NAME;
+import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_ID;
+import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_L_NAME;
+import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_PICTURE;
+
+public class StoryViewerActivity extends SwipeDismissBaseActivity implements StoriesProgressView.StoriesListener, RestCalls.GetFriendsListI {
+    public static final String STORY_STATUS = "status_story";
+    public static final String STORY_GROUPS = "group_story";
+    public static final String STORY_COMPANY = "company_story";
+
+    private ActivityStoryViewerBinding binding;
+    ArrayList<Group_Stories> stories;
+    ArrayList<Company_Stories> companyStories;
+    ArrayList<String> statuses;
+    String statusId;
     private static final String TAG = "ViewerStory";
-    public static final String URL="http://dass.io/oppo/app/story/image/";
-    int mCurrentPicture=0;
-    int mNumberOfImages;
+    public static final String URL = "http://dass.io/oppo/app/story/image/";
+    List<Friends> friendsList;
 
+    String intentType;
+    SharedPreferences pref;
+
+    public static StoriesProgressView storiesProgressView;
+    private ImageView image;
+
+    private int counter = 0;
+    boolean isPaused = false;
+
+
+    long pressTime = 0L;
+    long limit = 500L;
+    Gson gson = new Gson();
+
+    private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    pressTime = System.currentTimeMillis();
+                    storiesProgressView.pause();
+                    return false;
+                case MotionEvent.ACTION_UP:
+                    long now = System.currentTimeMillis();
+                    storiesProgressView.resume();
+                    return limit < now - pressTime;
+                //return false;
+            }
+            return false;
+        }
+    };
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_story_viewer);
-        stories = getIntent().getStringArrayListExtra("stories");
-        mNumberOfImages = stories.size();
-        for(String story : stories){
-            Log.d(TAG, "onCreate: "+ story);
-        }
-              if(stories!=null){
-                  setImage(0);
-              }
-        binding.buttonNext.setOnClickListener(new View.OnClickListener() {
+        storiesProgressView = findViewById(R.id.stories);
+        pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+        getUsersData();
+        image = findViewById(R.id.imageView_story);
+
+        // bind reverse view
+        View reverse = findViewById(R.id.reverse);
+        reverse.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                       if(mCurrentPicture<mNumberOfImages-1){
-                            mCurrentPicture++;
-                            setImage(mCurrentPicture);
-                       }
+            public void onClick(View v) {
+                storiesProgressView.reverse();
             }
         });
-        binding.buttonPrevious.setOnClickListener(new View.OnClickListener() {
+        reverse.setOnTouchListener(onTouchListener);
+
+        // bind skip view
+        View skip = findViewById(R.id.skip);
+        skip.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(! (mCurrentPicture==0)){
-                    mCurrentPicture--;
-                    setImage(mCurrentPicture);
+            public void onClick(View v) {
+                storiesProgressView.skip();
+            }
+        });
+        skip.setOnTouchListener(onTouchListener);
+
+
+    }
+
+
+    private void getUsersData() {
+
+        RestCalls restCalls = new RestCalls(this);
+        restCalls.getFriendsList(pref.getString(PREF_KEY_ID, ""));
+        binding.progressBarLoad.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onNext() {
+        Log.d("afakjf", "onNext:  called" + counter);
+        setImage(++counter);
+    }
+
+    @Override
+    public void onPrev() {
+        if ((counter - 1) < 0) return;
+        setImage(--counter);
+    }
+
+    @Override
+    public void onComplete() {
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        storiesProgressView.destroy();
+        super.onDestroy();
+    }
+
+    void setImage(int pos) {
+
+        binding.progressBarLoad.setVisibility(View.VISIBLE);
+        //User Details in GROUPS
+        if (intentType.equals(STORY_GROUPS)) {
+            String userId = stories.get(pos).getSenderId();
+            Friends user = null;
+            for (Friends temp : friendsList) {
+                if (temp.getId().equals(userId)) {
+                    user = temp;
                 }
             }
-        });
-    }
+            if (user != null) {
+                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
 
-    void setImage(int pos){
-        binding.progressBarLoad.setVisibility(View.VISIBLE);
-        Log.d(TAG, "setImage: image: "+ URL+stories.get(pos));
-        Glide.with(this).load(URL+stories.get(pos)).listener(new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                binding.progressBarLoad.setVisibility(View.GONE);
-                Toast.makeText(StoryViewerActivity.this, "This Story is not available anymore", Toast.LENGTH_SHORT).show();
-                return false;
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                }).into(binding.imageViewDp);
+
+                binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
+                binding.textViewTime.setText(stories.get(pos).getDate());
             }
 
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                binding.progressBarLoad.setVisibility(View.GONE);
-                return false;
+            if(!(stories.get(pos).getStory()).contains("firebasestorage.googleapis.com")){
+                switchPlayer(1);
+                      Glide.with(StoryViewerActivity.this).load(URL + stories.get(pos).getStory()).listener(new RequestListener<Drawable>() {
+                          @Override
+                          public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              binding.progressBarLoad.setVisibility(View.GONE);
+                              Toast.makeText(StoryViewerActivity.this, "This Story is not available anymore", Toast.LENGTH_SHORT).show();
+                              return false;
+
+                          }
+                          @Override
+                          public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                              binding.progressBarLoad.setVisibility(View.GONE);
+                              return false;
+                          }
+                      }).into(image);
+                  }else{
+                switchPlayer(2);
+
+                binding.videoViewStory.setVideoPath(cachingUrl(stories.get(pos).getStory()));
+
+                binding.videoViewStory.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+
+                        binding.progressBarLoad.setVisibility(View.GONE);
+                        storiesProgressView.pause();
+                    }
+                });
+                binding.videoViewStory.start();
+                binding.videoViewStory.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        storiesProgressView.skip();
+                    }
+                });
+
+
             }
-        }).into(binding.imageViewStory);
+
+
+        }
+        //User Details in STATUS
+        if (intentType.equals(STORY_STATUS)) {
+
+            Friends user = null;
+            for (Friends temp : friendsList) {
+                if (temp.getId().equals(statusId)) {
+                    user = temp;
+                }
+            }
+            if (user != null) {
+
+
+                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                }).into(binding.imageViewDp);
+
+                binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
+                binding.textViewTime.setText(user.getUsername());
+                binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+            }
+
+            if(!(statuses.get(pos)).contains("firebasestorage.googleapis.com")) {
+                switchPlayer(1);
+                Glide.with(this).load(URL + statuses.get(pos)).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        binding.progressBarLoad.setVisibility(View.GONE);
+                        Toast.makeText(StoryViewerActivity.this, "This Story is not available anymore", Toast.LENGTH_SHORT).show();
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.progressBarLoad.setVisibility(View.GONE);
+
+                        return false;
+                    }
+                }).into(image);
+
+
+            }else{
+                switchPlayer(2);
+
+                binding.videoViewStory.setVideoPath(cachingUrl(statuses.get(pos)));
+
+                binding.videoViewStory.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+
+                        binding.progressBarLoad.setVisibility(View.GONE);
+                        storiesProgressView.pause();
+                    }
+                });
+                binding.videoViewStory.start();
+                binding.videoViewStory.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        storiesProgressView.skip();
+                    }
+                });
+            }
+
+        }
+        //User Details in COMPANY
+        if (intentType.equals(STORY_COMPANY)) {
+            String userId = companyStories.get(pos).getUserId();
+            Friends user = null;
+            for (Friends temp : friendsList) {
+                if (temp.getId().equals(userId)) {
+                    user = temp;
+                }
+            }
+            if (user != null) {
+                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                }).into(binding.imageViewDp);
+                binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
+                binding.textViewTime.setText(companyStories.get(pos).getDate());
+            }
+                if(!companyStories.get(pos).getPicture().contains("firebasestorage.googleapis.com")){
+                    switchPlayer(1);
+                    Glide.with(StoryViewerActivity.this).load(URL + companyStories.get(pos).getPicture()).listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            binding.progressBarLoad.setVisibility(View.GONE);
+                            Toast.makeText(StoryViewerActivity.this, "This Story is not available anymore", Toast.LENGTH_SHORT).show();
+                            return false;
+
+                        }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            binding.progressBarLoad.setVisibility(View.GONE);
+                            return false;
+                        }
+                    }).into(image);
+                }else{
+                    switchPlayer(2);
+                    binding.videoViewStory.setVideoPath(cachingUrl(companyStories.get(pos).getPicture()));
+
+                    binding.videoViewStory.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mediaPlayer) {
+
+                            binding.progressBarLoad.setVisibility(View.GONE);
+                            storiesProgressView.pause();
+                        }
+                    });
+                    binding.videoViewStory.start();
+                    binding.videoViewStory.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            storiesProgressView.skip();
+                        }
+                    });
+                }
+
+
+
+        }
+
     }
+
+    @Override
+    public void response(Map<String, String> response) {
+
+    }
+
+    @Override
+    public void errorRequest(Map<String, String> response) {
+
+    }
+
+    @Override
+    public void responseList(List<Friends> friendsList) {
+        binding.progressBarLoad.setVisibility(View.GONE);
+        if (friendsList != null) {
+            this.friendsList = friendsList;
+            intentType = getIntent().getStringExtra("type");
+
+            if (intentType.equals(STORY_STATUS)) {
+                statuses = getIntent().getStringArrayListExtra("stories");
+                statusId = getIntent().getStringExtra("statusId");
+                storiesProgressView.setStoriesCount(statuses.size());
+                storiesProgressView.setStoryDuration(5000L);
+                storiesProgressView.setStoriesListener(this);
+                storiesProgressView.startStories();
+
+            }
+            if (intentType.equals(STORY_GROUPS)) {
+                Type typeGroup_Stories = new TypeToken<List<Group_Stories>>() {
+                }.getType();
+                stories = gson.fromJson(getIntent().getStringExtra("stories"), typeGroup_Stories);
+                Log.d("afakjf", "getUsersData: Restcall story Group");
+
+                storiesProgressView.setStoriesCount(stories.size());
+                storiesProgressView.setStoryDuration(5000L);
+                storiesProgressView.setStoriesListener(this);
+                storiesProgressView.startStories();
+
+            }
+            if (intentType.equals(STORY_COMPANY)) {
+                Type typeGroup_Stories = new TypeToken<List<Company_Stories>>() {
+                }.getType();
+                companyStories = gson.fromJson(getIntent().getStringExtra("stories"), typeGroup_Stories);
+                storiesProgressView.setStoriesCount(companyStories.size());
+                storiesProgressView.setStoryDuration(5000L);
+                storiesProgressView.setStoriesListener(this);
+                storiesProgressView.startStories();
+            }
+            setImage(counter);
+        } else {
+            Toast.makeText(this, "Problem Loading Sender's Data", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void responseListGroups(List<Groups> groupsList) {
+
+    }
+
+    @Override
+    public void responseListCompany(List<Company> companyList) {
+
+    }
+
+    private void switchPlayer(int player){
+          //1 - Image
+        //2 - Video
+        if(player == 1){
+             binding.imageViewStory.setVisibility(View.VISIBLE);
+            binding.videoViewStory.setVisibility(View.GONE);
+        }else{
+            binding.imageViewStory.setVisibility(View.GONE);
+            binding.videoViewStory.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
+    public String cachingUrl(String urlPath) {
+
+        return Application.getProxy(this).getProxyUrl(urlPath, true);
+
+    }
+
 }

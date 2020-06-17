@@ -18,6 +18,13 @@
 
     <color name="colorBorder">#e3e3e3</color>
 
+    <color name="colorStoryBorderBlue">#0074D9</color>
+    <color name="colorStoryBorderRed">#F21905</color>
+    <color name="colorStoryBorderYellow">#FCD12A</color>
+
+    <color name="colorNegative">#F21905</color>
+    <color name="colorPositive">#44F205</color>
+
 
 
 </resources>

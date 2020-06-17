@@ -4,14 +4,31 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:textViewStyle">@style/GilroyTextViewStyle</item>
+        <item name="android:buttonStyle">@style/GilroyButtonStyle</item>
+        <item name="android:editTextStyle">@style/GilroyEditTextStyle</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="GilroyTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+    </style>
+
+    <style name="GilroyButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+    </style>
+
+    <style name="GilroyEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+        <item name="android:lines">1</item>
     </style>
 
 </resources>

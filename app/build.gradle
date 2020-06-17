@@ -1,4 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 28
@@ -24,28 +29,66 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //New Dependencies
 
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
     implementation 'com.android.support:support-dynamic-animation:28.0.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     implementation 'com.android.volley:volley:1.1.1'
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-    implementation 'com.google.android.material:material:1.0.0'
+
 
     api 'com.otaliastudios:cameraview:2.6.2'
+
+    implementation 'com.github.shts:StoriesProgressView:3.0.0'
+
+
+
+    //compression
+    implementation 'id.zelory:compressor:2.1.0'
+   //implementation 'com.writingminds:FFmpegAndroid:0.3.2'
+
+   //Dexter for permissions
+    implementation 'com.karumi:dexter:6.1.2'
+
+    //Video Cache
+    implementation 'com.danikula:videocache:2.7.0'
+
+    //firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21'
+
+    implementation 'com.airbnb.android:lottie:3.4.0'
+    //numberPIcker
+    implementation 'com.shawnlin:number-picker:2.4.9'
+
+    //App Itro
+    implementation 'com.github.msayan:tutorial-view:v1.0.10'
+
 
 }

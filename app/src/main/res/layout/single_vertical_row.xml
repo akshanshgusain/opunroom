@@ -18,18 +18,31 @@
                    android:id="@+id/imaegView_banner_image"
                    android:layout_width="match_parent"
                    android:scaleType="centerCrop"
-                   android:background="@drawable/ic_launcher_background"
+                   android:background="@color/colorWhite"
                    android:layout_height="match_parent"
                    app:layout_constraintStart_toStartOf="parent"
                    app:layout_constraintTop_toTopOf="parent"
                    app:layout_constraintBottom_toBottomOf="parent"
                    app:layout_constraintEnd_toEndOf="parent"/>
+
+         <ImageView
+             android:id="@+id/imaegView_gradient"
+             android:layout_width="match_parent"
+             android:scaleType="centerCrop"
+             android:background="@drawable/shape_gradient_black_2"
+             android:layout_height="match_parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"/>
+
                   <LinearLayout
-                      android:layout_width="100dp"
+                      android:layout_width="match_parent"
                       android:layout_height="wrap_content"
+                      app:layout_constraintEnd_toEndOf="parent"
                       android:orientation="vertical"
-                      android:layout_marginStart="8dp"
-                      android:layout_marginBottom="8dp"
+                      android:gravity="center"
+                      android:background="@drawable/shape_gradient_black_2"
                       app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintBottom_toBottomOf="parent"
                       android:weightSum="300">
@@ -46,6 +59,9 @@
                               android:layout_width="match_parent"
                               android:text="NovoStack"
                               android:textSize="16sp"
+                              android:layout_marginBottom="08dp"
+                              android:layout_gravity="center"
+                              android:textAlignment="center"
                               android:textStyle="bold"
                               android:textColor="@color/colorWhite"
                               android:textAllCaps="true"
@@ -55,6 +71,7 @@
                              android:layout_width="match_parent"
                              android:layout_height="wrap_content"
                              android:orientation="horizontal"
+                             android:visibility="gone"
                              android:weightSum="10">
                                 <ImageView
                                     android:layout_width="20dp"
@@ -65,6 +82,7 @@
                                  android:id="@+id/textView_comapnt_recc"
                                  android:layout_width="match_parent"
                                  android:text="Recommended"
+
                                  android:layout_gravity="center"
                                  android:textSize="10sp"
                                  android:textStyle="bold"

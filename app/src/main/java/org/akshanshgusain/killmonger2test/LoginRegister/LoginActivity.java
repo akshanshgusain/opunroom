@@ -8,13 +8,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akshanshgusain.killmonger2test.MainActivity;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
+import org.akshanshgusain.killmonger2test.ORTutorialActivity;
 import org.akshanshgusain.killmonger2test.R;
-import org.akshanshgusain.killmonger2test.SplashActivity;
 import org.akshanshgusain.killmonger2test.databinding.ActivityLoginBinding;
 
 import java.util.Map;
@@ -24,17 +23,21 @@ import static org.akshanshgusain.killmonger2test.ProjectConstants.*;
 public class LoginActivity extends AppCompatActivity implements RestCalls.LoginUserI {
     private ActivityLoginBinding binding;
     private static final String TAG = "LoginAct";
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
-   public static TextView mHeader;
+    private SharedPreferences loginPref;
+    private SharedPreferences.Editor loginEditor;
+
+    private SharedPreferences tutorialPref;
+    private SharedPreferences.Editor tutorialEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
-      mHeader = binding.imageViewex;
+        loginPref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+        tutorialPref = getApplicationContext().getSharedPreferences("TutorialPreference", MODE_PRIVATE);
+
         binding.buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,21 +83,38 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
             Log.d(TAG, "response: success");
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
             //Create Preference Here:
-            editor = pref.edit();
-            editor.putString(PREF_KEY_ID, response.get("id"));
-            editor.putString(PREF_KEY_F_NAME, response.get("f_name"));
-            editor.putString(PREF_KEY_L_NAME, response.get("l_name"));
-            editor.putString(PREF_KEY_USERNAME, response.get("username"));
-            editor.putString(PREF_KEY_EMAIL, response.get("email"));
-            editor.putString(PREF_KEY_NETWORK, response.get("network"));
-            editor.putString(PREF_KEY_PICTURE, response.get("picture"));
-            editor.putBoolean(PREF_KEY_IS_LOGIN, true);
-            editor.apply();
-            Intent p = new Intent(LoginActivity.this, MainActivity.class);
-            p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-           startActivity(p);
-            finish();
+            loginEditor = loginPref.edit();
+
+
+            loginEditor.putString(PREF_KEY_ID, response.get("id"));
+            loginEditor.putString(PREF_KEY_F_NAME, response.get("f_name"));
+            loginEditor.putString(PREF_KEY_L_NAME, response.get("l_name"));
+            loginEditor.putString(PREF_KEY_USERNAME, response.get("username"));
+            loginEditor.putString(PREF_KEY_EMAIL, response.get("email"));
+            loginEditor.putString(PREF_KEY_NETWORK, response.get("network"));
+            loginEditor.putString(PREF_KEY_PICTURE, response.get("picture"));
+            loginEditor.putString(PREF_KEY_PROFESSION, response.get("profession"));
+            loginEditor.putBoolean(PREF_KEY_IS_LOGIN, true);
+
+
+            loginEditor.apply();
+
+
+            if(tutorialPref.getBoolean(PREF_KEY_IS_FIRST_RUN, true)){
+                Intent p = new Intent(LoginActivity.this, ORTutorialActivity.class);
+                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(p);
+                finish();
+
+            }else{
+                Intent p = new Intent(LoginActivity.this, MainActivity.class);
+                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(p);
+                finish();
+            }
+
         }
         if (response.get("id").equals("")) {
             Toast.makeText(this, " response Failed"+ response.get("id"), Toast.LENGTH_SHORT).show();
@@ -112,5 +132,11 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
         Log.d(TAG, "ErrorRequest (Exception): "+ response.get("exception"));
         Toast.makeText(this, "(Exception): "+ response.get("exception"), Toast.LENGTH_SHORT).show();
         binding.textViewDetails.setText(response.get("message"));
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        finish();
     }
 }

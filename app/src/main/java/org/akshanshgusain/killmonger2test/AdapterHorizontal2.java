@@ -3,10 +3,12 @@ package org.akshanshgusain.killmonger2test;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -41,6 +43,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
         }
         return super.getItemViewType(position);
     }
+
 
     @NonNull
     @Override
@@ -106,6 +109,8 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
         public void onClick(View view) {
             horizontal2ClickListener.onHorizontal2ClickListener(getAdapterPosition());
         }
+
+
     }
 
     public interface Horizontal2ClickListener {

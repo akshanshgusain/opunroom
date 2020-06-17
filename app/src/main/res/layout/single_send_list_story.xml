@@ -33,5 +33,5 @@
        app:layout_constraintStart_toEndOf="@+id/textView_heading"
        android:layout_marginEnd="16dp"
        app:layout_constraintHorizontal_bias="1"
-       android:src="@drawable/ic_avatar"/>
+       android:src="@drawable/ic_group"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

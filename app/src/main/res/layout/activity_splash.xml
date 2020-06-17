@@ -33,7 +33,7 @@
         android:id="@+id/textView_appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="opUndoor"
+        android:text="@string/app_name_2"
         android:textColor="@color/colorWhite"
         android:textSize="28dp"
         android:visibility="gone"

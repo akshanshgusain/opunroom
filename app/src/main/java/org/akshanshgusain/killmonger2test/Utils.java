@@ -1,5 +1,6 @@
 package org.akshanshgusain.killmonger2test;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,9 +15,11 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
-import static org.akshanshgusain.killmonger2test.LoginRegister.LoginActivity.mHeader;
+
 
 public class Utils {
 
@@ -36,7 +39,7 @@ public class Utils {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
     }
 
-    public String getVolleyErrorString(VolleyError error) {
+    public static String getVolleyErrorString(VolleyError error) {
         if (error instanceof TimeoutError) {
             return "Timeout Error";
         } else if (error instanceof NoConnectionError) {
@@ -51,5 +54,43 @@ public class Utils {
             return "Parse Error";
         }
         return " ";
+    }
+
+    public static File getVideoCacheDir(Context context) {
+        return new File(context.getExternalCacheDir(), "opunroom-video-cache");
+    }
+    public static void cleanVideoCacheDir(Context context) throws IOException {
+        File videoCacheDir = getVideoCacheDir(context);
+        cleanDirectory(videoCacheDir);
+    }
+
+    private static void cleanDirectory(File file) throws IOException {
+        if (!file.exists()) {
+            return;
+        }
+        File[] contentFiles = file.listFiles();
+        if (contentFiles != null) {
+            for (File contentFile : contentFiles) {
+                delete(contentFile);
+            }
+        }
+    }
+
+    private static void delete(File file) throws IOException {
+        if (file.isFile() && file.exists()) {
+            deleteOrThrow(file);
+        } else {
+            cleanDirectory(file);
+            deleteOrThrow(file);
+        }
+    }
+
+    private static void deleteOrThrow(File file) throws IOException {
+        if (file.exists()) {
+            boolean isDeleted = file.delete();
+            if (!isDeleted) {
+                throw new IOException(String.format("File %s can't be deleted", file.getAbsolutePath()));
+            }
+        }
     }
 }

@@ -44,9 +44,11 @@ public class AdapterContact extends RecyclerView.Adapter<AdapterContact.ViewHold
               Glide.with(mContext).load(contact.getPicture()).into(holder.dp);
               holder.position = position;
                 if(contact.isSelected()){
-                    holder.view.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+                    holder.view.setBackgroundColor(mContext.getResources().getColor(R.color.colorBlack));
+                    holder.username.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
                 }else{
                     holder.view.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                    holder.username.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
                 }
         }
     }

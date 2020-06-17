@@ -60,6 +60,7 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
             Friends friend = mDataObjects.get(position);
             Glide.with(mContext).load(friend.getPicture()).into(holder.dp);
             String name = friend.getF_name() +" "+ friend.getL_name();
+            holder.profession.setText(friend.getProfession());
             holder.name.setText(name);
         }
     }
@@ -72,7 +73,7 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
     //View Holder Class
     public class ViewHolderH extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView dp, status;
-        TextView name;
+        TextView name,profession;
         Horizontal1ClickListener clickListener;
 
         public ViewHolderH(View itemView, Horizontal1ClickListener horizontal1ClickListener) {
@@ -80,6 +81,7 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
             dp = (ImageView) itemView.findViewById(R.id.imageView_dp);
             status = (ImageView) itemView.findViewById(R.id.imageView_status);
             name = (TextView) itemView.findViewById(R.id.textView_name);
+            profession = itemView.findViewById(R.id.textView_profession);
             this.clickListener = horizontal1ClickListener;
             itemView.setOnClickListener(this);
         }

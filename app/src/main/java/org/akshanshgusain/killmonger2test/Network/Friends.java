@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Friends {
-    String id, f_name, l_name, username, email, password, network, picture;
+    String id, f_name, l_name, username, email, password, network, picture, profession;
     List<String> storyPictures = new ArrayList<>();
 
-    public Friends(String id, String f_name, String l_name, String username, String email, String password, String network, String picture, ArrayList<String> storypictures) {
+    public Friends(String id, String f_name, String l_name, String username, String email, String password, String network, String picture, ArrayList<String> storypictures, String profession) {
         this.id = id;
         this.f_name = f_name;
         this.l_name = l_name;
@@ -18,6 +18,15 @@ public class Friends {
         this.network = network;
         this.picture = picture;
         this.storyPictures = storypictures;
+        this.profession = profession;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
     }
 
     public List<String> getStoryPictures() {

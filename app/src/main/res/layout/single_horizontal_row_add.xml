@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:paddingStart="16dp"
-    android:background="@color/colorGrey"
+    android:background="@color/colorWhite"
     android:paddingEnd="16dp"
     android:focusable="true"
     android:clickable="true"

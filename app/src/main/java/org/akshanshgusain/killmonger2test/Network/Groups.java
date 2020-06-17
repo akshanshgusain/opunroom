@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Groups {
     private String id, grouptitle,admin;
-    private List<String> groupstories;
+    private List<Group_Stories> groupstories;
     private String groupImage;
 
-    public Groups(String id, String grouptitle, String admin, List<String> groupstories) {
+    public Groups(String id, String grouptitle, String admin, List<Group_Stories> groupstories) {
         this.id = id;
         this.grouptitle = grouptitle;
         this.admin = admin;
@@ -46,11 +46,11 @@ public class Groups {
         this.admin = admin;
     }
 
-    public List<String> getGroupstories() {
+    public List<Group_Stories> getGroupstories() {
         return groupstories;
     }
 
-    public void setGroupstories(List<String> groupstories) {
+    public void setGroupstories(List<Group_Stories> groupstories) {
         this.groupstories = groupstories;
     }
 }

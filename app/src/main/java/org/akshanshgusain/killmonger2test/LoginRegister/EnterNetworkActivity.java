@@ -25,6 +25,7 @@ public class EnterNetworkActivity extends AppCompatActivity implements RestCalls
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_enter_network);
+        checkForValidNetwork();
         binding.buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,8 +41,16 @@ public class EnterNetworkActivity extends AppCompatActivity implements RestCalls
 
     private void checkForValidNetwork() {
         RestCalls restCall = new RestCalls(this);
-        Log.d(TAG, "checkForValidNetwork: "+binding.editTextWorkspace.getText().toString().trim()+".com" );
-        restCall.checkNetworkCall( binding.editTextWorkspace.getText().toString().trim());
+       // Log.d(TAG, "checkForValidNetwork: "+binding.editTextWorkspace.getText().toString().trim()+".com" );
+       // restCall.checkNetworkCall( binding.editTextWorkspace.getText().toString().trim());
+       // restCall.checkNetworkCall("OpunRoom");
+
+        Intent i = new Intent(EnterNetworkActivity.this, EnterDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(INTENT_NAME_WORKSPACE,"Opundoor");
+        i.putExtra(BUNDLE_REGISTER, bundle );
+        startActivity(i);
+        finish();
     }
 
     @Override

@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.akshanshgusain.killmonger2test.Groups.AdapterContact;
+import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Friends;
+import org.akshanshgusain.killmonger2test.Network.Friends2;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.R;
@@ -34,25 +37,26 @@ import static org.akshanshgusain.killmonger2test.SendPicture.AdapterContacts.*;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BottomSheetFragment extends BottomSheetDialogFragment   {
-    private RecyclerView  recyclerView;
-    private List<SingleContact> groups;
+public class BottomSheetFragment extends BottomSheetDialogFragment {
+    private RecyclerView recyclerView;
+    private List<SingleContact> groups = new ArrayList<>();
+    private List<SingleContact> companies = new ArrayList<>();
     private Button mSend;
     private SendButtonClick sendButtonClick;
 
-    public interface SendButtonClick{
+    public interface SendButtonClick {
         public void sendButtonClick();
     }
+
     public BottomSheetFragment() {
 
     }
 
 
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        sendButtonClick = (SendButtonClick)getActivity();
+        sendButtonClick = (SendButtonClick) getActivity();
     }
 
     @Override
@@ -63,32 +67,43 @@ public class BottomSheetFragment extends BottomSheetDialogFragment   {
         mSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 sendButtonClick.sendButtonClick();
+                sendButtonClick.sendButtonClick();
             }
         });
+
+
+
         return view;
     }
 
-     void dataFromParent(List<Groups> list){
+    void dataFromParent(Friends2 friends2) {
+        if (friends2.getStatus() == 1) {
+            List<SingleContact> temp = new ArrayList<>();
 
-        List<SingleContact> temp = new ArrayList<>();
+            SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+            String name = pref.getString(PREF_KEY_F_NAME, "") + " " + pref.getString(PREF_KEY_L_NAME, "");
 
-         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
-        String  name =  pref.getString(PREF_KEY_F_NAME,"")+" "+ pref.getString(PREF_KEY_L_NAME,"");
+            temp.add(new SingleContact("", "2", "Add to your Company's Story", HEADING_TYPE));
+            for (Friends2.CompanyBean groups : friends2.getCompany()) {
+                temp.add(new SingleContact(groups.getDisplay_picture()
+                        , groups.getId()
+                        , groups.getName()
+                        , COMPANY_TYPE));
+            }
+            temp.add(new SingleContact("", "2", "Add to your story", HEADING_TYPE));
+            temp.add(new SingleContact(pref.getString(PREF_KEY_PICTURE, ""), pref.getString(PREF_KEY_ID, ""), name, SELF_TYPE));
+            temp.add(new SingleContact("", "2", "Your Groups", HEADING_TYPE));
+            for (Friends2.GroupsBean groups : friends2.getGroups()) {
+                temp.add(new SingleContact(""
+                        , groups.getId()
+                        , groups.getGrouptitle()
+                        , GROUP_TYPE));
+            }
+            groups = temp;
 
-         temp.add(new SingleContact("", "2","Add to your story",HEADING_TYPE));
-         temp.add(new SingleContact(pref.getString(PREF_KEY_PICTURE,""), pref.getString(PREF_KEY_ID,""),name,SELF_TYPE));
-        temp.add(new SingleContact("", "2","Your Groups",HEADING_TYPE));
-        for(Groups groups: list){
-            temp.add(new SingleContact(""
-                      , groups.getId()
-                    ,groups.getGrouptitle()
-                    ,GROUP_TYPE));
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(new AdapterContacts(groups, getActivity()));
         }
-         groups = temp;
-         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-         recyclerView.setAdapter(new AdapterContacts(groups, getActivity()));
     }
-
 
 }

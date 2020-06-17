@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
@@ -91,6 +92,11 @@ public class CreateGroupActivity extends AppCompatActivity implements AdapterCon
 
     @Override
     public void responseListGroups(List<Groups> groupsList) {
+
+    }
+
+    @Override
+    public void responseListCompany(List<Company> companyList) {
 
     }
 

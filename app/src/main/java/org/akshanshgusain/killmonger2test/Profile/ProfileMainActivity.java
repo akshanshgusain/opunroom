@@ -89,5 +89,6 @@ public class ProfileMainActivity extends AppCompatActivity {
         Glide.with(this).load(pref.getString(PREF_KEY_PICTURE, "")).into(binding.imageViewDp);
         binding.textViewName.setText(pref.getString(PREF_KEY_F_NAME, "") + " " + pref.getString(PREF_KEY_L_NAME, ""));
         binding.textViewUsername.setText(pref.getString(PREF_KEY_USERNAME, ""));
+        binding.textViewProfession.setText(pref.getString(PREF_KEY_PROFESSION, ""));
     }
 }

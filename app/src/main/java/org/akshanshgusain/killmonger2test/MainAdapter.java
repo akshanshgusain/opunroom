@@ -7,16 +7,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Groups;
+import org.akshanshgusain.killmonger2test.Network.NewsChannel;
 
 import java.util.ArrayList;
+
 
 import static org.akshanshgusain.killmonger2test.SwipableViews.DashBoardFragment.*;
 
@@ -30,20 +36,25 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VERTICAL = 2;
     private static final int HORIZONTAL2 = 3;
     public static final int  HEADING = 4;
+    private static final int VERTICAL2 = 5;
 
     AdapterHorizontal2 adapter2;
     AdapterHorizontal adapter;
-
+    AdapterVertical adapter1;
+    AdapterVertical2 adapter3;
+     EnableDisableScrollInViewPager enableDisableScrollInViewPager ;
     //Constructor
     public MainAdapter(ArrayList<Object> mObjectList, Context mContext) {
         this.mObjectList = mObjectList;
         this.mContext = mContext;
+        this.enableDisableScrollInViewPager  =  (EnableDisableScrollInViewPager) mContext;
+        Log.d("MainAdapter", "MainAdapter: Size: "+mObjectList.size() );
     }
 
     //ItemView Type
     @Override
     public int getItemViewType(int position) {
-        if (mObjectList.get(position) instanceof SingleVertical)
+        if (mObjectList.get(position) instanceof Company)
             return VERTICAL;
         if (mObjectList.get(position) instanceof Friends)
             return HORIZONTAL;
@@ -51,6 +62,9 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return HORIZONTAL2;
         if (mObjectList.get(position) instanceof SingleHeadingList){
             return HEADING;
+        }
+        if (mObjectList.get(position) instanceof NewsChannel){
+            return VERTICAL2;
         }
 
         else
@@ -75,14 +89,17 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return vh;
             case HORIZONTAL2:
                 view = mLayoutInflater.inflate(R.layout.horizontal2, parent, false);
-                vh = new ViewHolderHorizontal2(view);
+                vh = new ViewHolderHorizontal2(view, enableDisableScrollInViewPager);
                 return vh;
             case HEADING:
                 view = mLayoutInflater.inflate(R.layout.single_heading_row, parent, false);
                 vh = new ViewHolderHeading(view);
                 return vh;
+            case VERTICAL2:
+                view = mLayoutInflater.inflate(R.layout.vertical, parent, false);
+                vh = new ViewHolderVertical2(view);
+                return vh;
             default:
-                HORIZONTAL:
                 view = mLayoutInflater.inflate(R.layout.single_vertical_row, parent, false);
                 vh = new ViewHolderVertical(view);
                 return vh;
@@ -99,15 +116,25 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             horizontal2View((ViewHolderHorizontal2) holder);
         else if (holder.getItemViewType() == HEADING)
              headingView((ViewHolderHeading) holder, position);
+        else if (holder.getItemViewType() == VERTICAL2)
+            verticalView2((ViewHolderVertical2) holder);
 
     }
 
 
     private void verticalView(ViewHolderVertical holder) {
-        AdapterVertical adapter1 = new AdapterVertical(getVerticalData(), mContext);
+         adapter1 = new AdapterVertical(companiesGlobal, mContext);
         //holder.mRecyclerViewV.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         holder.mRecyclerViewV.setLayoutManager(new GridLayoutManager(mContext, 2));
         holder.mRecyclerViewV.setAdapter(adapter1);
+    }
+
+    private void verticalView2(ViewHolderVertical2 holder) {
+        adapter3 = new AdapterVertical2(channelsGlobal, mContext);
+        //holder.mRecyclerViewV.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        holder.mRecyclerViewV.setLayoutManager(new GridLayoutManager(mContext, 2));
+
+        holder.mRecyclerViewV.setAdapter(adapter3);
     }
 
     private void horizontalView(ViewHolderHorizontal holder) {
@@ -133,15 +160,27 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void verticalDataSetChanged(){
+         if(adapter1!=null){
+              adapter1.dataChanged((ArrayList<Company>) companiesGlobal);
+         }
+    }
+    public void vertical2DataSetChanged(){
+        if(adapter3!=null){
+            adapter3.dataChanged((ArrayList<NewsChannel>) channelsGlobal);
+        }
+    }
+
 
     private void headingView(ViewHolderHeading  holder, int position) {
        switch(position){
            case 0:
                holder.heading.setText(getHeadingData().get(0).getHeading());
-               holder.itemView.setBackgroundColor(mContext.getColor(R.color.colorGrey));
+              // holder.itemView.setBackgroundColor(mContext.getColor(R.color.colorGrey));
                 break;
            case 2: holder.heading.setText(getHeadingData().get(1).getHeading()); break;
            case 4: holder.heading.setText(getHeadingData().get(2).getHeading()); break ;
+           case 6: holder.heading.setText(getHeadingData().get(3).getHeading()); break ;
        }
 
     }
@@ -163,6 +202,15 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mRecyclerViewV = (RecyclerView) itemView.findViewById(R.id.vertical_recyclerView);
         }
     }
+    public class ViewHolderVertical2 extends RecyclerView.ViewHolder {
+        RecyclerView mRecyclerViewV;
+
+        public ViewHolderVertical2(View itemView) {
+            super(itemView);
+            mRecyclerViewV = (RecyclerView) itemView.findViewById(R.id.vertical_recyclerView);
+
+        }
+    }
 
     public class ViewHolderHorizontal extends RecyclerView.ViewHolder {
         RecyclerView mRecyclerViewH;
@@ -174,10 +222,49 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     public class ViewHolderHorizontal2 extends RecyclerView.ViewHolder {
         RecyclerView mRecyclerViewH2;
-
-        public ViewHolderHorizontal2(View itemView) {
+        EnableDisableScrollInViewPager enableDisableScrollInViewPager;
+        public ViewHolderHorizontal2(View itemView , final EnableDisableScrollInViewPager enableDisableScrollInViewPager) {
             super(itemView);
             mRecyclerViewH2 = (RecyclerView) itemView.findViewById(R.id.horizontal2_recyclerView);
+            this.enableDisableScrollInViewPager = enableDisableScrollInViewPager;
+
+            mRecyclerViewH2.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                int lastX = 0;
+                @Override
+                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            lastX = (int) e.getX();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            boolean isScrollingRight = e.getX() < lastX;
+      if ((isScrollingRight && ((LinearLayoutManager) mRecyclerViewH2.getLayoutManager()).findLastCompletelyVisibleItemPosition() == mRecyclerViewH2.getAdapter().getItemCount() - 1) ||
+                                    (!isScrollingRight && ((LinearLayoutManager) mRecyclerViewH2.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
+
+                                enableDisableScrollInViewPager.enableDisableScrollInViewPager(true);
+                            } else {
+
+                                enableDisableScrollInViewPager.enableDisableScrollInViewPager(false);
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            lastX = 0;
+                            enableDisableScrollInViewPager.enableDisableScrollInViewPager(true);
+                            break;
+                    }
+                    return false;
+                }
+
+                @Override
+                public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+                }
+
+                @Override
+                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                }
+            });
         }
     }
     public class ViewHolderHeading extends RecyclerView.ViewHolder {
@@ -187,6 +274,10 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
            heading =  itemView.findViewById(R.id.textView_heading);
         }
+    }
+
+    public interface EnableDisableScrollInViewPager{
+        public void enableDisableScrollInViewPager(boolean enable);
     }
 
 }

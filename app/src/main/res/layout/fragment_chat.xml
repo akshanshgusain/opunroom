@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:gravity="center"
+    android:background="@color/colorBlack"
     android:layout_height="match_parent">
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/sketch_coursive"
+        android:fontFamily="@font/gilroy_bold"
         android:gravity="center"
-        android:text="Chat"
-        android:textSize="70sp" />
+        android:text="Chat... Coming Soon!"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
 
 </LinearLayout>

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 
 import org.akshanshgusain.killmonger2test.Network.Company;
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.NewsChannel;
@@ -138,31 +139,31 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void horizontalView(ViewHolderHorizontal holder) {
-         adapter = new AdapterHorizontal((ArrayList<Friends>) friendsGlobal, mContext);
+         adapter = new AdapterHorizontal((ArrayList<Feed.FriendsBean>) friendsGlobal, mContext);
         holder.mRecyclerViewH.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.mRecyclerViewH.setAdapter(adapter);
     }
 
     private void horizontal2View(ViewHolderHorizontal2  holder) {
-         adapter2 = new AdapterHorizontal2((ArrayList<Groups>) groupsGlobal, mContext);
+         adapter2 = new AdapterHorizontal2((ArrayList<Feed.GroupsBean>) groupsGlobal, mContext);
         holder.mRecyclerViewH2.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.mRecyclerViewH2.setAdapter(adapter2);
     }
    public  void horizontal2DataSetChanged(){
          if(adapter2!=null){
-             adapter2.dataChanged((ArrayList<Groups>)groupsGlobal);
+             adapter2.dataChanged((ArrayList<Feed.GroupsBean>)groupsGlobal);
          }
     }
 
     public  void horizontalDataSetChanged(){
         if(adapter!=null){
-            adapter.dataChanged((ArrayList<Friends>)friendsGlobal);
+            adapter.dataChanged((ArrayList<Feed.FriendsBean>)friendsGlobal);
         }
     }
 
     public void verticalDataSetChanged(){
          if(adapter1!=null){
-              adapter1.dataChanged((ArrayList<Company>) companiesGlobal);
+              adapter1.dataChanged((ArrayList<Feed.CompanyBean>) companiesGlobal);
          }
     }
     public void vertical2DataSetChanged(){

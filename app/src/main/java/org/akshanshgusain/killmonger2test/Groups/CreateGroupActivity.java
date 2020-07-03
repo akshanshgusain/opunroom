@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Friends;
+import org.akshanshgusain.killmonger2test.Network.Friends2;
+import org.akshanshgusain.killmonger2test.Network.GroupMembers;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.R;
@@ -59,13 +61,24 @@ public class CreateGroupActivity extends AppCompatActivity implements AdapterCon
     }
 
     @Override
-    public void clickListener(int position, List<Integer> userIds, SingleFriends contact) {
+    public void clickListener(int position, SingleFriends contact) {
            try{
                temp.set(position,contact) ;
+               Log.d(TAG, "clickListener: ID: "+ temp.get(position).id);
 
            }catch(Exception e){
 
            }
+    }
+
+    @Override
+    public void clickListenerAddUSer(int position, Friends2.FriendsBean friend) {
+
+    }
+
+    @Override
+    public void clickListenerDeleteUSer(int position, GroupMembers.GroupsBean.MemberBean friend) {
+
     }
 
     @Override
@@ -87,7 +100,7 @@ public class CreateGroupActivity extends AppCompatActivity implements AdapterCon
               , friend.getEmail(), friend.getPassword(),friend.getNetwork(), friend.getPicture()));
         }
         binding.recyclerViewParticipants.setLayoutManager(new LinearLayoutManager(this));
-        binding.recyclerViewParticipants.setAdapter(new AdapterContact(temp,this));
+        binding.recyclerViewParticipants.setAdapter(new AdapterContact(temp,this,0));
     }
 
     @Override
@@ -123,21 +136,25 @@ public class CreateGroupActivity extends AppCompatActivity implements AdapterCon
              SharedPreferences pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
              String userId = pref.getString(PREF_KEY_ID,"");
              //Get the ids of participants.
-              String ids = new String();
+              StringBuilder ids = new StringBuilder(new String());
               int i=0;
               for(SingleFriends tempu : selectedFriends){
-                  if(i<selectedFriends.size()-1){
-                      ids = ids + ","+tempu.getId();
-                  }else{
-                      ids = ids +tempu.getId();
+                  if(i<selectedFriends.size()){
+                      if(ids.length() == 0){
+                          ids = new StringBuilder(tempu.getId());
+                      }else{
+                          ids.append(",").append(tempu.getId());
+                      }
                   }
                   i++;
               }
+
               //Call Create Group API
+              Log.d(TAG, "createGroup: USerIDs: "+ ids);
               Map<String, String> paramsMap = new HashMap<>();
               paramsMap.put("userid",userId );
               paramsMap.put("grouptitle",title );
-              paramsMap.put("groupalluserid",ids );
+              paramsMap.put("groupalluserid", ids.toString());
               restCalls.createGroup(paramsMap);
           }
     }

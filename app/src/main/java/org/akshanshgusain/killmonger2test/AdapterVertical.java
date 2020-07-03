@@ -13,22 +13,23 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import org.akshanshgusain.killmonger2test.Network.Company;
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHolderV>{
-   private ArrayList<Company> mDataObjects;
+   private ArrayList<Feed.CompanyBean> mDataObjects;
    private Context mContext;
    private VerticalClickListener verticalClickListener;
 
-    public AdapterVertical(List<Company> mDataObjects, Context mContext) {
-        this.mDataObjects =(ArrayList<Company>) mDataObjects;
+    public AdapterVertical(List<Feed.CompanyBean> mDataObjects, Context mContext) {
+        this.mDataObjects =(ArrayList<Feed.CompanyBean>) mDataObjects;
         this.mContext = mContext;
         this.verticalClickListener = (VerticalClickListener)mContext;
     }
-    public void dataChanged(ArrayList<Company> groups){
+    public void dataChanged(ArrayList<Feed.CompanyBean> groups){
         this.mDataObjects=groups;
         notifyDataSetChanged();
     }
@@ -44,8 +45,8 @@ public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderV holder, int position) {
-        Glide.with(mContext).load(mDataObjects.get(position).getCoverPicture()).into(holder.banner);
-        Glide.with(mContext).load(mDataObjects.get(position).getDisplayPicture()).into(holder.dp);
+        Glide.with(mContext).load(mDataObjects.get(position).getProfile_picture()).into(holder.banner);
+        Glide.with(mContext).load(mDataObjects.get(position).getDisplay_picture()).into(holder.dp);
         holder.name.setText(mDataObjects.get(position).getName());
     }
 

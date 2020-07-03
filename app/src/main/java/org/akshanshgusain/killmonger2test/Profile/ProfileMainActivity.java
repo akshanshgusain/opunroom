@@ -6,10 +6,13 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.akshanshgusain.killmonger2test.LoginRegister.LoginActivity;
 import org.akshanshgusain.killmonger2test.MainActivity;
 import org.akshanshgusain.killmonger2test.R;
 import org.akshanshgusain.killmonger2test.databinding.ActivityProfileMainBinding;
@@ -26,6 +29,8 @@ public class ProfileMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile_main);
         pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+
+        Log.i("TESTING", "CREATED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
         binding.imageViewSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,18 +75,24 @@ public class ProfileMainActivity extends AppCompatActivity {
       binding.constraintLayoutLogout.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
+             // Toast.makeText(ProfileMainActivity.this, "Logout Call", Toast.LENGTH_SHORT).show();
               editor = pref.edit();
               editor.clear();
               editor.apply();
-              Intent i = new Intent(ProfileMainActivity.this, MainActivity.class);
-              i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-              i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-              startActivity(i);
+//              Intent i = new Intent(ProfileMainActivity.this, LoginActivity.class);
+//              i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//              i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//              startActivity(i);
               finish();
           }
       });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("TESTING", "DESTROYED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
+    }
 
     @Override
     protected void onResume() {

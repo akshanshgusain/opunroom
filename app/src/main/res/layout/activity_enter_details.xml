@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:hint="Enter Your Email"
-                android:gravity="right"
-                android:inputType="text"
+                android:gravity="start"
+                android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
             <TextView
@@ -38,6 +38,7 @@
                 android:layout_weight="6"
                 android:gravity="center"
                 android:text="/@oppo.com"
+                android:visibility="gone"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
         </LinearLayout>

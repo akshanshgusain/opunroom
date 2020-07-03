@@ -30,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import org.akshanshgusain.killmonger2test.Application;
 import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Company_Stories;
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Group_Stories;
 import org.akshanshgusain.killmonger2test.Network.Groups;
@@ -55,8 +56,8 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
     public static final String STORY_COMPANY = "company_story";
 
     private ActivityStoryViewerBinding binding;
-    ArrayList<Group_Stories> stories;
-    ArrayList<Company_Stories> companyStories;
+    ArrayList<Feed.GroupsBean.GrouppicturesBean> stories;
+    ArrayList<Feed.CompanyBean.StorypictureBean> companyStories;
     ArrayList<String> statuses;
     String statusId;
     private static final String TAG = "ViewerStory";
@@ -166,7 +167,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         binding.progressBarLoad.setVisibility(View.VISIBLE);
         //User Details in GROUPS
         if (intentType.equals(STORY_GROUPS)) {
-            String userId = stories.get(pos).getSenderId();
+            String userId = stories.get(pos).getUserid();
             Friends user = null;
             for (Friends temp : friendsList) {
                 if (temp.getId().equals(userId)) {
@@ -188,12 +189,12 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                 }).into(binding.imageViewDp);
 
                 binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
-                binding.textViewTime.setText(stories.get(pos).getDate());
+                binding.textViewTime.setText(stories.get(pos).getCreated_at());
             }
 
-            if(!(stories.get(pos).getStory()).contains("firebasestorage.googleapis.com")){
+            if(!(stories.get(pos).getGroupstory()).contains("firebasestorage.googleapis.com")){
                 switchPlayer(1);
-                      Glide.with(StoryViewerActivity.this).load(URL + stories.get(pos).getStory()).listener(new RequestListener<Drawable>() {
+                      Glide.with(StoryViewerActivity.this).load(URL + stories.get(pos).getGroupstory()).listener(new RequestListener<Drawable>() {
                           @Override
                           public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                               binding.progressBarLoad.setVisibility(View.GONE);
@@ -210,7 +211,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                   }else{
                 switchPlayer(2);
 
-                binding.videoViewStory.setVideoPath(cachingUrl(stories.get(pos).getStory()));
+                binding.videoViewStory.setVideoPath(cachingUrl(stories.get(pos).getGroupstory()));
 
                 binding.videoViewStory.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
@@ -308,7 +309,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         }
         //User Details in COMPANY
         if (intentType.equals(STORY_COMPANY)) {
-            String userId = companyStories.get(pos).getUserId();
+            String userId = companyStories.get(pos).getUserid();
             Friends user = null;
             for (Friends temp : friendsList) {
                 if (temp.getId().equals(userId)) {
@@ -329,11 +330,11 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                     }
                 }).into(binding.imageViewDp);
                 binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
-                binding.textViewTime.setText(companyStories.get(pos).getDate());
+                binding.textViewTime.setText(companyStories.get(pos).getCreated_at());
             }
-                if(!companyStories.get(pos).getPicture().contains("firebasestorage.googleapis.com")){
+                if(!companyStories.get(pos).getStorypicture().contains("firebasestorage.googleapis.com")){
                     switchPlayer(1);
-                    Glide.with(StoryViewerActivity.this).load(URL + companyStories.get(pos).getPicture()).listener(new RequestListener<Drawable>() {
+                    Glide.with(StoryViewerActivity.this).load(URL + companyStories.get(pos).getStorypicture()).listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             binding.progressBarLoad.setVisibility(View.GONE);
@@ -349,7 +350,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                     }).into(image);
                 }else{
                     switchPlayer(2);
-                    binding.videoViewStory.setVideoPath(cachingUrl(companyStories.get(pos).getPicture()));
+                    binding.videoViewStory.setVideoPath(cachingUrl(companyStories.get(pos).getStorypicture()));
 
                     binding.videoViewStory.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
@@ -401,7 +402,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
 
             }
             if (intentType.equals(STORY_GROUPS)) {
-                Type typeGroup_Stories = new TypeToken<List<Group_Stories>>() {
+                Type typeGroup_Stories = new TypeToken<List<Feed.GroupsBean.GrouppicturesBean>>() {
                 }.getType();
                 stories = gson.fromJson(getIntent().getStringExtra("stories"), typeGroup_Stories);
                 Log.d("afakjf", "getUsersData: Restcall story Group");
@@ -413,7 +414,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
 
             }
             if (intentType.equals(STORY_COMPANY)) {
-                Type typeGroup_Stories = new TypeToken<List<Company_Stories>>() {
+                Type typeGroup_Stories = new TypeToken<List<Feed.CompanyBean.StorypictureBean>>() {
                 }.getType();
                 companyStories = gson.fromJson(getIntent().getStringExtra("stories"), typeGroup_Stories);
                 storiesProgressView.setStoriesCount(companyStories.size());

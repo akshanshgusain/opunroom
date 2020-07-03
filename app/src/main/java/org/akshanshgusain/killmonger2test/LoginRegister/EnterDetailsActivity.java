@@ -89,7 +89,7 @@ public class EnterDetailsActivity extends AppCompatActivity implements RestCalls
             binding.textViewPasswordErrors.setVisibility(View.GONE);
             binding.textViewUsernameAvailable.setVisibility(View.GONE);
 
-            bundle.putString(INTENT_EMAIL_WORKSPACE, binding.editTextEmail.getText().toString().trim()+"@"+bundle.get(INTENT_NAME_WORKSPACE).toString().trim()+".com");
+            bundle.putString(INTENT_EMAIL_WORKSPACE, binding.editTextEmail.getText().toString().trim());
             bundle.putString(INTENT_USERNAME_WORKSPACE, binding.editTextUsername.getText().toString().trim());
             bundle.putString(INTENT_PASSWORD_WORKSPACE, binding.editTextPassword.getText().toString().trim());
             Intent i = new Intent(this, EnterDetails2Activity.class);

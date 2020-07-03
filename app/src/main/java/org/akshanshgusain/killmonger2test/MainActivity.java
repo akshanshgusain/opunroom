@@ -1,19 +1,17 @@
 package org.akshanshgusain.killmonger2test;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,26 +23,25 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.akshanshgusain.killmonger2test.Groups.CreateGroupActivity;
 import org.akshanshgusain.killmonger2test.LoginRegister.LoginActivity;
-import org.akshanshgusain.killmonger2test.Network.Article;
 import org.akshanshgusain.killmonger2test.Network.Company;
 import org.akshanshgusain.killmonger2test.Network.Company_Stories;
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Group_Stories;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.NewsChannel;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.SendPicture.PreviewActivity;
+import org.akshanshgusain.killmonger2test.SwipableViews.BottomSheetGroups;
 import org.akshanshgusain.killmonger2test.SwipableViews.CameraFragment;
 import org.akshanshgusain.killmonger2test.SwipableViews.ChatFragment;
 import org.akshanshgusain.killmonger2test.SwipableViews.DashBoardFragment;
 import org.akshanshgusain.killmonger2test.SwipableViews.SectionPagerAdapter;
-import org.akshanshgusain.killmonger2test.SwipableViews.ViewPagerContainingHorizontalScrollView;
 import org.akshanshgusain.killmonger2test.ViewStories.StoryViewerActivity;
 import org.akshanshgusain.killmonger2test.ViewStories.StoryViewer_2_Activity;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +50,6 @@ import id.zelory.compressor.Compressor;
 
 import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_IS_LOGIN;
 import static org.akshanshgusain.killmonger2test.SwipableViews.CameraFragment.MEDIA_TYPE_PICTURE;
-import static org.akshanshgusain.killmonger2test.SwipableViews.CameraFragment.MEDIA_TYPE_PICTURE2;
 import static org.akshanshgusain.killmonger2test.SwipableViews.DashBoardFragment.getHorizontal2Data;
 import static org.akshanshgusain.killmonger2test.SwipableViews.DashBoardFragment.getHorizontalData;
 import static org.akshanshgusain.killmonger2test.SwipableViews.DashBoardFragment.getVertical2Data;
@@ -63,14 +59,17 @@ import static org.akshanshgusain.killmonger2test.ViewStories.StoryViewerActivity
 
 public class MainActivity extends AppCompatActivity implements AdapterHorizontal.Horizontal1ClickListener
         , AdapterHorizontal2.Horizontal2ClickListener, AdapterVertical.VerticalClickListener, AdapterVertical2.Vertical2ClickListener
-        , RestCalls.FeedI, RestCalls.GetNewsStoryI, View.OnClickListener, MainAdapter.EnableDisableScrollInViewPager {
+        , RestCalls.FeedI, RestCalls.GetNewsStoryI, View.OnClickListener, MainAdapter.EnableDisableScrollInViewPager
+        , RestCalls.DeleteGroupI {
 
     private ViewPager2 mViewPager;
+    DashBoardFragment dashBoardFragment;
+
     private ImageView mLeftButton, mRightButton;
     private int fragNUm;
-    private List<Groups> groupsGlobal = new ArrayList<>();
-    private List<Friends> friendsGlobal = new ArrayList<>();
-    private List<Company> companiesGlobal = new ArrayList<>();
+    private List<Feed.GroupsBean> groupsGlobal = new ArrayList<>();
+    private List<Feed.FriendsBean> friendsGlobal = new ArrayList<>();
+    private List<Feed.CompanyBean> companiesGlobal = new ArrayList<>();
     private List<NewsChannel> newsChannels = new ArrayList<>();
 
     public static final int FRAGMENT_CHAT = 0;
@@ -78,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     public static final int FRAGMENT_DASHBOARD = 2;
     public int FRAGMENT_CURRENT = 1;
     private static final String TAG = "MainActivity";
+
+    BottomSheetGroups bottomSheetGroups;
+    private List<Feed.CompanyBean> networkGlobal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +93,12 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
         mViewPager = findViewById(R.id.viewPager_main);
         mLeftButton = findViewById(R.id.imageView_leftButton);
         mLeftButton.setOnClickListener(this);
+        Log.i("TESTING", "CREATED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
+
         mRightButton = findViewById(R.id.imageView_rightButton);
         mRightButton.setOnClickListener(this);
         mViewPager.setOffscreenPageLimit(3);
-        checkLogin();
+        //checkLogin();
         setUpViewPager(mViewPager);
 
     }
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     }
 
     private void setUpViewPager(ViewPager2 mViewPager) {
-        final DashBoardFragment dashBoardFragment = new DashBoardFragment();
+         dashBoardFragment = new DashBoardFragment();
         SectionPagerAdapter adapter = new SectionPagerAdapter(this);
         adapter.addFragment(new ChatFragment(), "Chat");
         adapter.addFragment(new CameraFragment(), "Camera");
@@ -151,7 +155,16 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
             mViewPager.setCurrentItem(1);
         } else {
             //Send storylist to next Viewer:----------
-            List<String> stories = friendsGlobal.get(position).getStoryPictures();
+            List<String> stories = new ArrayList<>();
+
+            Feed.FriendsBean temp = friendsGlobal.get(position);
+                if(temp.getStorypicture()!=null){
+                     for(int i =0; i<temp.getStorypicture().size();i++){
+                         stories.add(temp.getStorypicture().get(i).getStorypicture());
+                     }
+
+                }
+
             if (stories.size() != 0) {
                 Intent i = new Intent(this, StoryViewerActivity.class);
                 i.putExtra("type", STORY_STATUS);
@@ -164,13 +177,14 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
         }
     }
 
+
     @Override
     public void onHorizontal2ClickListener(int position) {
         if (position == 0) {
             startActivity(new Intent(this, CreateGroupActivity.class));
         } else {
             //Send story list to next Viewer:----------
-            List<Group_Stories> stories = groupsGlobal.get(position).getGroupstories();
+            List<Feed.GroupsBean.GrouppicturesBean> stories = groupsGlobal.get(position).getGrouppictures();
             Gson gson = new Gson();
             if (stories.size() != 0) {
                 Intent i = new Intent(this, StoryViewerActivity.class);
@@ -184,8 +198,28 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     }
 
     @Override
+    public void onHorizontal2LongClickListener(int position) {
+        if (position == 0) {
+            //Do nothing
+        } else {
+            //Vibrate
+            Vibrator v = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(100);
+            }
+            //Get Group Details
+            Feed.GroupsBean currentGroup = groupsGlobal.get(position);
+            //Open Bottom Sheet Groups
+            bottomSheetGroups = new BottomSheetGroups(currentGroup);
+            bottomSheetGroups.show(getSupportFragmentManager(), "bottomSheetGroups");
+        }
+    }
+
+    @Override
     public void verticalClickListener(int position) {
-        List<Company_Stories> stories = companiesGlobal.get(position).getCompany_stories_list();
+        List<Feed.CompanyBean.StorypictureBean> stories = networkGlobal.get(position).getStorypicture();
         Gson gson = new Gson();
         if (stories.size() != 0) {
             Intent i = new Intent(this, StoryViewerActivity.class);
@@ -227,45 +261,43 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     }
 
     //Feed Rest Call Methods: ------------- start
-    @Override
-    public void feedResponse2(Map<String, String> response) {
-
-    }
+    /*Changes Here---------*/
 
     @Override
-    public void feedResponseStories(List<Friends> stories) {
+    public void feedResponse(Feed feed) {
+        //Friends
         this.friendsGlobal = new ArrayList<>();
-        this.friendsGlobal.add(new Friends("null", "null", "null", "null", "null", "null", "null", "null", null, null));
-        this.friendsGlobal.addAll(stories);
+        this.friendsGlobal.add(new Feed.FriendsBean());
+        this.friendsGlobal.addAll(feed.getFriends());
         getHorizontalData(this.friendsGlobal);
-    }
 
-    @Override
-    public void feedResponseGroups2(List<Groups> groups) {
+        //Groups
         this.groupsGlobal = new ArrayList<>();
-        this.groupsGlobal.add(new Groups(null, null, null, null));
-        this.groupsGlobal.addAll(groups);
+        this.groupsGlobal.add(new Feed.GroupsBean());
+        this.groupsGlobal.addAll(feed.getGroups());
         getHorizontal2Data(this.groupsGlobal);
 
+//        //companies
+//        this.companiesGlobal = new ArrayList<>();
+//        this.companiesGlobal = feed.getCompany();
+//        Log.d("actiMain", "feedResponseCompanies: " + companiesGlobal.size());
+//        getVerticalData(this.companiesGlobal);
 
+        //Network
+        this.networkGlobal = new ArrayList<>();
+        this.networkGlobal = feed.getNetwork();
+        Log.d("actiMain", "feedResponseCompanies: " + networkGlobal.size());
+        getVerticalData(this.networkGlobal);
     }
 
     @Override
-    public void feedResponseCompanies(List<Company> companies) {
-        this.companiesGlobal = new ArrayList<>();
-        this.companiesGlobal = companies;
-        Log.d("actiMain", "feedResponseCompanies: " + companiesGlobal.size());
-        getVerticalData(this.companiesGlobal);
-
+    public void feedErrorResponse(Map<String, String> errorMap) {
+        Log.d("FeedErrorResponse", "feedErrorRequest2:Exception " + errorMap.get("exception"));
+        Log.d("FeedErrorResponse", "feedErrorRequest2:Error " + errorMap.get("VolleyError"));
     }
 
-    @Override
-    public void feedErrorRequest2(Map<String, String> response) {
 
-        Log.d("FeedErrorResponse", "feedErrorRequest2:Exception " + response.get("exception"));
-        Log.d("FeedErrorResponse", "feedErrorRequest2:Error " + response.get("VolleyError"));
-    }
-
+    /*Changes Here---------*/
     @Override
     public void responseCS(Map<String, String> response) {
 
@@ -331,6 +363,11 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("TESTING", "DESTROYED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
+    }
 
     @Override
     public void enableDisableScrollInViewPager(boolean enable) {
@@ -380,5 +417,25 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
             }
         }
     }
+
+    @Override
+    public void responseDeleteG(Map<String, String> response) {
+           if(response.get("status").equals("1")){
+               //Group Delete
+               bottomSheetGroups.dismiss();
+               dashBoardFragment.onResume();
+           }else{
+               Toast.makeText(this, "Problem Deleting Group", Toast.LENGTH_SHORT).show();
+               bottomSheetGroups.dismiss();
+               bottomSheetGroups.dialogOfDelete.dismiss();
+           }
+    }
+
+    @Override
+    public void errorRequestDeleteG(Map<String, String> response) {
+        Toast.makeText(this, ""+response.get("VolleyError"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ""+response.get("exception"), Toast.LENGTH_SHORT).show();
+    }
+
 
 }

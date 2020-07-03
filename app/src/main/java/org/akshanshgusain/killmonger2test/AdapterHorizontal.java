@@ -12,23 +12,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Friends;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 
 import java.util.ArrayList;
 
 public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.ViewHolderH> {
-    private ArrayList<Friends> mDataObjects = new ArrayList<>();
+    private ArrayList<Feed.FriendsBean> mDataObjects = new ArrayList<>();
     private Context mContext;
     private Horizontal1ClickListener horizontal1ClickListener;
 
-    public AdapterHorizontal(ArrayList<Friends> mDataObjects, Context mContext) {
+    public AdapterHorizontal(ArrayList<Feed.FriendsBean> mDataObjects, Context mContext) {
         this.mDataObjects = mDataObjects;
         this.mContext = mContext;
         this.horizontal1ClickListener = (Horizontal1ClickListener) mContext;
     }
 
-    public void dataChanged(ArrayList<Friends> friends){
+    public void dataChanged(ArrayList<Feed.FriendsBean> friends){
         this.mDataObjects=friends;
         notifyDataSetChanged();
     }
@@ -57,7 +58,7 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolderH holder, int position) {
         if(position!=0){
-            Friends friend = mDataObjects.get(position);
+            Feed.FriendsBean friend = mDataObjects.get(position);
             Glide.with(mContext).load(friend.getPicture()).into(holder.dp);
             String name = friend.getF_name() +" "+ friend.getL_name();
             holder.profession.setText(friend.getProfession());

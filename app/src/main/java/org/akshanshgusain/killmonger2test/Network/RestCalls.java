@@ -52,6 +52,10 @@ public class RestCalls {
     private static final String CREATE_GROUP = "user/creategroup";
     private static final String FEED = "user/feed";
     private static final String CREATE_STORY = "user/createstory";
+    private static final String DELETE_GROUP = "user/deletegroup";
+    private static final String GET_GROUP_MEMBERS =  "user/getmembergroup";
+    private static final String UPDATE_GROUP = "user/updategroup";
+    private static final String FORGET_PASSWORD = "user/forgotpassword";
 
     private static final String TAG = "RestCalls";
 
@@ -234,7 +238,7 @@ public class RestCalls {
             @Override
             public void onResponse(NetworkResponse response) {
                 String stringResponse = new String(response.data);
-                Log.d(TAG, "Register API RESPONSE: " + stringResponse);
+                Log.d(TAG, "Login API RESponse: " + stringResponse);
 
                 try {
                     JSONObject obj = new JSONObject(stringResponse);
@@ -245,7 +249,9 @@ public class RestCalls {
                     responseMap.put("email", obj.getString("email"));
                     responseMap.put("picture", obj.getString("picture"));
                     responseMap.put("network", obj.getString("network"));
-                    responseMap.put("network", obj.getString("profession"));
+                    responseMap.put("profession", obj.getString("profession"));
+                    responseMap.put("is_verified", obj.getString("is_verified"));
+                    responseMap.put("experience", obj.getString("experience"));
                     loginUserI.response(responseMap);
                 } catch (JSONException e) {
                     errorMap.put("exception", e.toString());
@@ -553,123 +559,26 @@ public class RestCalls {
     public void getFeed(final String userid) {
 
         final FeedI feedI = (FeedI) mContext;
-        final Map<String, String> responseMap = new HashMap<>();
         final Map<String, String> errorMap = new HashMap<>();
 
-        final List<Groups> groups = new ArrayList<>();
-        final List<Friends> storiesFriends = new ArrayList<>();
-        final List<Company> companiesList = new ArrayList<>();
 
         VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + FEED, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String stringResponse = new String(response.data);
                 Log.d(TAG, "Feed API RESPONSE: " + stringResponse);
-                try {
-                    JSONObject obj = new JSONObject(stringResponse);
-                    if (obj.getString("status").equals("1")) {
-                        //Parsing GROUPS--------------------------------------------------
-                        JSONArray groupsJSONArray = obj.getJSONArray("groups");
-                        for (int i = 0; i < groupsJSONArray.length(); i++) {
-                            JSONObject singleGroup = groupsJSONArray.getJSONObject(i);
 
-                            List<Group_Stories> stories = new ArrayList<>();
-
-                            JSONArray storiesPicturesArray = singleGroup.getJSONArray("grouppictures");
-                            for (int k = 0; k < storiesPicturesArray.length(); k++) {
-                                JSONObject story = storiesPicturesArray.getJSONObject(k);
-                                stories.add(new Group_Stories(
-                                        story.getString("userid")
-                                        , story.getString("groupstory")
-                                        , story.getString("created_at")
-                                        , story.getString("groupid")
-                                ));
-                            }
-                            Groups group = new Groups(
-                                    singleGroup.getString("id")
-                                    , singleGroup.getString("grouptitle")
-                                    , singleGroup.getString("adminname")
-                                    , stories);
-
-                            group.setGroupImage(singleGroup.getString("adminpicture"));
-                            groups.add(group);
-                        }
-                        //Parsing GROUPS--------------------------------------------------
-                        /*-------Parsing FRIENDS----------------------------------------*/
-                        JSONArray storiesJSONArray = obj.getJSONArray("friends");
-                        for (int j = 0; j < storiesJSONArray.length(); j++) {
-                            JSONObject singlesStory = storiesJSONArray.getJSONObject(j);
-                            ArrayList<String> stories = new ArrayList<>();
-
-                            JSONArray storiesPIctureArray = singlesStory.getJSONArray("storypicture");
-                            for (int k = 0; k < storiesPIctureArray.length(); k++) {
-                                JSONObject story = storiesPIctureArray.getJSONObject(k);
-                                stories.add(story.getString("storypicture"));
-                            }
-                            Friends friend = new Friends(
-                                    singlesStory.getString("id"),
-                                    singlesStory.getString("f_name"),
-                                    singlesStory.getString("l_name"),
-                                    singlesStory.getString("username"),
-                                    singlesStory.getString("email"),
-                                    singlesStory.getString("password"),
-                                    singlesStory.getString("network"),
-                                    singlesStory.getString("picture"),
-                                    stories
-                                    , singlesStory.getString("profession"));
-                            storiesFriends.add(friend);
-                        }
-                        /*-------Parsing FRIENDS----------------------------------------*/
-                        //========== Parsing Companies===================================
-                        JSONArray companiesJSONArray = obj.getJSONArray("company");
-                        for (int l = 0; l < companiesJSONArray.length(); l++) {
-                            JSONObject singlesCompany = companiesJSONArray.getJSONObject(l);
-
-                            ArrayList<Company_Stories> companies = new ArrayList<>();
-
-                            JSONArray companyPictures = singlesCompany.getJSONArray("storypicture");
-                            for (int p = 0; p < companyPictures.length(); p++) {
-                                JSONObject story = companyPictures.getJSONObject(p);
-                                companies.add(new Company_Stories(
-                                        story.getString("id")
-                                        , story.getString("networkid")
-                                        , story.getString("userid")
-                                        , story.getString("storypicture")
-                                        , story.getString("created_at")
-                                ));
-                            }
-
-                            Company company = new Company(
-                                    singlesCompany.getString("id")
-                                    , singlesCompany.getString("name")
-                                    , singlesCompany.getString("network")
-                                    , singlesCompany.getString("display_picture")
-                                    , singlesCompany.getString("profile_picture")
-                                    , singlesCompany.getString("website")
-                                    , companies
-                            );
-                            companiesList.add(company);
-
-                        }
-
-                        //========== Parsing Companies===================================
-                    }
-
-                    feedI.feedResponse2(responseMap);
-                    feedI.feedResponseGroups2(groups);
-                    feedI.feedResponseStories(storiesFriends);
-                    feedI.feedResponseCompanies(companiesList);
-                } catch (JSONException e) {
-                    errorMap.put("exception", e.toString());
-                    feedI.feedErrorRequest2(errorMap);
-                    Log.d(TAG, "Feed API Exception: " + e);
-                }
+                Feed feed = new Feed();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                Gson gson = gsonBuilder.create();
+                feed = gson.fromJson(stringResponse, Feed.class);
+                feedI.feedResponse(feed);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorMap.put("VolleyError", error.getLocalizedMessage());
-                feedI.feedErrorRequest2(errorMap);
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                feedI.feedErrorResponse(errorMap);
             }
         }) {
             @Override
@@ -687,16 +596,8 @@ public class RestCalls {
     }
 
     public interface FeedI {
-        public void feedResponse2(Map<String, String> response);
-
-        public void feedResponseStories(List<Friends> stories);
-
-        public void feedResponseGroups2(List<Groups> groups);
-
-        public void feedResponseCompanies(List<Company> companies);
-
-        public void feedErrorRequest2(Map<String, String> response);
-
+       public void feedResponse(Feed feed);
+       public void feedErrorResponse(Map<String, String> errorMap);
     }
 
     //------------------ Create Story ------------
@@ -845,4 +746,205 @@ public class RestCalls {
 
         public void errorRequestCS(Map<String, String> response);
     }
+
+    //------------------ Delete Group ------------
+    public void deleteGroup(final String groupId) {
+
+        final DeleteGroupI deleteGroupI = (DeleteGroupI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL+DELETE_GROUP, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                Log.d("deleteGroup", "Delete GROUP API RESPONSE: " + stringResponse);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                   responseMap.put("status",obj.getString("status") ) ;
+                    deleteGroupI.responseDeleteG(responseMap);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    deleteGroupI.errorRequestDeleteG(errorMap);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                deleteGroupI.errorRequestDeleteG(errorMap);
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramMap = new HashMap<>();
+                paramMap.put("groupid", groupId);
+                return paramMap;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    public interface DeleteGroupI {
+        public void responseDeleteG(Map<String, String> response);
+        public void errorRequestDeleteG(Map<String, String> response);
+    }
+
+
+    //------------------ Get Group Members
+    public void getGroupMembers(final String groupId) {
+
+        final GetGroupMembersI getGroupMembersI = (GetGroupMembersI) mContext;
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + GET_GROUP_MEMBERS, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                Log.d("Get_Group_members", "onResponse: "+stringResponse);
+                GroupMembers groupMembers = new GroupMembers();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                Gson gson = gsonBuilder.create();
+                groupMembers = gson.fromJson(stringResponse, GroupMembers.class);
+                getGroupMembersI.responseGetGroupMembers(groupMembers);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                getGroupMembersI.errorRequestGetGroupMembers(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("groupid", groupId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setShouldCache(true);
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+    }
+    public interface GetGroupMembersI {
+        public void responseGetGroupMembers(GroupMembers response);
+
+        public void errorRequestGetGroupMembers(Map<String, String> response);
+
+    }
+
+
+
+    //------------------ Update Group
+    public void updateGroup(final Map<String, String> params) {
+
+        final UpdateGroupI updateGroupI = (UpdateGroupI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + UPDATE_GROUP, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                Log.d("Get_Group_members", "onResponse: "+stringResponse);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    responseMap.put("status", obj.getString("status"));
+                    updateGroupI.responseUpdateGroup(responseMap);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    errorMap.put("exception", e.getMessage());
+                    updateGroupI.errorUpdateGroup(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                updateGroupI.errorUpdateGroup(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return params;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+    }
+    public interface UpdateGroupI {
+
+        public void responseUpdateGroup(Map<String, String> response);
+
+        public void errorUpdateGroup(Map<String, String> error);
+
+    }
+
+    //------------------ ForgetPassword
+    public void forgetPassword(final String email) {
+
+        final ForgetPasswordI forgetPasswordI = (ForgetPasswordI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + FORGET_PASSWORD, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                Log.d("Get_Group_members", "onResponse: "+stringResponse);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    responseMap.put("status", obj.getString("status"));
+                    forgetPasswordI.responseForgetPass(responseMap);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    errorMap.put("exception", e.getMessage());
+                    forgetPasswordI.errorForgetPass(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                forgetPasswordI.errorForgetPass(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", email);
+                return params;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+    }
+    public interface ForgetPasswordI {
+
+        public void responseForgetPass(Map<String, String> response);
+
+        public void errorForgetPass(Map<String, String> error);
+
+    }
+
+
 }

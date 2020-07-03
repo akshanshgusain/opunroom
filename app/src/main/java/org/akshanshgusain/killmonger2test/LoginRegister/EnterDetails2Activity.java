@@ -49,6 +49,7 @@ public class EnterDetails2Activity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_enter_details_2);
+
         bundle = getIntent().getBundleExtra(BUNDLE_REGISTER);
 
         profession_array = getResources().getStringArray(R.array.professions);

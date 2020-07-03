@@ -3,6 +3,8 @@ package org.akshanshgusain.killmonger2test.LoginRegister;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginPref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
         tutorialPref = getApplicationContext().getSharedPreferences("TutorialPreference", MODE_PRIVATE);
+        Log.i("TESTING", "CREATED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
 
         binding.buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,47 +83,73 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
     public void response(Map<String, String> response) {
         binding.progressBarUpdate.setVisibility(View.GONE);
         if (!response.get("id").equals("")) {
-            Log.d(TAG, "response: success");
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-            //Create Preference Here:
-            loginEditor = loginPref.edit();
+                if(response.get("is_verified").equals("0")){
+                    android.app.AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("Email Not Verified")
+                            .setCancelable(false)
+                            .setMessage("A verification email has been sent to your registered email address. Please verify your email and try again.")
+                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                    alert.show();
+                }else{
+                    Log.d(TAG, "response: success");
+                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+                    //Create Preference Here:
+                    loginEditor = loginPref.edit();
 
 
-            loginEditor.putString(PREF_KEY_ID, response.get("id"));
-            loginEditor.putString(PREF_KEY_F_NAME, response.get("f_name"));
-            loginEditor.putString(PREF_KEY_L_NAME, response.get("l_name"));
-            loginEditor.putString(PREF_KEY_USERNAME, response.get("username"));
-            loginEditor.putString(PREF_KEY_EMAIL, response.get("email"));
-            loginEditor.putString(PREF_KEY_NETWORK, response.get("network"));
-            loginEditor.putString(PREF_KEY_PICTURE, response.get("picture"));
-            loginEditor.putString(PREF_KEY_PROFESSION, response.get("profession"));
-            loginEditor.putBoolean(PREF_KEY_IS_LOGIN, true);
+                    loginEditor.putString(PREF_KEY_ID, response.get("id"));
+                    loginEditor.putString(PREF_KEY_F_NAME, response.get("f_name"));
+                    loginEditor.putString(PREF_KEY_L_NAME, response.get("l_name"));
+                    loginEditor.putString(PREF_KEY_USERNAME, response.get("username"));
+                    loginEditor.putString(PREF_KEY_EMAIL, response.get("email"));
+                    loginEditor.putString(PREF_KEY_NETWORK, response.get("network"));
+                    loginEditor.putString(PREF_KEY_PICTURE, response.get("picture"));
+                    loginEditor.putString(PREF_KEY_PROFESSION, response.get("profession"));
+                    loginEditor.putBoolean(PREF_KEY_IS_LOGIN, true);
 
 
-            loginEditor.apply();
+                    loginEditor.apply();
 
 
-            if(tutorialPref.getBoolean(PREF_KEY_IS_FIRST_RUN, true)){
-                Intent p = new Intent(LoginActivity.this, ORTutorialActivity.class);
-                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(p);
-                finish();
+                    if(tutorialPref.getBoolean(PREF_KEY_IS_FIRST_RUN, true)){
+                        Intent p = new Intent(LoginActivity.this, ORTutorialActivity.class);
+                        p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(p);
+                        finish();
 
-            }else{
-                Intent p = new Intent(LoginActivity.this, MainActivity.class);
-                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(p);
-                finish();
-            }
-
+                    }else{
+                        Intent p = new Intent(LoginActivity.this, MainActivity.class);
+                        p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        p.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(p);
+                        finish();
+                    }
+                }
         }
         if (response.get("id").equals("")) {
-            Toast.makeText(this, " response Failed"+ response.get("id"), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, " response Failed"+ response.get("id"), Toast.LENGTH_SHORT).show();
             Log.d(TAG, "response: Error");
             Log.d(TAG, "response: Error" + response.get("message"));
-            binding.textViewDetails.setText(response.get("message"));
+            binding.textViewDetails.setVisibility(View.VISIBLE);
+            binding.textViewDetails.setText("Invalid username or password");
+
+            android.app.AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Invalid Credentials")
+                    .setCancelable(false)
+                    .setMessage("Invalid username or password")
+                    .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                           dialogInterface.dismiss();
+                        }
+                    });
+            alert.show();
         }
     }
 
@@ -136,7 +165,12 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
 
     @Override
     public void onBackPressed() {
-
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("TESTING", "DESTROYED: " + getClass().getSimpleName() + " -- TASK ID: " + getTaskId());
     }
 }

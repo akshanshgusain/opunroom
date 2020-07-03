@@ -3,6 +3,8 @@ package org.akshanshgusain.killmonger2test.LoginRegister;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,11 +33,8 @@ public class TransitionActivity extends AppCompatActivity implements RestCalls.R
        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Intent i = new Intent(TransitionActivity.this, LoginActivity.class);
-               i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-               i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-               startActivity(i);
-               finish();
+
+
            }
        });
        RestCalls restCalls = new RestCalls(this);
@@ -49,6 +48,24 @@ public class TransitionActivity extends AppCompatActivity implements RestCalls.R
             Log.d(TAG, "response: success");
             binding.buttonLogin.setVisibility(View.VISIBLE);
             binding.h2.setText("All Done, Please Login with with your username");
+
+            //Prrsenet ALert
+            AlertDialog.Builder alert = new AlertDialog.Builder(TransitionActivity.this)
+                    .setTitle("Email Verification")
+                    .setCancelable(false)
+                    .setMessage("A verification link has been sent to your Email Address. Verify and Login again.")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent y = new Intent(TransitionActivity.this, LoginActivity.class);
+                            y.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            y.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(y);
+                            finish();
+                        }
+                    });
+            alert.show();
+
         }
         if (response.get("status").equals("0")) {
             Log.d(TAG, "response: Error");

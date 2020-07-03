@@ -2,6 +2,7 @@ package org.akshanshgusain.killmonger2test;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,22 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import org.akshanshgusain.killmonger2test.Network.Feed;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 
 import java.util.ArrayList;
 
 public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.ViewHolderH> {
-    private ArrayList<Groups> mDataObjects;
+    private ArrayList<Feed.GroupsBean> mDataObjects;
     private Context mContext;
     private Horizontal2ClickListener horizontal2ClickListener;
 
-    public AdapterHorizontal2(ArrayList<Groups> mDataObjects, Context mContext) {
+    public AdapterHorizontal2(ArrayList<Feed.GroupsBean> mDataObjects, Context mContext) {
         this.mDataObjects = mDataObjects;
         this.mContext = mContext;
         this.horizontal2ClickListener = (Horizontal2ClickListener) mContext;
     }
 
-    public void dataChanged(ArrayList<Groups> groups){
+    public void dataChanged(ArrayList<Feed.GroupsBean> groups){
         this.mDataObjects=groups;
         notifyDataSetChanged();
     }
@@ -61,9 +63,9 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
     @Override
     public void onBindViewHolder(@NonNull ViewHolderH holder, int position) {
         if (position != 0) {
-            Glide.with(mContext).load(mDataObjects.get(position).getGroupImage()).into(holder.dp);
+            Glide.with(mContext).load(mDataObjects.get(position).getAdminpicture()).into(holder.dp);
             holder.title.setText(mDataObjects.get(position).getGrouptitle());
-            holder.adminName.setText(mDataObjects.get(position).getAdmin());
+            holder.adminName.setText(mDataObjects.get(position).getAdminname());
             switch (Utils.getRandomNumber()) {
                 case 0:
                     holder.backGround.setBackgroundResource(R.color.colorGroup1);
@@ -89,7 +91,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
         return mDataObjects.size();
     }
 
-    public class ViewHolderH extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolderH extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         ImageView dp;
         TextView title, adminName;
         ConstraintLayout backGround;
@@ -103,6 +105,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
             backGround = itemView.findViewById(R.id.constraint_background);
             this.horizontal2ClickListener = horizontal2ClickListener;
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -111,9 +114,17 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
         }
 
 
+        @Override
+        public boolean onLongClick(View view) {
+            horizontal2ClickListener.onHorizontal2LongClickListener(getAdapterPosition());
+            return true;
+        }
     }
 
     public interface Horizontal2ClickListener {
         void onHorizontal2ClickListener(int position);
+        void onHorizontal2LongClickListener(int position);
     }
+
+
 }

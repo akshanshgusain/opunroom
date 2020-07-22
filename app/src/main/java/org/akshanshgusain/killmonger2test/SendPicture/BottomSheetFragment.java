@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -43,6 +44,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private List<SingleContact> companies = new ArrayList<>();
     private Button mSend;
     private SendButtonClick sendButtonClick;
+    private ProgressBar progressBar;
 
     public interface SendButtonClick {
         public void sendButtonClick();
@@ -64,10 +66,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.bottom_sheet_layout_1, container, false);
         recyclerView = view.findViewById(R.id.recyclerView_contacts);
         mSend = view.findViewById(R.id.button_send);
+        progressBar = view.findViewById(R.id.progress);
         mSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendButtonClick.sendButtonClick();
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
 

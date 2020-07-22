@@ -47,7 +47,7 @@ public class EnterNetworkActivity extends AppCompatActivity implements RestCalls
 
         Intent i = new Intent(EnterNetworkActivity.this, EnterDetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(INTENT_NAME_WORKSPACE,"Opundoor");
+        bundle.putString(INTENT_NAME_WORKSPACE,"OpunDoor");
         i.putExtra(BUNDLE_REGISTER, bundle );
         startActivity(i);
         finish();

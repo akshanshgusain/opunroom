@@ -83,6 +83,11 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
                     holder.backGround.setBackgroundResource(R.color.colorGroup5);
                     break;
             }
+            if(mDataObjects.get(position).getGrouppictures().size()>0){
+                holder.notification.setVisibility(View.VISIBLE);
+            }else{
+                holder.notification.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -92,7 +97,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
     }
 
     public class ViewHolderH extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        ImageView dp;
+        ImageView dp,notification;
         TextView title, adminName;
         ConstraintLayout backGround;
         private Horizontal2ClickListener horizontal2ClickListener;
@@ -103,6 +108,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
             title = (TextView) itemView.findViewById(R.id.textView_group_title);
             adminName = itemView.findViewById(R.id.textView_group_admin);
             backGround = itemView.findViewById(R.id.constraint_background);
+            notification = itemView.findViewById(R.id.imageView_notification);
             this.horizontal2ClickListener = horizontal2ClickListener;
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

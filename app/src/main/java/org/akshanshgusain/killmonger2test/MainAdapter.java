@@ -82,7 +82,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (viewType) {
             case HORIZONTAL:
                 view = mLayoutInflater.inflate(R.layout.horizontal, parent, false);
-                vh = new ViewHolderHorizontal(view);
+                vh = new ViewHolderHorizontal(view,enableDisableScrollInViewPager);
                 return vh;
             case VERTICAL:
                 view = mLayoutInflater.inflate(R.layout.vertical, parent, false);
@@ -215,10 +215,50 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class ViewHolderHorizontal extends RecyclerView.ViewHolder {
         RecyclerView mRecyclerViewH;
-
-        public ViewHolderHorizontal(View itemView) {
+        EnableDisableScrollInViewPager enableDisableScrollInViewPager;
+        public ViewHolderHorizontal(View itemView, final EnableDisableScrollInViewPager enableDisableScrollInViewPager) {
             super(itemView);
             mRecyclerViewH = (RecyclerView) itemView.findViewById(R.id.horizontal_recyclerView);
+            this.enableDisableScrollInViewPager = enableDisableScrollInViewPager;
+
+            mRecyclerViewH.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                int lastX = 0;
+                @Override
+                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            lastX = (int) e.getX();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            boolean isScrollingRight = e.getX() < lastX;
+                            if ((isScrollingRight && ((LinearLayoutManager) mRecyclerViewH.getLayoutManager())
+                                    .findLastCompletelyVisibleItemPosition() == mRecyclerViewH.getAdapter().getItemCount() - 1) ||
+                                    (!isScrollingRight && ((LinearLayoutManager) mRecyclerViewH.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
+
+                                enableDisableScrollInViewPager.enableDisableScrollInViewPager(true);
+                            } else {
+
+                                enableDisableScrollInViewPager.enableDisableScrollInViewPager(false);
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            lastX = 0;
+                            enableDisableScrollInViewPager.enableDisableScrollInViewPager(true);
+                            break;
+                    }
+                    return false;
+                }
+
+                @Override
+                public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+                }
+
+                @Override
+                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                }
+            });
         }
     }
     public class ViewHolderHorizontal2 extends RecyclerView.ViewHolder {
@@ -239,7 +279,8 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             break;
                         case MotionEvent.ACTION_MOVE:
                             boolean isScrollingRight = e.getX() < lastX;
-      if ((isScrollingRight && ((LinearLayoutManager) mRecyclerViewH2.getLayoutManager()).findLastCompletelyVisibleItemPosition() == mRecyclerViewH2.getAdapter().getItemCount() - 1) ||
+                         if ((isScrollingRight && ((LinearLayoutManager) mRecyclerViewH2.getLayoutManager())
+                                 .findLastCompletelyVisibleItemPosition() == mRecyclerViewH2.getAdapter().getItemCount() - 1) ||
                                     (!isScrollingRight && ((LinearLayoutManager) mRecyclerViewH2.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
 
                                 enableDisableScrollInViewPager.enableDisableScrollInViewPager(true);

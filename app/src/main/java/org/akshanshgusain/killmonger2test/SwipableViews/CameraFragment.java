@@ -142,11 +142,9 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
                     result.toFile(pictureFile, new FileCallback() {
                         @Override
                         public void onFileReady(@Nullable File file) {
-                           // Toast.makeText(getActivity(), "File Saved to: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-
                             try {
                                 File pictureDPAth = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                                        + File.separator + "OpunRoom", "OpunRoomCom");
+                                        + File.separator + "OpunRoom", "Sent");
 
                                 File compressedImage = new Compressor(getActivity())
                                         .setMaxWidth(640)
@@ -156,7 +154,12 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
                                         .setDestinationDirectoryPath(pictureDPAth.getAbsolutePath())
                                         .compressToFile(file);
 
-                               // File flippedImage = flippImage(compressedImage);
+
+                                //Delete the Original File
+                                if(file.exists()){
+                                   if (file.delete()) Log.d(TAG, "onFileReady: Original File is Deleted");
+                                   else  Log.d(TAG, "onFileReady: Original File is not Deleted");
+                                }
 
                                 Intent i = new Intent(getActivity(), PreviewActivity.class);
                                 i.putExtra("type", MEDIA_TYPE_PICTURE);
@@ -331,8 +334,11 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
             }
             break;
             case R.id.imageView_gallery: {
+//                CropImage.activity()
+//                        .setGuidelines(CropImageView.Guidelines.ON).setAspectRatio(9, 16)
+//                        .start(getActivity());
                 CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON).setAspectRatio(9, 16)
+                        .setGuidelines(CropImageView.Guidelines.ON)
                         .start(getActivity());
             }break;
         }

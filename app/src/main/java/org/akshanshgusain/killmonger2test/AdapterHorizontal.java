@@ -63,6 +63,12 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
             String name = friend.getF_name() +" "+ friend.getL_name();
             holder.profession.setText(friend.getProfession());
             holder.name.setText(name);
+
+            if(friend.getStorypicture().size()>0){
+                holder.status.setVisibility(View.VISIBLE);
+            }else{
+                holder.status.setVisibility(View.GONE);
+            }
         }
     }
 

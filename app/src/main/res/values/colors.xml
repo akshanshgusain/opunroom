@@ -25,6 +25,8 @@
     <color name="colorNegative">#F21905</color>
     <color name="colorPositive">#44F205</color>
 
+    <color name="colorBlackTransparent">#59000000</color>
+    <color name="tool_bg">#151414</color>
 
 
 </resources>

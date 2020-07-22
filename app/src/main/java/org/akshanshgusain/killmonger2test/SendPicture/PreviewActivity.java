@@ -3,13 +3,21 @@ package org.akshanshgusain.killmonger2test.SendPicture;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,8 +26,11 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -47,13 +58,26 @@ import org.akshanshgusain.killmonger2test.Network.Friends2;
 import org.akshanshgusain.killmonger2test.Network.Groups;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.R;
+import org.akshanshgusain.killmonger2test.SendPicture.PictureEditor.EmojiFragment;
+import org.akshanshgusain.killmonger2test.SendPicture.PictureEditor.FilterListener;
+import org.akshanshgusain.killmonger2test.SendPicture.PictureEditor.FilterViewAdapter;
+import org.akshanshgusain.killmonger2test.SendPicture.PictureEditor.TextEditorFragment;
+import org.akshanshgusain.killmonger2test.Utils;
 import org.akshanshgusain.killmonger2test.databinding.ActivityPreviewBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
+import ja.burhanrashid52.photoeditor.SaveSettings;
+import ja.burhanrashid52.photoeditor.TextStyleBuilder;
+import ja.burhanrashid52.photoeditor.ViewType;
 
 import static org.akshanshgusain.killmonger2test.ProjectConstants.INTENT_PICTURE_WORKSPACE;
 import static org.akshanshgusain.killmonger2test.ProjectConstants.PREF_KEY_ID;
@@ -63,7 +87,7 @@ import static org.akshanshgusain.killmonger2test.SendPicture.AdapterContacts.SEL
 import static org.akshanshgusain.killmonger2test.SwipableViews.CameraFragment.*;
 
 public class PreviewActivity extends AppCompatActivity implements
-        RestCalls.GetFriendsList2I, AdapterContacts.AdapterClickListener, BottomSheetFragment.SendButtonClick, RestCalls.CreateStoryI {
+        RestCalls.GetFriendsList2I, AdapterContacts.AdapterClickListener, BottomSheetFragment.SendButtonClick, RestCalls.CreateStoryI, EmojiFragment.EmojiListener, FilterListener {
 
     private ActivityPreviewBinding binding;
     private static final String TAG = "PreviewTag";
@@ -89,7 +113,15 @@ public class PreviewActivity extends AppCompatActivity implements
 
     final AnimatorSet mAnimationSet = new AnimatorSet();
 
+    private PhotoEditor mPhotoEditor;
+    private boolean mIsFilterVisible;
+    private ConstraintSet mConstraintSet = new ConstraintSet();
+    private ConstraintLayout mRootView;
+    private RecyclerView mRvFilters;
+    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+    Uri mSaveImageUri;
 
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +129,13 @@ public class PreviewActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_preview);
         mAuth = FirebaseAuth.getInstance();
+
+        mRootView = binding.rootView;
+
+        mRvFilters = findViewById(R.id.rvFilterView);
+        LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        binding.rvFilterView.setLayoutManager(llmFilters);
+        binding.rvFilterView.setAdapter(mFilterViewAdapter);
 
         numberPicker = binding.numberPickerPreview;
         numberPicker.setMinValue(1);
@@ -118,20 +157,13 @@ public class PreviewActivity extends AppCompatActivity implements
 
         getURI(filePathMedia);
 
-
-
-
+        setupPhotoEditor();
         showPreview();
 
         binding.buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-
-                //call the service to get friend List
-                pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
-                restCalls = new RestCalls(PreviewActivity.this);
-                restCalls.getFriendsList2(pref.getString(PREF_KEY_ID, ""));
+               saveImage();
             }
         });
 
@@ -162,6 +194,36 @@ public class PreviewActivity extends AppCompatActivity implements
                 binding.constraintTimerNumberPicker.setVisibility(View.GONE);
             }
         });
+
+        binding.imageViewTextEditor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inflateTextEditor();
+            }
+        });
+
+        binding.imageViewSticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inflateEmojiEditor();
+            }
+        });
+
+        binding.imageViewFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilter(true);
+            }
+        });
+    }
+
+    private void showBottomSheet() {
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+
+        //call the service to get friend List
+        pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+        restCalls = new RestCalls(PreviewActivity.this);
+        restCalls.getFriendsList2(pref.getString(PREF_KEY_ID, ""));
     }
 
 
@@ -200,7 +262,7 @@ public class PreviewActivity extends AppCompatActivity implements
 
                     return false;
                 }
-            }).into(binding.imageViewPreview);
+            }).into(binding.imageViewPreview.getSource());
         } else if (mediaType.equals(MEDIA_TYPE_VIDEO) && filePathMedia != null) {
             binding.videoViewPreview.setVisibility(View.VISIBLE);
             binding.imageViewPreview.setVisibility(View.GONE);
@@ -315,7 +377,7 @@ public class PreviewActivity extends AppCompatActivity implements
 
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
         if (bitmap == null) {
-            bitmap = ((BitmapDrawable) binding.imageViewPreview.getDrawable()).getBitmap();
+            bitmap = ((BitmapDrawable) binding.imageViewPreview.getSource().getDrawable()).getBitmap();
 
         }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -393,5 +455,169 @@ public class PreviewActivity extends AppCompatActivity implements
             binding.constraintTimerNumberPicker.setVisibility(View.VISIBLE);
         }
 
+    }
+
+
+    private void setupPhotoEditor() {
+        mPhotoEditor = new PhotoEditor.Builder(this, binding.imageViewPreview).build();
+        mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+            @Override
+            public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
+
+                TextEditorFragment textEditorDialogFragment = TextEditorFragment.show(PreviewActivity.this, text, colorCode);
+                textEditorDialogFragment.setOnTextEditorListener(new TextEditorFragment.TextEditor() {
+                    @Override
+                    public void onDone(String inputText, int colorCode) {
+                        final TextStyleBuilder styleBuilder =  new TextStyleBuilder();
+                        styleBuilder.withTextSize(40f);
+                        styleBuilder.withTextColor(colorCode);
+                        styleBuilder.withGravity(Gravity.CENTER);
+                        styleBuilder.withBackgroundColor(getColor(R.color.colorBlackTransparent));
+                        mPhotoEditor.editText(rootView, inputText, styleBuilder);
+                    }
+                });
+            }
+
+            @Override
+            public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
+
+            }
+
+            @Override
+            public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
+
+            }
+
+            @Override
+            public void onStartViewChangeListener(ViewType viewType) {
+
+            }
+
+            @Override
+            public void onStopViewChangeListener(ViewType viewType) {
+
+            }
+        });
+
+        showFilter(false);
+    }
+
+    private void inflateTextEditor() {
+
+        TextEditorFragment textEditorDialogFragment = TextEditorFragment.show(this);
+        textEditorDialogFragment.setOnTextEditorListener(new TextEditorFragment.TextEditor() {
+            @Override
+            public void onDone(String inputText, int colorCode) {
+                TextStyleBuilder styleBuilder =  new TextStyleBuilder();
+                styleBuilder.withTextSize(40f);
+                styleBuilder.withTextColor(colorCode);
+                styleBuilder.withGravity(Gravity.CENTER);
+                styleBuilder.withBackgroundColor(getColor(R.color.colorBlackTransparent));
+                mPhotoEditor.addText(inputText, styleBuilder);
+            }
+        });
+    }
+
+    private void inflateEmojiEditor() {
+        EmojiFragment emojiFragment = new EmojiFragment();
+        emojiFragment.setEmojiListener(this);
+        emojiFragment.show(getSupportFragmentManager(), emojiFragment.getTag());
+    }
+
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        mPhotoEditor.addEmoji(emojiUnicode);
+    }
+
+
+    void showFilter(boolean isVisible) {
+        mIsFilterVisible = isVisible;
+        mConstraintSet.clone(mRootView);
+
+        if (isVisible) {
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.END,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
+        } else {
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.END);
+        }
+
+        ChangeBounds changeBounds = new ChangeBounds();
+        changeBounds.setDuration(350);
+        changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
+        TransitionManager.beginDelayedTransition(mRootView, changeBounds);
+
+        mConstraintSet.applyTo(mRootView);
+    }
+
+    @Override
+    public void onFilterSelected(PhotoFilter photoFilter) {
+        mPhotoEditor.setFilterEffect(photoFilter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFilterVisible) {
+            showFilter(false);
+
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void saveImage() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Processing");
+        if (Utils.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    progressDialog.show();
+            File file = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + ""
+                    + System.currentTimeMillis() + ".png");
+
+            File pictureDPAth = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    + File.separator + "OpunRoom" + File.separator + "Sent",System.currentTimeMillis()+"OpunRoom_Edt" + ".png" );
+
+            try {
+                pictureDPAth.createNewFile();
+
+                SaveSettings saveSettings = new SaveSettings.Builder()
+                        .setClearViewsEnabled(true)
+                        .setTransparencyEnabled(true)
+                        .build();
+
+                mPhotoEditor.saveAsFile(pictureDPAth.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                       // hideLoading();
+                        progressDialog.hide();
+                        //showSnackbar("Image Saved Successfully");
+                        mSaveImageUri = Uri.fromFile(new File(imagePath));
+                        binding.imageViewPreview.getSource().setImageURI(mSaveImageUri);
+
+                        showBottomSheet();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+//                        hideLoading();
+                        progressDialog.hide();
+                        Log.e(TAG, "onFailure: Fail to save Image" +exception);
+//                        showSnackbar("Failed to save Image");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                progressDialog.hide();
+//                hideLoading();
+//                showSnackbar(e.getMessage());
+                Log.d(TAG, "saveImage: "+e);
+            }
+        }
     }
 }

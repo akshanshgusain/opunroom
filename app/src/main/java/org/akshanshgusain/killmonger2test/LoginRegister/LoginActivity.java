@@ -16,6 +16,7 @@ import org.akshanshgusain.killmonger2test.MainActivity;
 import org.akshanshgusain.killmonger2test.Network.RestCalls;
 import org.akshanshgusain.killmonger2test.ORTutorialActivity;
 import org.akshanshgusain.killmonger2test.R;
+import org.akshanshgusain.killmonger2test.Utils;
 import org.akshanshgusain.killmonger2test.databinding.ActivityLoginBinding;
 
 import java.util.Map;
@@ -44,12 +45,14 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
         binding.buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.hideKeyboard(LoginActivity.this);
                  startActivity(new Intent(LoginActivity.this, EnterNetworkActivity.class));
             }
         });
         binding.buttonSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.hideKeyboard(LoginActivity.this);
                  signIn();
             }
         });

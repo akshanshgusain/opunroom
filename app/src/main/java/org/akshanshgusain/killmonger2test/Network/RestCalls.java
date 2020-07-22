@@ -46,6 +46,7 @@ public class RestCalls {
     private static final String REGISTER_URL = "user/register";
     private static final String CHECK_NETWORK = "user/checknetwork";
     private static final String CHECK_USERNAME = "user/checkusername";
+    private static final String CHECK_EMAIL = "user/checkemail";
     private static final String LOGIN = "user/login";
     private static final String UPDATE = "user/update";
     private static final String GET_FRIEND_LIST = "user/getuserfriend";
@@ -56,6 +57,7 @@ public class RestCalls {
     private static final String GET_GROUP_MEMBERS =  "user/getmembergroup";
     private static final String UPDATE_GROUP = "user/updategroup";
     private static final String FORGET_PASSWORD = "user/forgotpassword";
+
 
     private static final String TAG = "RestCalls";
 
@@ -162,6 +164,57 @@ public class RestCalls {
         public void errorRequest(Map<String, String> response);
     }
 
+
+    //---Check Email availabliity
+    public void checkEmail(final String email) {
+        final CheckEmailI checkEmailI = (CheckEmailI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + CHECK_EMAIL, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+                    responseMap.put("message", obj.getString("message"));
+                    responseMap.put("status", obj.getString("status"));
+                    checkEmailI.responseEmailCheck(responseMap);
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    checkEmailI.errorRequestEmailCheck(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                checkEmailI.errorRequestEmailCheck(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("email", email);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface CheckEmailI {
+        public void responseEmailCheck(Map<String, String> response);
+
+        public void errorRequestEmailCheck(Map<String, String> response);
+    }
+
     //--------Register API Call
 
     public void registerUser(final Bundle bundle) {
@@ -174,7 +227,7 @@ public class RestCalls {
             @Override
             public void onResponse(NetworkResponse response) {
                 String stringResponse = new String(response.data);
-                Log.d(TAG, "Register API RESPONSE: " + stringResponse);
+                Log.d("RegisterApiCall", "Register API RESPONSE: " + stringResponse);
                 try {
                     JSONObject obj = new JSONObject(stringResponse);
                     responseMap.put("status", obj.getString("status"));
@@ -196,7 +249,7 @@ public class RestCalls {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> paramsMap = new HashMap<>();
-                paramsMap.put("f_name", bundle.get(INTENT_FIRST_NAME_WORKSPACE).toString());
+                paramsMap.put("f_name", Objects.requireNonNull(bundle.get(INTENT_FIRST_NAME_WORKSPACE)).toString());
                 paramsMap.put("l_name", bundle.get(INTENT_LAST_NAME_WORKSPACE).toString());
                 paramsMap.put("username", bundle.get(INTENT_USERNAME_WORKSPACE).toString());
                 paramsMap.put("email", bundle.get(INTENT_EMAIL_WORKSPACE).toString());
@@ -205,6 +258,7 @@ public class RestCalls {
                 paramsMap.put("profession", bundle.get(INTENT_PROFESSION_WORKSPACE).toString());
                 paramsMap.put("experience", bundle.get(INTENT_EXP_WORKSPACE).toString());
                 paramsMap.put("current_company", bundle.get(INTENT_CURRENT_COMPANY_WORKSPACE).toString());
+                Log.d("RegisterApiCall", "getParams: Params Value: "+ paramsMap.toString());
                 return paramsMap;
             }
 
@@ -219,6 +273,7 @@ public class RestCalls {
                 5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setShouldCache(false);
         VolleySingleton.getInstance(mContext).addToRequestQueue(request);
     }
 
@@ -945,6 +1000,8 @@ public class RestCalls {
         public void errorForgetPass(Map<String, String> error);
 
     }
+
+
 
 
 }

@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBlack"
         tools:context=".SendPicture.PreviewActivity">
 
-        <ImageView
+        <ja.burhanrashid52.photoeditor.PhotoEditorView
             android:id="@+id/imageView_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,22 +44,36 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFilterView"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="04dp"
+            android:background="@color/tool_bg"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/button_Send"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/row_filter_view" />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout_tools"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@drawable/shape_transparent_pink"
-            app:layout_constraintStart_toStartOf="parent"
             android:padding="08dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_height="wrap_content">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/imageView_cancel"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_cancel_24"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,37 +82,73 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_timer_2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_cancel" />
+
+            <ImageView
+                android:id="@+id/imageView_text_editor"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_text_editor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_timer" />
+
+            <ImageView
+                android:id="@+id/imageView_sticker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_sticker"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_text_editor" />
+
+            <ImageView
+                android:id="@+id/imageView_filters"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:padding="0dp"
+                android:src="@drawable/ic_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_sticker" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_timer_numberPicker"
-            android:paddingTop="08dp"
             android:layout_width="match_parent"
             android:layout_height="320dp"
-            android:visibility="gone"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/shape_gradient_black"
+            android:paddingTop="08dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/textView_storyExpirationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Story expires in"
                 android:fontFamily="@font/gilroy_semibold"
-                android:textSize="18sp"
+                android:text="Story expires in"
                 android:textColor="@color/colorWhite"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/numberPicker_preview"
@@ -107,8 +159,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:np_dividerColor="@color/colorPrimary"
-                app:np_height="200dp"
                 app:np_dividerDistance="80sp"
+                app:np_height="200dp"
                 app:np_selectedTextColor="@color/colorGroup1"
                 app:np_selectedTextSize="40sp"
                 app:np_textColor="@color/colorPrimary"

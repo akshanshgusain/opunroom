@@ -56,7 +56,7 @@ public class ForgetPassActivity extends AppCompatActivity implements RestCalls.F
 //                         }
 //                     }).setCancelable(false);
 //             alert.show();
-             
+
 
 
          }else if(response.get("status").equals("0")){

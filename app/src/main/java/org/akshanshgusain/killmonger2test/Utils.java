@@ -1,10 +1,17 @@
 package org.akshanshgusain.killmonger2test;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -22,6 +29,20 @@ import java.util.Random;
 
 
 public class Utils {
+
+    public static final int READ_WRITE_STORAGE = 52;
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 
     public static int getRandomNumber() {
         Random random = new Random();
@@ -92,5 +113,16 @@ public class Utils {
                 throw new IOException(String.format("File %s can't be deleted", file.getAbsolutePath()));
             }
         }
+    }
+
+    public static boolean requestPermission(Activity context, String permission) {
+        boolean isGranted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+        if (!isGranted) {
+            ActivityCompat.requestPermissions(
+                    context,
+                    new String[]{permission},
+                    READ_WRITE_STORAGE);
+        }
+        return isGranted;
     }
 }

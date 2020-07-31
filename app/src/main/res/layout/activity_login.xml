@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:background="@color/colorBlack"
         android:layout_height="match_parent"
-        tools:context=".LoginRegister.LoginActivity">
+        tools:context="com.factor8.opUndoor.LoginRegister.LoginActivity">
 
 
         <ImageView

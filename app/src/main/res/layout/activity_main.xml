@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context="com.factor8.opUndoor.MainActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager_main"
@@ -19,27 +19,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView_leftButton"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:padding="15dp"
-        android:src="@drawable/ic_chat"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintStart_toStartOf="parent"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView_leftButton"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:padding="15dp"-->
+<!--        android:src="@drawable/ic_chat"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:layout_marginStart="48dp"-->
+<!--        android:layout_marginBottom="32dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"/>-->
 
-    <ImageView
-        android:id="@+id/imageView_rightButton"
-        android:layout_width="70dp"
-        android:padding="17dp"
-        android:layout_height="70dp"
-        android:src="@drawable/ic_dashboard"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView_rightButton"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:padding="17dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:src="@drawable/ic_dashboard"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:layout_marginEnd="48dp"-->
+<!--        android:layout_marginBottom="32dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
 
 

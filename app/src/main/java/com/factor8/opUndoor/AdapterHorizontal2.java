@@ -89,7 +89,9 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
 
     @Override
     public int getItemCount() {
+
         return mDataObjects.size();
+
     }
 
     public class ViewHolderH extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

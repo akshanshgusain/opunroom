@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHolderV>{
    private ArrayList<Feed.CompanyBean> mDataObjects;
    private Context mContext;
@@ -44,8 +46,8 @@ public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderV holder, int position) {
-        Glide.with(mContext).load(mDataObjects.get(position).getProfile_picture()).into(holder.banner);
-        Glide.with(mContext).load(mDataObjects.get(position).getDisplay_picture()).into(holder.dp);
+        Glide.with(mContext).load(mDataObjects.get(position).getProfile_picture()).transition(withCrossFade()).into(holder.banner);
+        Glide.with(mContext).load(mDataObjects.get(position).getDisplay_picture()).transition(withCrossFade()).into(holder.dp);
         holder.name.setText(mDataObjects.get(position).getName());
     }
 

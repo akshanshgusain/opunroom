@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class DashBoardFragment extends Fragment {
     private RecyclerView mRecyclerView;
@@ -57,7 +58,7 @@ public class DashBoardFragment extends Fragment {
     static boolean isHorizontal2DataReady = false;
     static ProgressBar progressBar;
 
-    private ImageView mCameraButton;
+    private ImageView mCameraButton, mSearchButton;
     private ButtonClickListener buttonClickListener;
 
     @Override
@@ -78,7 +79,7 @@ public class DashBoardFragment extends Fragment {
         mRecyclerView.setNestedScrollingEnabled(true);
 
         mCameraButton = view.findViewById(R.id.imageView_cancel_button);
-
+        mSearchButton = view.findViewById(R.id.imageView_search_button);
         progressBar = view.findViewById(R.id.progressBar_load);
         progressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -98,7 +99,7 @@ public class DashBoardFragment extends Fragment {
             }
         });
         fullName.setText("Hi, " + pref.getString(ProjectConstants.PREF_KEY_F_NAME, ""));
-        Glide.with(getActivity()).load(pref.getString(ProjectConstants.PREF_KEY_PICTURE, "")).into(imageView);
+        Glide.with(getActivity()).load(pref.getString(ProjectConstants.PREF_KEY_PICTURE, "")).transition(withCrossFade()).into(imageView);
 
         //Call Feed Rest API
         restCalls.getFeed(pref.getString(ProjectConstants.PREF_KEY_ID, ""));
@@ -110,6 +111,13 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 buttonClickListener.buttonClickListener(2);
+            }
+        });
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 

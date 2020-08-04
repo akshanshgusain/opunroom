@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.ViewHolderH> {
     private ArrayList<Feed.FriendsBean> mDataObjects = new ArrayList<>();
     private Context mContext;

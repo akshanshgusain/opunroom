@@ -3,12 +3,17 @@ package com.factor8.opUndoor.SwipableViews;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,20 +24,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
 import com.factor8.opUndoor.R;
 import com.factor8.opUndoor.SendPicture.PreviewActivity;
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.otaliastudios.cameraview.CameraException;
@@ -50,9 +60,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 
-
 import java.io.File;
 import java.io.IOException;
+import java.security.Permission;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -82,8 +93,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
     public static final long START_TIME_IN_MILLIS = 10000;
     private CountDownTimer mCountDownTimer;
 
-    int cameraFacing=0;
+    int cameraFacing = 0;
     private ButtonClickListener buttonClickListener;
+
+    int askPermissions = 0;
 
 
     @Nullable
@@ -99,8 +112,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
         mCounterLayout = view.findViewById(R.id.constraintLayout_recording);
         mCancel = view.findViewById(R.id.imageView_cancel_button);
 
-        cameraSetUP();
-
 
         mFlip.setOnClickListener(this);
         mFlash.setOnClickListener(this);
@@ -108,7 +119,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
         mShutter.setOnLongClickListener(this);
         mGallery.setOnClickListener(this);
         mCancel.setOnClickListener(this);
-        checkForPermissions();
         return view;
     }
 
@@ -116,13 +126,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        buttonClickListener = (ButtonClickListener)context;
+        buttonClickListener = (ButtonClickListener) context;
     }
 
     //Camera Setup and callbacks
     private void cameraSetUP() {
         camera.setLifecycleOwner(Objects.requireNonNull(getActivity()));
         camera.setMode(Mode.PICTURE);
+        camera.setRequestPermissions(false);
         camera.setFlash(Flash.OFF);
         camera.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         camera.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS);
@@ -161,9 +172,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
 
 
                                 //Delete the Original File
-                                if(file.exists()){
-                                   if (file.delete()) Log.d(TAG, "onFileReady: Original File is Deleted");
-                                   else  Log.d(TAG, "onFileReady: Original File is not Deleted");
+                                if (file.exists()) {
+                                    if (file.delete())
+                                        Log.d(TAG, "onFileReady: Original File is Deleted");
+                                    else Log.d(TAG, "onFileReady: Original File is not Deleted");
                                 }
 
                                 Intent i = new Intent(getActivity(), PreviewActivity.class);
@@ -287,7 +299,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
     public void onResume() {
         super.onResume();
         camera.open();
+
+        if(askPermissions == 0)
+        {
+            checkForPermissions();
+        }
+
     }
+
 
     @Override
     public void onPause() {
@@ -298,6 +317,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onStop() {
         super.onStop();
+
     }
 
     @Override
@@ -343,14 +363,25 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
             }
             break;
             case R.id.imageView_gallery: {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(getActivity());
-            }break;
+                if (
+                        (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                                &&
+                                (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(getActivity());
+                } else {
+                    checkForPermissions();
+                }
+
+            }
+            break;
 
             case R.id.imageView_cancel_button: {
                 buttonClickListener.buttonClickListener(1);
-            }break;
+            }
+            break;
         }
     }
 
@@ -393,8 +424,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
             }
 
             File videoDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    + File.separator + "Opundoor","Video");
-            if(!videoDirectory.exists()){
+                    + File.separator + "Opundoor", "Video");
+            if (!videoDirectory.exists()) {
                 videoDirectory.mkdirs();
             }
             camera.takeVideoSnapshot(new File(videoDirectory, System.currentTimeMillis() + "_" + "video.mp4"));
@@ -423,60 +454,157 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
         }.start();
     }
 
-    ///Permissions
+//    ///Permissions
+//    private void checkForPermissions() {
+//        Dexter.withContext(getActivity())
+//                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                .withListener(new PermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+//                      //  Toast.makeText(getActivity(), permissionGrantedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+//                        if (permissionDeniedResponse.isPermanentlyDenied()) {
+//                            Toast.makeText(getActivity(), "Go to Settings ", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(getActivity(), "Permission denied " + permissionDeniedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
+//                            PermissionListener dialogPermissionListener =
+//                                    DialogOnDeniedPermissionListener.Builder
+//                                            .withContext(getActivity())
+//                                            .withTitle("Storage Permission is Required")
+//                                            .withMessage("Storage permission is needed to save pictures")
+//                                            .withButtonText(android.R.string.ok)
+//                                            .withIcon(R.drawable.ic_main)
+//                                            .build();
+//
+//
+//                        }
+//                    }
+//
+//
+//                    @Override
+//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+//                        Toast.makeText(getActivity(), "onPermissionRationaleShouldBeShown", Toast.LENGTH_SHORT).show();
+//
+//                        permissionToken.continuePermissionRequest();
+//                    }
+//                }).onSameThread().check();
+//
+//
+//    }
+
+
     private void checkForPermissions() {
-
-
-
-
-        Dexter.withContext(getActivity())
-                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                      //  Toast.makeText(getActivity(), permissionGrantedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        if (permissionDeniedResponse.isPermanentlyDenied()) {
-                            Toast.makeText(getActivity(), "Go to Settings ", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Permission denied " + permissionDeniedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
-                            PermissionListener dialogPermissionListener =
-                                    DialogOnDeniedPermissionListener.Builder
-                                            .withContext(getActivity())
-                                            .withTitle("Storage Permission is Required")
-                                            .withMessage("Storage permission is needed to save pictures")
-                                            .withButtonText(android.R.string.ok)
-                                            .withIcon(R.drawable.ic_main)
-                                            .build();
-                            dialogPermissionListener.onPermissionDenied(permissionDeniedResponse);
-
-                        }
-                    }
-
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        Toast.makeText(getActivity(), "onPermissionRationaleShouldBeShown", Toast.LENGTH_SHORT).show();
-
-                        permissionToken.continuePermissionRequest();
-                    }
-                }).onSameThread().check();
+        if (
+                (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                        ||
+                        (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                        ||
+                        (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                        ||
+                        (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        ) {
+            //Any for the permissions are not granted
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Need Permissions");
+            builder.setIcon(R.drawable.ic_main);
+            builder.setMessage("opUndoor require Camera, Record-Audio & Storage permissions in order to function. Denying these permissions may cause the app to not function properly." +
+                    "Please provide the necessary permissions.");
+            builder.setPositiveButton("Give Permissions", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    dexterPermissions();
+                }
+            });
+            builder.setNegativeButton("I rather not", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+        } else {
+            cameraSetUP();
+        }
 
 
     }
 
-//  private File flippImage(File file){
-//      String filePath = file.getPath();
-//      Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-//
-//      Matrix matrix = new Matrix();
-//      matrix.preScale(-1.0f, 1.0f);
-//      Bitmap filppedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-//
-//  }
+    private void dexterPermissions() {
+        Dexter.withContext(getActivity())
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            // init camera
+                            cameraSetUP();
+
+
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            // permission is denied permenantly, navigate user to app settings
+                                askPermissions = 1;
+                                showSettingsDialog();
+                        }
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+
+                    }
+                }).withErrorListener(new PermissionRequestErrorListener() {
+            @Override
+            public void onError(DexterError dexterError) {
+
+            }
+        })
+                .onSameThread()
+                .check();
+    }
+
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Need Permissions");
+        builder.setIcon(R.drawable.ic_main);
+        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
+        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                openSettings();
+                askPermissions = 0;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                askPermissions = 0;
+            }
+        });
+        builder.show();
+
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
+    }
 
 
 }

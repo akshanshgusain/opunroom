@@ -48,6 +48,16 @@
                 app:layout_constraintTop_toTopOf="@+id/imageView_dp" />
 
             <ImageView
+                android:id="@+id/imageView_search_button"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_search"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/imageView_cancel_button"
+                app:layout_constraintTop_toTopOf="@+id/imageView_dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_dp"/>
+
+            <ImageView
                 android:id="@+id/imageView_cancel_button"
                 android:layout_width="35dp"
                 android:layout_height="30dp"

@@ -50,6 +50,7 @@
             <ImageView
                 android:id="@+id/imageView_search_button"
                 android:layout_width="35dp"
+                android:visibility="gone"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_search"
                 android:layout_marginEnd="16dp"

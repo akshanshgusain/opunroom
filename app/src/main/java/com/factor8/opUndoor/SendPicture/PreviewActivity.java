@@ -129,6 +129,7 @@ public class PreviewActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_preview);
         mAuth = FirebaseAuth.getInstance();
+        Log.e(TAG, "onCreate: PreviewActivity");
 
         mRootView = binding.rootView;
 

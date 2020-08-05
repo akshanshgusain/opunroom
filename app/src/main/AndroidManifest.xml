@@ -9,88 +9,76 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        android:name="com.factor8.opUndoor.Application"
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name="com.factor8.opUndoor.Groups.UpdateGroupSettings"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-        </activity>
-
-        <activity android:name="com.factor8.opUndoor.ORTutorialActivity">
-        </activity>
+        <activity android:name=".Search.SearchActivity"/>
 
         <activity
-            android:name="com.factor8.opUndoor.ViewStories.VideoViewerActivity"
-            android:screenOrientation="portrait" />
+            android:name=".Groups.UpdateGroupSettings"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
 
+        <activity android:name=".ORTutorialActivity"/>
         <activity
-            android:name="com.factor8.opUndoor.ViewStories.StoryViewerActivity"
+            android:name=".ViewStories.VideoViewerActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.ViewStories.StoryViewer_2_Activity"
+            android:name=".ViewStories.StoryViewerActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.SendPicture.PreviewActivity"
+            android:name=".ViewStories.StoryViewer_2_Activity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.TransitionActivity"
+            android:name=".SendPicture.PreviewActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.EnterDetails2Activity"
+            android:name=".LoginRegister.TransitionActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.ForgetPassActivity"
+            android:name=".LoginRegister.EnterDetails2Activity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.EnterDetailsActivity"
+            android:name=".LoginRegister.ForgetPassActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.EnterNetworkActivity"
+            android:name=".LoginRegister.EnterDetailsActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".LoginRegister.EnterNetworkActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-
         <activity
-            android:name="com.factor8.opUndoor.LoginRegister.LoginActivity"
+            android:name=".LoginRegister.LoginActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.factor8.opUndoor.SplashActivity"
+            android:name=".SplashActivity"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
-            android:name="com.factor8.opUndoor.Profile.SettingsActivity"
+            android:name=".Profile.SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.factor8.opUndoor.Profile.ProfileMainActivity"
+            android:name=".Profile.ProfileMainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.factor8.opUndoor.Groups.CreateGroupActivity"
+            android:name=".Groups.CreateGroupActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.factor8.opUndoor.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

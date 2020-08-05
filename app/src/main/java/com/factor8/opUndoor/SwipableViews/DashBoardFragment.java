@@ -24,6 +24,7 @@ import com.factor8.opUndoor.Network.NewsChannel;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.ProjectConstants;
 import com.factor8.opUndoor.R;
+import com.factor8.opUndoor.Search.SearchActivity;
 import com.factor8.opUndoor.SingleHeadingList;
 import com.bumptech.glide.Glide;
 
@@ -117,7 +118,10 @@ public class DashBoardFragment extends Fragment {
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i2 = new Intent(getActivity(), SearchActivity.class);
+                startActivity(i2);
+                //getActivity().overridePendingTransition( R.anim.activity_slide_in_up, R.anim.activity_slide_out_up );
+                getActivity().overridePendingTransition( R.anim.activity_slide_in_up, R.anim.none );
             }
         });
 

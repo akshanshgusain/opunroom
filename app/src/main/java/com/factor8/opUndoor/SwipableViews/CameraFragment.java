@@ -112,13 +112,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
         mCounterLayout = view.findViewById(R.id.constraintLayout_recording);
         mCancel = view.findViewById(R.id.imageView_cancel_button);
 
-
         mFlip.setOnClickListener(this);
         mFlash.setOnClickListener(this);
         mShutter.setOnTouchListener(this);
         mShutter.setOnLongClickListener(this);
         mGallery.setOnClickListener(this);
         mCancel.setOnClickListener(this);
+        cameraSetUP();
         return view;
     }
 
@@ -131,6 +131,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
 
     //Camera Setup and callbacks
     private void cameraSetUP() {
+        Log.e(TAG, "cameraSetUP:  Camera Fragment" );
         camera.setLifecycleOwner(Objects.requireNonNull(getActivity()));
         camera.setMode(Mode.PICTURE);
         camera.setRequestPermissions(false);
@@ -149,6 +150,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
 
                 File pictureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                         + File.separator + "Opundoor", System.currentTimeMillis() + "_" + "Opundoor.jpg");
+
                 boolean success = true;
                 if (!pictureFile.exists()) {
                     success = pictureFile.mkdirs();
@@ -200,87 +202,11 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
             @Override
             public void onVideoTaken(@NonNull VideoResult result) {
                 super.onVideoTaken(result);
-//                 //Compression ---------     START      -------------------------
-//                String inputVideoPath = result.getFile().getAbsolutePath();
-//                FFmpeg ffmpeg = FFmpeg.getInstance(getActivity());
-//                try {
-//                    //Load the binary
-//                    ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-//
-//                        @Override
-//                        public void onStart() {
-//                            Log.d(TAG, "onStart: ");
-//                        }
-//
-//                        @Override
-//                        public void onFailure() {
-//                            Log.d(TAG, "onFailure: ");
-//                        }
-//
-//                        @Override
-//                        public void onSuccess() {
-//                            Log.d(TAG, "onSuccess: ");
-//                        }
-//
-//                        @Override
-//                        public void onFinish() {
-//                            Log.d(TAG, "onFinish: ");
-//                        }
-//                    });
-//                } catch (FFmpegNotSupportedException e) {
-//                    // Handle if FFmpeg is not supported by device
-//                    Log.d(TAG, "onVideoTaken: FFmpeg not support by the device: "+e);
-//                }
-//
-//                try {
-//                    // to execute "ffmpeg -version" command you just need to pass "-version"
-//                    String outputPath =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-//                            + File.separator + "OpunRoom","OpunRoomVidC.mp4").toString();
-//
-//                    String[] commandArray = new String[]{};
-//                    commandArray = new String[]{"-y", "-i", inputVideoPath, "-s", "1920x1080", "-r", "30",
-//                            "-vcodec", "mpeg4", "-b:v", "300k", "-b:a", "48000", "-ac", "2", "-ar", "22050", outputPath};
-//
-//                    ffmpeg.execute(commandArray, new ExecuteBinaryResponseHandler() {
-//                        @Override
-//                        public void onStart() {
-//                            Log.d("FFmpeg", "onStart");
-//
-//                        }
-//                        @Override
-//                        public void onProgress(String message) {
-//                            Log.d("FFmpeg onProgress? ", message);
-//                        }
-//                        @Override
-//                        public void onFailure(String message) {
-//                            Log.d("FFmpeg onFailure? ", message);
-//                        }
-//                        @Override
-//                        public void onSuccess(String message) {
-//                            Log.d("FFmpeg onSuccess? ", message);
-//
-//                        }
-//                        @Override
-//                        public void onFinish() {
-//                            Log.d("FFmpeg", "onFinish");
-//
-//                        }
-//                    });
-//                } catch (FFmpegCommandAlreadyRunningException e) {
-//                    e.printStackTrace();
-//                    Log.d(TAG, "onVideoTaken: "+e);
-//                    // Handle if FFmpeg is already running
-//                }
-//
-//                //Compression ---------     END      -------------------------
-
                 Intent i = new Intent(getActivity(), PreviewActivity.class);
                 i.putExtra("type", MEDIA_TYPE_VIDEO);
                 i.putExtra(CAMERA_FACING, 0);
                 i.putExtra("mediaPreview", result.getFile().getAbsolutePath());
                 startActivity(i);
-
-
             }
 
             @Override
@@ -299,12 +225,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
     public void onResume() {
         super.onResume();
         camera.open();
-
         if(askPermissions == 0)
         {
             checkForPermissions();
         }
-
     }
 
 
@@ -454,47 +378,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
         }.start();
     }
 
-//    ///Permissions
-//    private void checkForPermissions() {
-//        Dexter.withContext(getActivity())
-//                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                .withListener(new PermissionListener() {
-//                    @Override
-//                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-//                      //  Toast.makeText(getActivity(), permissionGrantedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-//                        if (permissionDeniedResponse.isPermanentlyDenied()) {
-//                            Toast.makeText(getActivity(), "Go to Settings ", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(getActivity(), "Permission denied " + permissionDeniedResponse.getPermissionName(), Toast.LENGTH_SHORT).show();
-//                            PermissionListener dialogPermissionListener =
-//                                    DialogOnDeniedPermissionListener.Builder
-//                                            .withContext(getActivity())
-//                                            .withTitle("Storage Permission is Required")
-//                                            .withMessage("Storage permission is needed to save pictures")
-//                                            .withButtonText(android.R.string.ok)
-//                                            .withIcon(R.drawable.ic_main)
-//                                            .build();
-//
-//
-//                        }
-//                    }
-//
-//
-//                    @Override
-//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-//                        Toast.makeText(getActivity(), "onPermissionRationaleShouldBeShown", Toast.LENGTH_SHORT).show();
-//
-//                        permissionToken.continuePermissionRequest();
-//                    }
-//                }).onSameThread().check();
-//
-//
-//    }
-
 
     private void checkForPermissions() {
         if (
@@ -527,7 +410,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
             });
             builder.show();
         } else {
-            cameraSetUP();
+
         }
 
 
@@ -546,9 +429,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener, Vi
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
                             // init camera
-                            cameraSetUP();
-
-
+                            //cameraSetUP();
+                            checkForPermissions();
                         }
                         // check for permanent denial of any permission
                         if (report.isAnyPermissionPermanentlyDenied()) {

@@ -43,6 +43,7 @@ public class RestCalls {
     private static final String GET_GROUP_MEMBERS =  "user/getmembergroup";
     private static final String UPDATE_GROUP = "user/updategroup";
     private static final String FORGET_PASSWORD = "user/forgotpassword";
+    private static final String SEARCH = "user/searchuser";
 
 
     private static final String TAG = "RestCalls";
@@ -52,6 +53,8 @@ public class RestCalls {
     public RestCalls(Context mContext) {
         this.mContext = mContext;
     }
+
+
 
     public void checkNetworkCall(final String networkName) {
         final CheckNetworkCallI checkNetworkCallI = (CheckNetworkCallI) mContext;
@@ -987,7 +990,57 @@ public class RestCalls {
 
     }
 
+    //---search UserName
+    public void search(final String query) {
+        final SearchResultI searchResultI = (SearchResultI) mContext;
+        final Map<String, String> errorMap = new HashMap<>();
 
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + SEARCH, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+
+                    SearchResult searchResult = new SearchResult();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
+                    searchResult = gson.fromJson(stringResponse, SearchResult.class);
+                    searchResultI.response(searchResult);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    searchResultI.errorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                searchResultI.errorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("searchkeyword",query);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface SearchResultI {
+        public void response(SearchResult response);
+        public void errorRequest(Map<String, String> response);
+    }
 
 
 }

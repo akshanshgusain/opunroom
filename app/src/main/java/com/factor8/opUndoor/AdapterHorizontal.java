@@ -58,9 +58,10 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderH holder, int position) {
+
         if(position!=0){
             Feed.FriendsBean friend = mDataObjects.get(position);
-            Glide.with(mContext).load(friend.getPicture()).into(holder.dp);
+            Glide.with(mContext).load(ProjectConstants.PROFILE_IMAGES + friend.getPicture()).into(holder.dp);
             String name = friend.getF_name() +" "+ friend.getL_name();
             holder.profession.setText(friend.getProfession());
             holder.name.setText(name);
@@ -71,6 +72,7 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
                 holder.status.setVisibility(View.GONE);
             }
         }
+
     }
 
     @Override

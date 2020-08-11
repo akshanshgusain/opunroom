@@ -59,7 +59,7 @@ public class AdapterHorizontal2 extends RecyclerView.Adapter<AdapterHorizontal2.
     @Override
     public void onBindViewHolder(@NonNull ViewHolderH holder, int position) {
         if (position != 0) {
-            Glide.with(mContext).load(mDataObjects.get(position).getAdminpicture()).into(holder.dp);
+            Glide.with(mContext).load(ProjectConstants.PROFILE_IMAGES +mDataObjects.get(position).getAdminpicture()).into(holder.dp);
             holder.title.setText(mDataObjects.get(position).getGrouptitle());
             holder.adminName.setText(mDataObjects.get(position).getAdminname());
             switch (Utils.getRandomNumber()) {

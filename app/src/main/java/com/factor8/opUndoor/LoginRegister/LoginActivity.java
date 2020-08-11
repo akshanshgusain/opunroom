@@ -113,6 +113,12 @@ public class LoginActivity extends AppCompatActivity implements RestCalls.LoginU
                     loginEditor.putString(ProjectConstants.PREF_KEY_NETWORK, response.get("network"));
                     loginEditor.putString(ProjectConstants.PREF_KEY_PICTURE, response.get("picture"));
                     loginEditor.putString(ProjectConstants.PREF_KEY_PROFESSION, response.get("profession"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_EXPERIENCE, response.get("experience"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_IS_PRIVATE, response.get("privacy"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_COVER, response.get("coverpic"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_COMPANY_COVER, response.get("networkcover"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_COMPANY_PICTURE, response.get("networkprofile"));
+                    loginEditor.putString(ProjectConstants.PREF_KEY_CURRENT_COMPANY, response.get("current_company"));
                     loginEditor.putBoolean(ProjectConstants.PREF_KEY_IS_LOGIN, true);
 
 

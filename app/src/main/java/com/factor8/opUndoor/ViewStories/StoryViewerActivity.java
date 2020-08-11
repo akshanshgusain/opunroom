@@ -44,6 +44,8 @@ import java.util.Map;
 
 import jp.shts.android.storiesprogressview.StoriesProgressView;
 
+import static com.factor8.opUndoor.ProjectConstants.PROFILE_IMAGES;
+
 public class StoryViewerActivity extends SwipeDismissBaseActivity implements StoriesProgressView.StoriesListener, RestCalls.GetFriendsListI {
     public static final String STORY_STATUS = "status_story";
     public static final String STORY_GROUPS = "group_story";
@@ -169,7 +171,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                 }
             }
             if (user != null) {
-                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                Glide.with(this).load(PROFILE_IMAGES+user.getPicture()).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
@@ -248,7 +250,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
             if (user != null) {
 
 
-                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                Glide.with(this).load(PROFILE_IMAGES+user.getPicture()).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
@@ -323,7 +325,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                 }
             }
             if (user != null) {
-                Glide.with(this).load(user.getPicture()).listener(new RequestListener<Drawable>() {
+                Glide.with(this).load(PROFILE_IMAGES+user.getPicture()).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;

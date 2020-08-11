@@ -11,9 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.factor8.opUndoor.ProjectConstants;
 import com.factor8.opUndoor.R;
 
 import java.util.List;
+
+import static com.factor8.opUndoor.ProjectConstants.*;
 
 public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<SingleContact> groups;
@@ -85,7 +88,7 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case COMPANY_TYPE:
 
-                Glide.with(mContext).load(contact.getImage()).into(((ViewHolderContacts) holder).dp);
+                Glide.with(mContext).load(COMPANY_IMAGES+contact.getImage()).into(((ViewHolderContacts) holder).dp);
                 if(contact!=null){
                     ((ViewHolderContacts) holder).name.setText(contact.username);
                     if(contact.isSelected()){
@@ -99,7 +102,7 @@ public class AdapterContacts extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             default:
                 ((ViewHolderContacts) holder).name.setText(contact.username);
-                Glide.with(mContext).load(contact.getImage()).into(((ViewHolderContacts) holder).dp);
+                Glide.with(mContext).load(PROFILE_IMAGES+contact.getImage()).into(((ViewHolderContacts) holder).dp);
                 if(contact!=null){
                     ((ViewHolderContacts) holder).name.setText(contact.username);
                     if(contact.isSelected()){

@@ -136,7 +136,7 @@ public class DashBoardFragment extends Fragment {
         Log.d("Dashboard", "onResume: ");
         if(pref.getBoolean(ProjectConstants.PREF_KEY_IS_LOGIN,false)){
             fullName.setText("Hi, " + pref.getString(ProjectConstants.PREF_KEY_F_NAME, ""));
-            Glide.with(getActivity()).load(pref.getString(ProjectConstants.PREF_KEY_PICTURE, "")).into(imageView);
+            Glide.with(getActivity()).load(ProjectConstants.PROFILE_IMAGES+pref.getString(ProjectConstants.PREF_KEY_PICTURE, "")).into(imageView);
             //Call Feed Rest API
             restCalls.getFeed(pref.getString(ProjectConstants.PREF_KEY_ID, ""));
             restCalls.getNewsStory(0);

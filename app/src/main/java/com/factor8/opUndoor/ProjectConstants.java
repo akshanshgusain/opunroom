@@ -1,6 +1,11 @@
 package com.factor8.opUndoor;
 
 public final class ProjectConstants {
+
+    //URLS
+    public static final String PROFILE_IMAGES = "http://dass.io/oppo/app/profile/image/";
+    public static final String COMPANY_IMAGES = "http://dass.io/oppo/app/story/company/";
+
     public static final String BUNDLE_REGISTER="register_bundle";
     public static final String INTENT_NAME_WORKSPACE="workspace";
     public static final String INTENT_EMAIL_WORKSPACE="email";
@@ -24,5 +29,13 @@ public final class ProjectConstants {
     public static final String PREF_KEY_PICTURE = "picture";
     public static final String PREF_KEY_IS_LOGIN = "isLogin";
     public static final String PREF_KEY_PROFESSION = "profession";
+    public static final String PREF_KEY_EXPERIENCE = "work_experience";
     public static final String PREF_KEY_IS_FIRST_RUN = "isFirstRun";
+    public static final String PREF_KEY_IS_PRIVATE = "isPrivate";
+    public static final String PREF_KEY_COVER = "coverPicture";
+    public static final String PREF_KEY_COMPANY_COVER = "companyCoverPicture";
+    public static final String PREF_KEY_COMPANY_PICTURE = "companyDisplayPicture";
+    public static final String PREF_KEY_CURRENT_COMPANY = "companyCurrentCompany";
+
+
 }

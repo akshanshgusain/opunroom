@@ -46,8 +46,8 @@ public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderV holder, int position) {
-        Glide.with(mContext).load(mDataObjects.get(position).getProfile_picture()).transition(withCrossFade()).into(holder.banner);
-        Glide.with(mContext).load(mDataObjects.get(position).getDisplay_picture()).transition(withCrossFade()).into(holder.dp);
+        Glide.with(mContext).load(ProjectConstants.COMPANY_IMAGES + mDataObjects.get(position).getProfile_picture()).into(holder.banner);
+        Glide.with(mContext).load(ProjectConstants.COMPANY_IMAGES + mDataObjects.get(position).getDisplay_picture()).into(holder.dp);
         holder.name.setText(mDataObjects.get(position).getName());
     }
 

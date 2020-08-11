@@ -44,6 +44,7 @@ public class RestCalls {
     private static final String UPDATE_GROUP = "user/updategroup";
     private static final String FORGET_PASSWORD = "user/forgotpassword";
     private static final String SEARCH = "user/searchuser";
+    private static final String SEARCH_USER_PROFILE = "user/userprofile";
 
 
     private static final String TAG = "RestCalls";
@@ -294,8 +295,13 @@ public class RestCalls {
                     responseMap.put("picture", obj.getString("picture"));
                     responseMap.put("network", obj.getString("network"));
                     responseMap.put("profession", obj.getString("profession"));
-                    responseMap.put("is_verified", obj.getString("is_verified"));
                     responseMap.put("experience", obj.getString("experience"));
+                    responseMap.put("is_verified", obj.getString("is_verified"));
+                    responseMap.put("coverpic", obj.getString("coverpic"));
+                    responseMap.put("privacy", obj.getString("privacy"));
+                    responseMap.put("networkprofile", obj.getString("networkprofile"));
+                    responseMap.put("networkcover", obj.getString("networkcover"));
+                    responseMap.put("current_company", obj.getString("current_company"));
                     loginUserI.response(responseMap);
                 } catch (JSONException e) {
                     errorMap.put("exception", e.toString());
@@ -352,7 +358,12 @@ public class RestCalls {
                     responseMap.put("email", obj.getString("email"));
                     responseMap.put("picture", obj.getString("picture"));
                     responseMap.put("network", obj.getString("network"));
+                    responseMap.put("coverpic", obj.getString("coverpic"));
+                    responseMap.put("privacy", obj.getString("privacy"));
 
+                    responseMap.put("profession", obj.getString("profession"));
+                    responseMap.put("current_company", obj.getString("current_company"));
+                    responseMap.put("experience", obj.getString("experience"));
                     loginUserI.response(responseMap);
                 } catch (JSONException e) {
                     errorMap.put("exception", e.getLocalizedMessage());
@@ -375,13 +386,19 @@ public class RestCalls {
                 paramsMap.put("username", Objects.requireNonNull(bundle.getString("username")));
                 paramsMap.put("email", Objects.requireNonNull(bundle.getString("email")));
                 paramsMap.put("network", Objects.requireNonNull(bundle.getString("network")));
+                paramsMap.put("privacy", Objects.requireNonNull(bundle.getString("privacy")));
+
+                paramsMap.put("profession", Objects.requireNonNull(bundle.getString("profession")));
+                paramsMap.put("experience", Objects.requireNonNull(bundle.getString("experience")));
+                paramsMap.put("current_company", Objects.requireNonNull(bundle.getString("current_company")));
                 return paramsMap;
             }
 
             @Override
             protected Map<String, DataPart> getByteData() throws AuthFailureError {
                 Map<String, DataPart> params = new HashMap<>();
-                params.put("picture", new DataPart("ProfilePicture.jpeg", bundle.getByteArray(ProjectConstants.INTENT_PICTURE_WORKSPACE)));
+                params.put("picture", new DataPart("ProfilePicture.jpeg", bundle.getByteArray("picture")));
+                params.put("coverpic",new DataPart("CoverPicture.jpeg", bundle.getByteArray("coverpic")));
                 return params;
             }
         };
@@ -1042,5 +1059,58 @@ public class RestCalls {
         public void errorRequest(Map<String, String> response);
     }
 
+    //---Get User Search Profile
+
+    public void getSearchUserProfile(final String userId, final String friendId) {
+        final SearchUserProfileI searchUserProfileI = (SearchUserProfileI) mContext;
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + SEARCH_USER_PROFILE, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+
+                    SearchResultUserProfile searchResultUserProfile = new SearchResultUserProfile();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
+                    searchResultUserProfile = gson.fromJson(stringResponse, SearchResultUserProfile.class);
+                    searchUserProfileI.SearchUserProfileIResponse(searchResultUserProfile);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    searchUserProfileI.SearchUserProfileIErrorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                searchUserProfileI.SearchUserProfileIErrorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("userid",userId);
+                paramsMap.put("friendid",friendId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface SearchUserProfileI {
+        public void SearchUserProfileIResponse(SearchResultUserProfile response);
+        public void SearchUserProfileIErrorRequest(Map<String, String> response);
+    }
 
 }

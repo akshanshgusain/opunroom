@@ -168,11 +168,10 @@ public class PreviewActivity extends AppCompatActivity implements
         binding.buttonSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mediaType.equals(MEDIA_TYPE_PICTURE)){
-                    saveImage();
-                }else{
+                selectedItems.clear();
+               // if(mediaType.equals(MEDIA_TYPE_PICTURE)){
+
                     showBottomSheet();
-                }
 
             }
         });
@@ -351,6 +350,7 @@ public class PreviewActivity extends AppCompatActivity implements
     public void sendButtonClick() {
         int count = 0;
         for (SingleContact temp : selectedItems) {
+            Log.e(TAG, "selected Item : "+ temp.username );
             if (temp.isSelected) {
                 count++;
             }
@@ -358,44 +358,57 @@ public class PreviewActivity extends AppCompatActivity implements
         if (count == 0) {
             Toast.makeText(this, "Please Select target", Toast.LENGTH_SHORT).show();
         } else {
-            String selfIds = new String();
-            String groupIds = new String();
-            String companyId = new String();
-
-            for (SingleContact temp : selectedItems) {
-                if (temp.isSelected) {
-                    switch (temp.getType()) {
-                        case SELF_TYPE: {
-                            selfIds = temp.getUserId();
-                        }
-                        break;
-                        case GROUP_TYPE: {
-                            groupIds = groupIds + "," + temp.getUserId();
-                        }
-                        break;
-                        case COMPANY_TYPE: {
-                            companyId = temp.getUserId();
-                        }
-                        break;
-                    }
-                }
-            }
-            //Call createStory API: >>>>
-            Bundle bundle = new Bundle();
-            bundle.putString("userid", pref.getString(PREF_KEY_ID, ""));
-            bundle.putString("selfid", selfIds);
-            bundle.putString("friends", "");
-            bundle.putString("groups", groupIds);
-            bundle.putString("company", companyId);
-            bundle.putString("duaration", currentTimerSelection);
+            //Save Image To External Storage
             if (mediaType.equals(MEDIA_TYPE_VIDEO)) {
-                bundle.putString("video", videoDownloadURI);
-            } else {
-                bundle.putByteArray(INTENT_PICTURE_WORKSPACE, getFileDataFromDrawable(null));
+                makeNetworkCall();
+            }else{
+                saveImage();
             }
-            restCalls.createStory(bundle, mediaType);
 
         }
+    }
+
+    private void makeNetworkCall(){
+        String selfIds = new String();
+        String groupIds = new String();
+        String companyId = new String();
+
+        for (SingleContact temp : selectedItems) {
+            if (temp.isSelected) {
+                switch (temp.getType()) {
+                    case SELF_TYPE: {
+                        selfIds = temp.getUserId();
+                    }
+                    break;
+                    case GROUP_TYPE: {
+                        groupIds = groupIds + "," + temp.getUserId();
+                    }
+                    break;
+                    case COMPANY_TYPE: {
+                        companyId = temp.getUserId();
+                    }
+                    break;
+                }
+            }
+        }
+        Log.e(TAG, "sendButtonClick: Users "+ selfIds);
+        Log.e(TAG, "sendButtonClick: groupIds"+ groupIds );
+        Log.e(TAG, "sendButtonClick: CompanyIDs"+ companyId );
+
+        //Call createStory API: >>>>
+        Bundle bundle = new Bundle();
+        bundle.putString("userid", pref.getString(PREF_KEY_ID, ""));
+        bundle.putString("selfid", selfIds);
+        bundle.putString("friends", "");
+        bundle.putString("groups", groupIds);
+        bundle.putString("company", companyId);
+        bundle.putString("duaration", currentTimerSelection);
+        if (mediaType.equals(MEDIA_TYPE_VIDEO)) {
+            bundle.putString("video", videoDownloadURI);
+        } else {
+            bundle.putByteArray(INTENT_PICTURE_WORKSPACE, getFileDataFromDrawable(null));
+        }
+        restCalls.createStory(bundle, mediaType);
     }
 
 
@@ -638,8 +651,7 @@ public class PreviewActivity extends AppCompatActivity implements
                         progressDialog.hide();
                         mSaveImageUri = Uri.fromFile(new File(imagePath));
                         binding.imageViewPreview.getSource().setImageURI(mSaveImageUri);
-
-                        showBottomSheet();
+                        makeNetworkCall();
                     }
 
                     @Override

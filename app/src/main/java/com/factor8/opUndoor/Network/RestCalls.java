@@ -4,6 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.factor8.opUndoor.Network.Responses.Company;
+import com.factor8.opUndoor.Network.Responses.Feed;
+import com.factor8.opUndoor.Network.Responses.Friends;
+import com.factor8.opUndoor.Network.Responses.Friends2;
+import com.factor8.opUndoor.Network.Responses.GetAllFriendRequest;
+import com.factor8.opUndoor.Network.Responses.GroupMembers;
+import com.factor8.opUndoor.Network.Responses.Groups;
+import com.factor8.opUndoor.Network.Responses.NewsChannel;
+import com.factor8.opUndoor.Network.Responses.SearchResult;
+import com.factor8.opUndoor.Network.Responses.SearchResultUserProfile;
 import com.factor8.opUndoor.ProjectConstants;
 import com.factor8.opUndoor.Utils;
 import com.android.volley.AuthFailureError;
@@ -18,6 +28,10 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +42,7 @@ import java.util.Objects;
 import static com.factor8.opUndoor.SwipableViews.CameraFragment.MEDIA_TYPE_VIDEO;
 
 public class RestCalls {
-    private static final String BASE_URL = "http://dass.io/oppo/api/";
+    private static final String BASE_URL = "https://dass.io/oppo/api/";
     private static final String REGISTER_URL = "user/register";
     private static final String CHECK_NETWORK = "user/checknetwork";
     private static final String CHECK_USERNAME = "user/checkusername";
@@ -45,6 +59,10 @@ public class RestCalls {
     private static final String FORGET_PASSWORD = "user/forgotpassword";
     private static final String SEARCH = "user/searchuser";
     private static final String SEARCH_USER_PROFILE = "user/userprofile";
+    private static final String SEND_FRIEND_REQUEST = "user/friendrequest";
+    private static final String GET_ALL_FRIEND_REQUESTS = "user/getfriendrequest";
+    private static final String ACCEPT_FRIEND_REQUESTS = "user/acceptfriendrequest";
+    private static final String REJECT_FRIEND_REQUESTS = "user/rejectfriendrequest";
 
 
     private static final String TAG = "RestCalls";
@@ -534,7 +552,7 @@ public class RestCalls {
             @Override
             public void onResponse(NetworkResponse response) {
                 String stringResponse = new String(response.data);
-
+                Log.d(TAG, "onResponse: GetFriends2:"+stringResponse);
                     Friends2 friends2 = new Friends2();
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     Gson gson = gsonBuilder.create();
@@ -1111,6 +1129,218 @@ public class RestCalls {
     public interface SearchUserProfileI {
         public void SearchUserProfileIResponse(SearchResultUserProfile response);
         public void SearchUserProfileIErrorRequest(Map<String, String> response);
+    }
+
+    //---Send Friend Request
+    public void sendFriendRequest(final String userId, final String friendId) {
+        final SendFriendRequestI sendFriendRequestI = (SendFriendRequestI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + SEND_FRIEND_REQUEST, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+                    responseMap.put("status", obj.getString("status"));
+                    responseMap.put("message", obj.getString("message"));
+
+                    sendFriendRequestI.sendFriendRequestResponse(responseMap);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    sendFriendRequestI.sendFriendRequestErrorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                sendFriendRequestI.sendFriendRequestErrorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("userid",userId);
+                paramsMap.put("friendid",friendId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface SendFriendRequestI {
+        public void sendFriendRequestResponse(Map<String, String>  Response );
+        public void sendFriendRequestErrorRequest(Map<String, String> errorResponse);
+    }
+
+
+    //---Get All Friend Request
+
+    public void getAllFriendRequests(final String userId) {
+        final GetAllFriendRequestsI getAllFriendRequestsI = (GetAllFriendRequestsI) mContext;
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + GET_ALL_FRIEND_REQUESTS, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+
+                    GetAllFriendRequest getAllFriendRequest = new GetAllFriendRequest();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
+                    getAllFriendRequest = gson.fromJson(stringResponse, GetAllFriendRequest.class);
+                    getAllFriendRequestsI.GetAllFriendRequestsIResponse(getAllFriendRequest);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    getAllFriendRequestsI.GetAllFriendRequestsIErrorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                getAllFriendRequestsI.GetAllFriendRequestsIErrorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("userid",userId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface GetAllFriendRequestsI {
+        public void GetAllFriendRequestsIResponse(GetAllFriendRequest response);
+        public void GetAllFriendRequestsIErrorRequest(Map<String, String> response);
+    }
+
+
+    //---Accepts Friend Request
+    public void acceptFriendRequest(final String userId, final String friendId) {
+        final AcceptFriendRequestI acceptFriendRequestI = (AcceptFriendRequestI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + ACCEPT_FRIEND_REQUESTS, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+                    responseMap.put("status", obj.getString("status"));
+                    responseMap.put("message", obj.getString("message"));
+
+                    acceptFriendRequestI.acceptFriendRequestResponse(responseMap);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    acceptFriendRequestI.acceptFriendRequestErrorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                acceptFriendRequestI.acceptFriendRequestErrorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("userid",userId);
+                paramsMap.put("friendid",friendId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface AcceptFriendRequestI {
+        public void acceptFriendRequestResponse(Map<String, String>  Response );
+        public void acceptFriendRequestErrorRequest(Map<String, String> errorResponse);
+    }
+
+
+    //---Reject Friend Request
+    public void rejectFriendRequest(final String userId, final String friendId) {
+        final RejectFriendRequestI rejectFriendRequestI = (RejectFriendRequestI) mContext;
+        final Map<String, String> responseMap = new HashMap<>();
+        final Map<String, String> errorMap = new HashMap<>();
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, BASE_URL + REJECT_FRIEND_REQUESTS, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String stringResponse = new String(response.data);
+                try {
+                    JSONObject obj = new JSONObject(stringResponse);
+                    Log.d(TAG, "onResponse: " + stringResponse);
+                    responseMap.put("status", obj.getString("status"));
+                    responseMap.put("message", obj.getString("message"));
+
+                    rejectFriendRequestI.rejectFriendRequestResponse(responseMap);
+
+                } catch (JSONException e) {
+                    errorMap.put("exception", e.getLocalizedMessage());
+                    rejectFriendRequestI.rejectFriendRequestErrorRequest(errorMap);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorMap.put("VolleyError", Utils.getVolleyErrorString(error));
+                rejectFriendRequestI.rejectFriendRequestErrorRequest(errorMap);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("userid",userId);
+                paramsMap.put("friendid",friendId);
+                return paramsMap;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(mContext).addToRequestQueue(request);
+
+
+    }
+
+    public interface RejectFriendRequestI {
+        public void rejectFriendRequestResponse(Map<String, String>  Response );
+        public void rejectFriendRequestErrorRequest(Map<String, String> errorResponse);
     }
 
 }

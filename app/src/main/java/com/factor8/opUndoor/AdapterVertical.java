@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.factor8.opUndoor.Network.Feed;
+import com.factor8.opUndoor.Network.Responses.Feed;
 import com.bumptech.glide.Glide;
 
 
@@ -21,16 +21,16 @@ import java.util.List;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHolderV>{
-   private ArrayList<Feed.CompanyBean> mDataObjects;
+   private ArrayList<Feed.NetworkBean> mDataObjects;
    private Context mContext;
    private VerticalClickListener verticalClickListener;
 
-    public AdapterVertical(List<Feed.CompanyBean> mDataObjects, Context mContext) {
-        this.mDataObjects =(ArrayList<Feed.CompanyBean>) mDataObjects;
+    public AdapterVertical(List<Feed.NetworkBean> mDataObjects, Context mContext) {
+        this.mDataObjects =(ArrayList<Feed.NetworkBean>) mDataObjects;
         this.mContext = mContext;
         this.verticalClickListener = (VerticalClickListener)mContext;
     }
-    public void dataChanged(ArrayList<Feed.CompanyBean> groups){
+    public void dataChanged(ArrayList<Feed.NetworkBean> groups){
         this.mDataObjects=groups;
         notifyDataSetChanged();
     }

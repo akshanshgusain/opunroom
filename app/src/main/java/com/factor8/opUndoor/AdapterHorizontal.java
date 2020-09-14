@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.factor8.opUndoor.Network.Feed;
+import com.factor8.opUndoor.Network.Responses.Feed;
 import com.bumptech.glide.Glide;
 
 
@@ -66,7 +66,8 @@ public class AdapterHorizontal extends RecyclerView.Adapter<AdapterHorizontal.Vi
             holder.profession.setText(friend.getProfession());
             holder.name.setText(name);
 
-            if(friend.getStorypicture().size()>0){
+
+            if(friend.getStorypicture()!=null && friend.getStorypicture().size()>0){
                 holder.status.setVisibility(View.VISIBLE);
             }else{
                 holder.status.setVisibility(View.GONE);

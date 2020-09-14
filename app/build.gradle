@@ -12,8 +12,8 @@ android {
         applicationId "com.factor8.opUndoor"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.0.2"
+        versionCode 5
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -98,6 +98,9 @@ dependencies {
     //PhotoEditor
     implementation 'ja.burhanrashid52:photoeditor:1.0.0'
     implementation 'com.github.naz013:ColorSlider:2.0.6'
+
+    //XML Parser
+    implementation 'org.jsoup:jsoup:1.11.3'
 
 
 }

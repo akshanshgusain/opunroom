@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.factor8.opUndoor.Network.Feed;
+import com.factor8.opUndoor.Network.Responses.Feed;
 import com.bumptech.glide.Glide;
 
 

@@ -15,6 +15,7 @@ import com.factor8.opUndoor.MainActivity;
 import com.factor8.opUndoor.ProjectConstants;
 import com.bumptech.glide.Glide;
 import com.factor8.opUndoor.R;
+import com.factor8.opUndoor.Search.IncomingRequestsActivity;
 import com.factor8.opUndoor.databinding.ActivityProfileMainBinding;
 
 import static com.factor8.opUndoor.ProjectConstants.COMPANY_IMAGES;
@@ -62,6 +63,13 @@ public class ProfileMainActivity extends AppCompatActivity {
               editor.clear();
               editor.apply();
               finish();
+          }
+      });
+
+      binding.imageViewNotification.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+              startActivity(new Intent(ProfileMainActivity.this, IncomingRequestsActivity.class));
           }
       });
 

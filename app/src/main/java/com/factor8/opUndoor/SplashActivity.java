@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.factor8.opUndoor.Network.RestCalls;
+
 
 public class SplashActivity extends AppCompatActivity {
     ImageView label;

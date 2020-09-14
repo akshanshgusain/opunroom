@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.factor8.opUndoor.Network.Company;
-import com.factor8.opUndoor.Network.Friends;
-import com.factor8.opUndoor.Network.NewsChannel;
+import com.factor8.opUndoor.Network.Responses.Company;
+import com.factor8.opUndoor.Network.Responses.Friends;
+import com.factor8.opUndoor.Network.Responses.NewsChannel;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.ProjectConstants;
 import com.factor8.opUndoor.R;
@@ -29,8 +29,8 @@ import com.factor8.opUndoor.SingleHeadingList;
 import com.bumptech.glide.Glide;
 
 import com.factor8.opUndoor.MainAdapter;
-import com.factor8.opUndoor.Network.Feed;
-import com.factor8.opUndoor.Network.Groups;
+import com.factor8.opUndoor.Network.Responses.Feed;
+import com.factor8.opUndoor.Network.Responses.Groups;
 import com.factor8.opUndoor.Profile.ProfileMainActivity;
 
 
@@ -40,13 +40,13 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class DashBoardFragment extends Fragment {
+public class DashBoardFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private ArrayList<Object> mObjects = new ArrayList<>();
     public static List<Feed.GroupsBean> groupsGlobal = new ArrayList<>();
     public static List<Feed.FriendsBean> friendsGlobal = new ArrayList<>();
-    public static List<Feed.CompanyBean> companiesGlobal = new ArrayList<>();
-    public static List<NewsChannel> channelsGlobal = new ArrayList<>();
+    public static List<Feed.NetworkBean> companiesGlobal = new ArrayList<>();
+    public static Feed.NewsBean channelsGlobal = new Feed.NewsBean();
 
     SharedPreferences pref;
     TextView fullName;
@@ -62,11 +62,13 @@ public class DashBoardFragment extends Fragment {
     private ImageView mCameraButton, mSearchButton;
     private ButtonClickListener buttonClickListener;
 
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         restCalls = new RestCalls(getActivity());
         buttonClickListener = (ButtonClickListener)context;
+
     }
 
     @Nullable
@@ -139,9 +141,10 @@ public class DashBoardFragment extends Fragment {
             Glide.with(getActivity()).load(ProjectConstants.PROFILE_IMAGES+pref.getString(ProjectConstants.PREF_KEY_PICTURE, "")).into(imageView);
             //Call Feed Rest API
             restCalls.getFeed(pref.getString(ProjectConstants.PREF_KEY_ID, ""));
-            restCalls.getNewsStory(0);
-            restCalls.getNewsStory(1);
-            restCalls.getNewsStory(2);
+//            restCalls.getNewsStory(0);
+//            restCalls.getNewsStory(1);
+//            restCalls.getNewsStory(2);
+
         }
 
     }
@@ -197,20 +200,23 @@ public class DashBoardFragment extends Fragment {
         return (ArrayList<Feed.GroupsBean>) groupsGlobal;
     }
 
-    public static ArrayList<Feed.CompanyBean> getVerticalData(List<Feed.CompanyBean> companies) {
+    public static ArrayList<Feed.NetworkBean> getVerticalData(List<Feed.NetworkBean> companies) {
         companiesGlobal = companies;
         mainAdapter.verticalDataSetChanged();
         isVerticalDataReady = true;
         checkLoad();
-        return (ArrayList<Feed.CompanyBean>) companiesGlobal;
+        return (ArrayList<Feed.NetworkBean>) companiesGlobal;
     }
 
-    public static ArrayList<NewsChannel> getVertical2Data(List<NewsChannel> channels) {
-        channelsGlobal = channels;
-        mainAdapter.vertical2DataSetChanged();
-        isVerticalDataReady = true;
-        checkLoad();
-        return (ArrayList<NewsChannel>) channelsGlobal;
+    public static Feed.NewsBean getVertical2Data(Feed.NewsBean news) {
+        if(news!=null){
+            channelsGlobal = news;
+            mainAdapter.vertical2DataSetChanged();
+            isVerticalDataReady = true;
+            checkLoad();
+            return channelsGlobal;
+        }
+        return new Feed.NewsBean();
     }
 
     private static void checkLoad() {
@@ -218,8 +224,5 @@ public class DashBoardFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
     }
-
-
-
 
 }

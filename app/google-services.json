@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "259479535906",
+    "firebase_url": "https://opunroom.firebaseio.com",
+    "project_id": "opunroom",
+    "storage_bucket": "opunroom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259479535906:android:c96b3fdfc44c3b351b257b",
+        "android_client_info": {
+          "package_name": "com.factor8.opUndoor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259479535906-lh4r8it3gor634202qehm2hqujsu4ijk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.factor8.opUndoor",
+            "certificate_hash": "dc2520d31a4979332e95949fd13c87474b6d438c"
+          }
+        },
+        {
+          "client_id": "259479535906-415k2n3dkduikl76g79um7uh1baue7q7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfucHvCZ98KCCHgo2qUngdo9OmAtYKG60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259479535906-prp3pkm3j2891pf1aavr6v7vnumqu9su.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

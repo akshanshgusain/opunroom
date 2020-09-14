@@ -54,7 +54,7 @@ import com.google.firebase.storage.UploadTask;
 import com.shawnlin.numberpicker.NumberPicker;
 
 
-import com.factor8.opUndoor.Network.Friends2;
+import com.factor8.opUndoor.Network.Responses.Friends2;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.SendPicture.PictureEditor.EmojiFragment;
 import com.factor8.opUndoor.SendPicture.PictureEditor.FilterListener;

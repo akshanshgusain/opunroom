@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Search.SearchUserProfileActivity"></activity>
+        <activity android:name=".Search.IncomingRequestsActivity"></activity>
+        <activity android:name=".Search.SearchUserProfileActivity" />
         <activity android:name=".Search.SearchActivity" />
         <activity
             android:name=".Groups.UpdateGroupSettings"

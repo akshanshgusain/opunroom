@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.factor8.opUndoor.Network.Friends2;
+import com.factor8.opUndoor.Network.Responses.Friends2;
 import com.factor8.opUndoor.ProjectConstants;
 import com.factor8.opUndoor.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

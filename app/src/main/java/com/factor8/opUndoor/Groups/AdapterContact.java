@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import com.factor8.opUndoor.Network.Friends2;
-import com.factor8.opUndoor.Network.GroupMembers;
+import com.factor8.opUndoor.Network.Responses.Friends2;
+import com.factor8.opUndoor.Network.Responses.GroupMembers;
 import com.factor8.opUndoor.R;
 
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package com.factor8.opUndoor;
 public final class ProjectConstants {
 
     //URLS
-    public static final String PROFILE_IMAGES = "http://dass.io/oppo/app/profile/image/";
-    public static final String COMPANY_IMAGES = "http://dass.io/oppo/app/story/company/";
+    public static final String PROFILE_IMAGES = "https://dass.io/oppo/app/profile/image/";
+    public static final String COMPANY_IMAGES = "https://dass.io/oppo/app/story/company/";
 
     public static final String BUNDLE_REGISTER="register_bundle";
     public static final String INTENT_NAME_WORKSPACE="workspace";

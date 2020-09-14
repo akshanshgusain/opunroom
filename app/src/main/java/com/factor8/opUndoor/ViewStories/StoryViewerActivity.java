@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.factor8.opUndoor.Application;
-import com.factor8.opUndoor.Network.Company;
-import com.factor8.opUndoor.Network.Friends;
+import com.factor8.opUndoor.Network.Responses.Friends;
+import com.factor8.opUndoor.Network.Responses.Friends2;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.ProjectConstants;
 import com.bumptech.glide.Glide;
@@ -31,8 +31,7 @@ import com.factor8.opUndoor.databinding.ActivityStoryViewerBinding;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import com.factor8.opUndoor.Network.Feed;
-import com.factor8.opUndoor.Network.Groups;
+import com.factor8.opUndoor.Network.Responses.Feed;
 
 
 
@@ -44,9 +43,13 @@ import java.util.Map;
 
 import jp.shts.android.storiesprogressview.StoriesProgressView;
 
+import static com.factor8.opUndoor.ProjectConstants.PREF_KEY_F_NAME;
+import static com.factor8.opUndoor.ProjectConstants.PREF_KEY_ID;
+import static com.factor8.opUndoor.ProjectConstants.PREF_KEY_L_NAME;
+import static com.factor8.opUndoor.ProjectConstants.PREF_KEY_PICTURE;
 import static com.factor8.opUndoor.ProjectConstants.PROFILE_IMAGES;
 
-public class StoryViewerActivity extends SwipeDismissBaseActivity implements StoriesProgressView.StoriesListener, RestCalls.GetFriendsListI {
+public class StoryViewerActivity extends SwipeDismissBaseActivity implements StoriesProgressView.StoriesListener, RestCalls.GetFriendsList2I {
     public static final String STORY_STATUS = "status_story";
     public static final String STORY_GROUPS = "group_story";
     public static final String STORY_COMPANY = "company_story";
@@ -58,7 +61,8 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
     String statusId;
     private static final String TAG = "ViewerStory";
     public static final String URL = "http://dass.io/oppo/app/story/image/";
-    List<Friends> friendsList;
+    List<Friends2.FriendsBean> friendsList;
+    String userIdSelf, fullname;
 
     String intentType;
     SharedPreferences pref;
@@ -101,6 +105,8 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         binding = DataBindingUtil.setContentView(this, R.layout.activity_story_viewer);
         storiesProgressView = findViewById(R.id.stories);
         pref = getApplicationContext().getSharedPreferences("LoginPreference", MODE_PRIVATE);
+        userIdSelf = pref.getString(PREF_KEY_ID,"");
+        fullname = pref.getString(PREF_KEY_F_NAME,"")+ " "+pref.getString(PREF_KEY_L_NAME,"");
         getUsersData();
         image = findViewById(R.id.imageView_story);
 
@@ -131,7 +137,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
     private void getUsersData() {
 
         RestCalls restCalls = new RestCalls(this);
-        restCalls.getFriendsList(pref.getString(ProjectConstants.PREF_KEY_ID, ""));
+        restCalls.getFriendsList2(pref.getString(ProjectConstants.PREF_KEY_ID, ""));
         binding.progressBarLoad.setVisibility(View.VISIBLE);
     }
 
@@ -164,13 +170,16 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         //User Details in GROUPS
         if (intentType.equals(STORY_GROUPS)) {
             String userId = stories.get(pos).getUserid();
-            Friends user = null;
-            for (Friends temp : friendsList) {
+            Log.i(TAG, "setImage: userId"+ userId);
+            Friends2.FriendsBean user = null;
+            for (Friends2.FriendsBean temp : friendsList) {
+                Log.i(TAG, "setImage: friends"+ temp.getF_name());
                 if (temp.getId().equals(userId)) {
                     user = temp;
                 }
             }
             if (user != null) {
+                Log.e(TAG, "setImage: "+ user.getPicture());
                 Glide.with(this).load(PROFILE_IMAGES+user.getPicture()).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -185,6 +194,24 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                 }).into(binding.imageViewDp);
 
                 binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
+                binding.textViewTime.setText(stories.get(pos).getCreated_at());
+            }
+            if (userId.equals(userIdSelf)) {
+
+                Glide.with(this).load(PROFILE_IMAGES+pref.getString(PREF_KEY_PICTURE,"")).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                }).into(binding.imageViewDp);
+
+                binding.textViewFullName.setText(fullname);
                 binding.textViewTime.setText(stories.get(pos).getCreated_at());
             }
 
@@ -241,8 +268,8 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         //User Details in STATUS
         if (intentType.equals(STORY_STATUS)) {
 
-            Friends user = null;
-            for (Friends temp : friendsList) {
+            Friends2.FriendsBean user = null;
+            for (Friends2.FriendsBean temp : friendsList) {
                 if (temp.getId().equals(statusId)) {
                     user = temp;
                 }
@@ -318,8 +345,8 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
         //User Details in COMPANY
         if (intentType.equals(STORY_COMPANY)) {
             String userId = companyStories.get(pos).getUserid();
-            Friends user = null;
-            for (Friends temp : friendsList) {
+            Friends2.FriendsBean user = null;
+            for (Friends2.FriendsBean temp : friendsList) {
                 if (temp.getId().equals(userId)) {
                     user = temp;
                 }
@@ -340,6 +367,26 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
                 binding.textViewFullName.setText(user.getF_name() + " " + user.getL_name());
                 binding.textViewTime.setText(companyStories.get(pos).getCreated_at());
             }
+
+            if (userId.equals(userIdSelf)) {
+
+                Glide.with(this).load(PROFILE_IMAGES+pref.getString(PREF_KEY_PICTURE,"")).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.constraintLayoutUserDetails.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                }).into(binding.imageViewDp);
+
+                binding.textViewFullName.setText(fullname);
+                binding.textViewTime.setText(companyStories.get(pos).getCreated_at());
+            }
+
                 if(!companyStories.get(pos).getStorypicture().contains("firebasestorage.googleapis.com")){
                     switchPlayer(1);
                     pauseStory();
@@ -389,10 +436,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
 
     }
 
-    @Override
-    public void response(Map<String, String> response) {
 
-    }
 
     @Override
     public void errorRequest(Map<String, String> response) {
@@ -400,10 +444,11 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
     }
 
     @Override
-    public void responseList(List<Friends> friendsList) {
+    public void response(Friends2 friends2) {
+
         binding.progressBarLoad.setVisibility(View.GONE);
-        if (friendsList != null) {
-            this.friendsList = friendsList;
+        if (friends2 != null) {
+            this.friendsList = friends2.getFriends();
             intentType = getIntent().getStringExtra("type");
 
             if (intentType.equals(STORY_STATUS)) {
@@ -443,15 +488,7 @@ public class StoryViewerActivity extends SwipeDismissBaseActivity implements Sto
 
     }
 
-    @Override
-    public void responseListGroups(List<Groups> groupsList) {
 
-    }
-
-    @Override
-    public void responseListCompany(List<Company> companyList) {
-
-    }
 
     private void switchPlayer(int player){
           //1 - Image

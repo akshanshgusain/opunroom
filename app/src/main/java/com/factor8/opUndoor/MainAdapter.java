@@ -15,12 +15,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.factor8.opUndoor.Network.Company;
-import com.factor8.opUndoor.Network.Feed;
-import com.factor8.opUndoor.Network.Friends;
-import com.factor8.opUndoor.Network.NewsChannel;
+import com.factor8.opUndoor.Network.Responses.Company;
+import com.factor8.opUndoor.Network.Responses.Feed;
+import com.factor8.opUndoor.Network.Responses.Friends;
+import com.factor8.opUndoor.Network.Responses.NewsChannel;
 import com.factor8.opUndoor.SwipableViews.DashBoardFragment;
-import com.factor8.opUndoor.Network.Groups;
+import com.factor8.opUndoor.Network.Responses.Groups;
 
 
 import java.util.ArrayList;
@@ -160,12 +160,12 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void verticalDataSetChanged(){
          if(adapter1!=null){
-              adapter1.dataChanged((ArrayList<Feed.CompanyBean>) DashBoardFragment.companiesGlobal);
+              adapter1.dataChanged((ArrayList<Feed.NetworkBean>) DashBoardFragment.companiesGlobal);
          }
     }
     public void vertical2DataSetChanged(){
         if(adapter3!=null){
-            adapter3.dataChanged((ArrayList<NewsChannel>) DashBoardFragment.channelsGlobal);
+            adapter3.dataChanged(DashBoardFragment.channelsGlobal);
         }
     }
 

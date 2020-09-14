@@ -52,7 +52,7 @@
                 android:layout_width="35dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_search"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toStartOf="@+id/imageView_cancel_button"
                 app:layout_constraintTop_toTopOf="@+id/imageView_dp"

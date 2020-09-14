@@ -10,13 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.factor8.opUndoor.Network.Company;
-import com.factor8.opUndoor.Network.Friends;
+import com.factor8.opUndoor.Network.Responses.Company;
+import com.factor8.opUndoor.Network.Responses.Friends;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.ProjectConstants;
-import com.factor8.opUndoor.Network.Friends2;
-import com.factor8.opUndoor.Network.GroupMembers;
-import com.factor8.opUndoor.Network.Groups;
+import com.factor8.opUndoor.Network.Responses.Friends2;
+import com.factor8.opUndoor.Network.Responses.GroupMembers;
+import com.factor8.opUndoor.Network.Responses.Groups;
 import com.factor8.opUndoor.R;
 import com.factor8.opUndoor.databinding.ActivityCreateGroupBinding;
 

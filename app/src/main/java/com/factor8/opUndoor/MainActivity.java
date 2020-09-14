@@ -16,7 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.factor8.opUndoor.Network.NewsChannel;
+import com.factor8.opUndoor.Network.Responses.NewsChannel;
 import com.factor8.opUndoor.Network.RestCalls;
 import com.factor8.opUndoor.SendPicture.PreviewActivity;
 import com.factor8.opUndoor.SwipableViews.ButtonClickListener;
@@ -30,7 +30,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import com.factor8.opUndoor.Groups.CreateGroupActivity;
 import com.factor8.opUndoor.LoginRegister.LoginActivity;
-import com.factor8.opUndoor.Network.Feed;
+import com.factor8.opUndoor.Network.Responses.Feed;
 
 
 import com.factor8.opUndoor.SwipableViews.BottomSheetGroups;
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     private List<Feed.FriendsBean> friendsGlobal = new ArrayList<>();
     private List<Feed.CompanyBean> companiesGlobal = new ArrayList<>();
     private List<NewsChannel> newsChannels = new ArrayList<>();
+    private Feed.NewsBean news = new Feed.NewsBean();
 
     public static final int FRAGMENT_CHAT = 0;
     public static final int FRAGMENT_CAMERA = 1;
@@ -72,13 +73,13 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     private static final String TAG = "MainActivity";
 
     BottomSheetGroups bottomSheetGroups;
-    private List<Feed.CompanyBean> networkGlobal;
+    private List<Feed.NetworkBean> networkGlobal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        // getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         StatusBarUtil.setDarkMode(this);
-        StatusBarUtil.setColor(this,getResources().getColor(R.color.colorBlack));
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorBlack));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     }
 
     private void setUpViewPager(ViewPager2 mViewPager) {
-         dashBoardFragment = new DashBoardFragment();
+        dashBoardFragment = new DashBoardFragment();
         SectionPagerAdapter adapter = new SectionPagerAdapter(this);
         adapter.addFragment(new ChatFragment(), "Chat");
         adapter.addFragment(dashBoardFragment, "Dashboard");
@@ -122,12 +123,12 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
             List<String> stories = new ArrayList<>();
 
             Feed.FriendsBean temp = friendsGlobal.get(position);
-                if(temp.getStorypicture()!=null){
-                     for(int i =0; i<temp.getStorypicture().size();i++){
-                         stories.add(temp.getStorypicture().get(i).getStorypicture());
-                     }
-
+            if (temp.getStorypicture() != null) {
+                for (int i = 0; i < temp.getStorypicture().size(); i++) {
+                    stories.add(temp.getStorypicture().get(i).getStorypicture());
                 }
+
+            }
 
             if (stories.size() != 0) {
                 Intent i = new Intent(this, StoryViewerActivity.class);
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
 
     @Override
     public void verticalClickListener(int position) {
-        List<Feed.CompanyBean.StorypictureBean> stories = networkGlobal.get(position).getStorypicture();
+        List<Feed.NetworkBean.StorypictureBeanXXX> stories = networkGlobal.get(position).getStorypicture();
         Gson gson = new Gson();
         if (stories.size() != 0) {
             Intent i = new Intent(this, StoryViewerActivity.class);
@@ -198,17 +199,23 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
 
     @Override
     public void vertical2ClickListener(int position) {
-        NewsChannel channel = newsChannels.get(position);
         Gson gson = new Gson();
-        if (channel.getArticles().size() != 0) {
+        if(position == 0 && (news.getTimesofindia().size()!=0)){
+
             Intent i = new Intent(this, StoryViewer_2_Activity.class);
-            i.putExtra("type", STORY_COMPANY);
-            i.putExtra("stories", gson.toJson(channel));
+            i.putExtra("type", "TOI");
+            i.putExtra("stories", gson.toJson(news));
             startActivity(i);
-        } else {
+
+        }
+        else if(position == 1 && (news.getEconomictimes().size()!=0)){
+            Intent i = new Intent(this, StoryViewer_2_Activity.class);
+            i.putExtra("type", "TET");
+            i.putExtra("stories", gson.toJson(news));
+            startActivity(i);
+        }else {
             Toast.makeText(this, "No Stories to Show", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
@@ -231,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     public void feedResponse(Feed feed) {
 
         //Friends
-        if(feed!=null){
+        if (feed != null) {
             this.friendsGlobal = new ArrayList<>();
             this.friendsGlobal.add(new Feed.FriendsBean());
             this.friendsGlobal.addAll(feed.getFriends());
@@ -243,17 +250,15 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
             this.groupsGlobal.addAll(feed.getGroups());
             DashBoardFragment.getHorizontal2Data(this.groupsGlobal);
 
-//        //companies
-//        this.companiesGlobal = new ArrayList<>();
-//        this.companiesGlobal = feed.getCompany();
-//        Log.d("actiMain", "feedResponseCompanies: " + companiesGlobal.size());
-//        getVerticalData(this.companiesGlobal);
-
             //Network
             this.networkGlobal = new ArrayList<>();
             this.networkGlobal = feed.getNetwork();
             Log.d("actiMain", "feedResponseCompanies: " + networkGlobal.size());
             DashBoardFragment.getVerticalData(this.networkGlobal);
+
+            this.news = new Feed.NewsBean();
+            this.news = feed.getNews();
+            DashBoardFragment.getVertical2Data(this.news);
         }
 
     }
@@ -263,6 +268,9 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
         Log.d("FeedErrorResponse", "feedErrorRequest2:Exception " + errorMap.get("exception"));
         Log.d("FeedErrorResponse", "feedErrorRequest2:Error " + errorMap.get("VolleyError"));
     }
+
+
+
 
 
     /*Changes Here---------*/
@@ -275,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
     public void responseArticles(NewsChannel feed) {
         if (newsChannels.size() != 3) {
             newsChannels.add(feed);
-            DashBoardFragment.getVertical2Data(newsChannels);
+            //DashBoardFragment.getVertical2Data(newsChannels);
         }
 
     }
@@ -298,8 +306,8 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
 
     @Override
     public void enableDisableScrollInViewPager(boolean enable) {
-        Log.d("enableDisable", "enableDisableScrollInViewPager: "+ enable);
-         mViewPager.setUserInputEnabled(enable);
+        Log.d("enableDisable", "enableDisableScrollInViewPager: " + enable);
+        mViewPager.setUserInputEnabled(enable);
     }
 
     @Override
@@ -323,14 +331,14 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
                             .setCompressFormat(Bitmap.CompressFormat.WEBP)
                             .setDestinationDirectoryPath(pictureDPAth.getAbsolutePath())
                             .compressToFile(file);
-                    File renamed = new File(pictureDPAth, System.currentTimeMillis()+"opundoor.jpg");
-                    if(compressedImage.renameTo(renamed)){
+                    File renamed = new File(pictureDPAth, System.currentTimeMillis() + "opundoor.jpg");
+                    if (compressedImage.renameTo(renamed)) {
                         Intent i = new Intent(this, PreviewActivity.class);
                         i.putExtra("type", MEDIA_TYPE_PICTURE);
                         i.putExtra(CAMERA_FACING, 0);
                         i.putExtra("mediaPreview", renamed.getAbsolutePath());
                         startActivity(i);
-                    }else{
+                    } else {
                         Log.d(TAG, "Could Not rename the file");
                     }
 
@@ -338,9 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
                     e.printStackTrace();
                     Log.d(TAG, "onFileReady: " + e);
                 }
-
-
-
 
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -352,23 +357,22 @@ public class MainActivity extends AppCompatActivity implements AdapterHorizontal
 
     @Override
     public void responseDeleteG(Map<String, String> response) {
-           if(response.get("status").equals("1")){
-               //Group Delete
-               bottomSheetGroups.dismiss();
-               dashBoardFragment.onResume();
-           }else{
-               Toast.makeText(this, "Problem Deleting Group", Toast.LENGTH_SHORT).show();
-               bottomSheetGroups.dismiss();
-               bottomSheetGroups.dialogOfDelete.dismiss();
-           }
+        if (response.get("status").equals("1")) {
+            //Group Delete
+            bottomSheetGroups.dismiss();
+            dashBoardFragment.onResume();
+        } else {
+            Toast.makeText(this, "Problem Deleting Group", Toast.LENGTH_SHORT).show();
+            bottomSheetGroups.dismiss();
+            bottomSheetGroups.dialogOfDelete.dismiss();
+        }
     }
 
     @Override
     public void errorRequestDeleteG(Map<String, String> response) {
-        Toast.makeText(this, ""+response.get("VolleyError"), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, ""+response.get("exception"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + response.get("VolleyError"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + response.get("exception"), Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void buttonClickListener(int position) {

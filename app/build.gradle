@@ -16,6 +16,14 @@ android {
         versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"]
+            }
+        }
     }
 
     buildTypes {
@@ -99,8 +107,26 @@ dependencies {
     implementation 'ja.burhanrashid52:photoeditor:1.0.0'
     implementation 'com.github.naz013:ColorSlider:2.0.6'
 
-    //XML Parser
-    implementation 'org.jsoup:jsoup:1.11.3'
+//MVI - Refactor
+
+    // jetpack navigation components
+    //def nav_version = "2.1.0-alpha06" // NEWEST VERSION DOESN'T HANDLE BACK NAV PROPERLY!!!
+    def nav_version = "2.1.0-alpha02"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-runtime:$nav_version"
+
+    // -- Retrofit2
+    def retrofit2_version = "2.6.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+
+    // -- Room
+    def room_version = "2.1.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 
 
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.factor8.opUndoor.UI.Auth.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerP1Fragment"
+            app:destination="@id/registerP1Fragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
+        <action
+            android:id="@+id/action_loginFragment_to_forgetPasswordFragment"
+            app:destination="@id/forgetPasswordFragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/registerP1Fragment"
+        android:name="com.factor8.opUndoor.UI.Auth.RegisterP1Fragment"
+        android:label="fragment_register_p1"
+        tools:layout="@layout/fragment_register_p1" >
+        <action
+            android:id="@+id/action_registerP1Fragment_to_registerP2Fragment"
+            app:destination="@id/registerP2Fragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/forgetPasswordFragment"
+        android:name="com.factor8.opUndoor.UI.Auth.ForgetPasswordFragment"
+        android:label="fragment_forget_password"
+        tools:layout="@layout/fragment_forget_password" />
+    <fragment
+        android:id="@+id/registerP2Fragment"
+        android:name="com.factor8.opUndoor.UI.Auth.RegisterP2Fragment"
+        android:label="fragment_register_p2"
+        tools:layout="@layout/fragment_register_p2" >
+        <action
+            android:id="@+id/action_registerP2Fragment_to_registerP3Fragment"
+            app:destination="@id/registerP3Fragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/registerP3Fragment"
+        android:name="com.factor8.opUndoor.UI.Auth.RegisterP3Fragment"
+        android:label="fragment_register_p3"
+        tools:layout="@layout/fragment_register_p3" />
+</navigation>

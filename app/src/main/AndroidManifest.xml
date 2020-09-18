@@ -18,7 +18,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Search.IncomingRequestsActivity"></activity>
+
+
+
+        <activity android:name=".UI.Auth.AuthActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+
+
+
+
+<!--        Old Java CODE   from master branch-->
+        <activity android:name=".Search.IncomingRequestsActivity" />
         <activity android:name=".Search.SearchUserProfileActivity" />
         <activity android:name=".Search.SearchActivity" />
         <activity
@@ -61,11 +78,7 @@
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Profile.SettingsActivity"

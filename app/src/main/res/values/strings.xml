@@ -7,6 +7,12 @@
     <string name="action_settings">action_settings</string>
     <string name="holidays_destination_hint">Select your field of work</string>
 
+    <string name="text_error">Error</string>
+    <string name="text_success">Success</string>
+    <string name="text_ok">OK</string>
+    <string name="text_cancel">Cancel</string>
+
+
     <!--    //Professions: -->
     <string name="profession_1">Computers and Technology</string>
     <string name="profession_2">Health Care and Allied Health</string>

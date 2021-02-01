@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.factor8.opUndoor.API.Models.AuthToken
+import com.factor8.opUndoor.Models.AuthToken
 
 @Dao
 interface AuthTokenDao {

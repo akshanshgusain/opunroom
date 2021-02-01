@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/viewPagerContainer">
+
+    <fragment
+        android:id="@+id/viewPagerContainer"
+        android:name="com.factor8.opUndoor.UI.Main.ViewPagerContainer"
+        android:label="fragment_view_pager_container"
+        tools:layout="@layout/fragment_view_pager_container" />
+</navigation>

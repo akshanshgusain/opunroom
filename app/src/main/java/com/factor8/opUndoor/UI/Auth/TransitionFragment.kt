@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.factor8.opUndoor.R
 
 
-class TransitionFragment : Fragment() {
+class TransitionFragment : BaseAuthFragment() {
 
 
 

@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.factor8.opUndoor.API.Models.AccountProperties
+import com.factor8.opUndoor.Models.AccountProperties
 
 @Dao
 interface AccountPropertiesDao {

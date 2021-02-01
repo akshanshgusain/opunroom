@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.factor8.opUndoor.R
 
 
-class RegisterP2Fragment : Fragment() {
+class RegisterP2Fragment : BaseAuthFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -11,6 +11,9 @@ class ErrorHandling {
         const val ERROR_SAVE_AUTH_TOKEN = "Error saving authentication token.\nTry restarting the app."
         const val ERROR_SAVE_ACCOUNT_PROPERTIES = "Error saving account properties.\nTry restarting the app."
 
+        const val ERROR_SOMETHING_WRONG_WITH_IMAGE = "Something went wrong with the image."
+        const val ERROR_MUST_SELECT_IMAGE = "You must select an image."
+
         const val ERROR_UNKNOWN = "Unknown error"
 
         fun isNetworkError(msg: String): Boolean{

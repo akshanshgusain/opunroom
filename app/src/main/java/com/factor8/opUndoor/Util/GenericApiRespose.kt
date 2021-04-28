@@ -26,6 +26,7 @@ sealed class GenericApiResponse<T> {
             Log.d(TAG, "GenericApiResponse: raw: ${response.raw()}")
             Log.d(TAG, "GenericApiResponse: headers: ${response.headers()}")
             Log.d(TAG, "GenericApiResponse: message: ${response.message()}")
+            Log.d(TAG, "GenericApiResponse: message: ${response.code()}")
 
             if(response.isSuccessful){
                 val body = response.body()
@@ -33,12 +34,16 @@ sealed class GenericApiResponse<T> {
                     ApiEmptyResponse()
                 } else if(response.code() == 401){
                     ApiErrorResponse("401 Unauthorized. Token may be invalid.")
-                } else {
+                } else if(response.code() == 500){
+                    ApiErrorResponse("Server Internal Error")
+                }
+                else {
                     ApiSuccessResponse(body = body)
                 }
             }
             else{
                 val msg = response.errorBody()?.string()
+                val errorCode = response.code()
                 val errorMsg = if (msg.isNullOrEmpty()) {
                     response.message()
                 } else {

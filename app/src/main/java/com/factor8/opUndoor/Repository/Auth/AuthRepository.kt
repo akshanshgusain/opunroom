@@ -1,5 +1,6 @@
 package com.factor8.opUndoor.Repository.Auth
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -9,6 +10,7 @@ import com.factor8.opUndoor.Models.AccountProperties
 import com.factor8.opUndoor.Models.AuthToken
 import com.factor8.opUndoor.Persistence.AccountPropertiesDao
 import com.factor8.opUndoor.Persistence.AuthTokenDao
+import com.factor8.opUndoor.Repository.JobManager
 import com.factor8.opUndoor.Repository.NetworkBoundResource
 import com.factor8.opUndoor.Session.SessionManager
 import com.factor8.opUndoor.UI.Auth.State.AuthViewState
@@ -17,6 +19,7 @@ import com.factor8.opUndoor.UI.DataState
 import com.factor8.opUndoor.UI.Response
 import com.factor8.opUndoor.UI.ResponseType
 import com.factor8.opUndoor.Util.*
+import com.factor8.opUndoor.Util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.factor8.opUndoor.Util.ErrorHandling.Companion.ERROR_UNKNOWN
 import com.factor8.opUndoor.Util.ErrorHandling.Companion.GENERIC_AUTH_ERROR
 import kotlinx.coroutines.Job
@@ -26,8 +29,11 @@ constructor(
         val authTokenDao: AuthTokenDao,
         val accountPropertiesDao: AccountPropertiesDao,
         val opUndoorAuthService: OpUndoorAuthService,
-        val sessionManager: SessionManager
-) {
+        val sessionManager: SessionManager,
+        val sharedPreferences: SharedPreferences,
+        val sharedPrefsEditor: SharedPreferences.Editor
+): JobManager("AuthRepository") {
+
     private val TAG: String = "AppDebug"
     private var repositoryJob: Job? = null
 
@@ -40,9 +46,25 @@ constructor(
             return returnErrorResponse(loginFieldErrors, ResponseType.Dialog())
         }
 
-        return object : NetworkBoundResource<AccountProperties, AuthViewState>(
-                sessionManager.isConnectedToTheInternet()
+        return object : NetworkBoundResource<AccountProperties, Any,AuthViewState>(
+                sessionManager.isConnectedToTheInternet(),
+                true,
+                true,
+                false
         ) {
+
+            override fun loadFromCache(): LiveData<AuthViewState> {
+                return AbsentLiveData.create()
+            }
+
+            override suspend fun updateLocalDb(cacheObject: Any?) {
+
+            }
+
+            override suspend fun createCacheRequestAndReturn() {
+
+            }
+
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<AccountProperties>) {
                 Log.d(TAG, "handleApiSuccessResponse: ${response}")
 
@@ -52,6 +74,43 @@ constructor(
                     //return onErrorReturn(response.body.errorMessage, true, false)
                     return onErrorReturn(Constants.INVALID_CREDENTIALS, true, false);
                 }
+
+                // Don't care about result here. Just insert if it doesn't exist b/c of foreign key relationship
+                // with AuthToken
+                accountPropertiesDao.insertOrIgnore(
+                        AccountProperties(
+                                response.body.id,
+                                response.body.f_name,
+                                response.body.l_name,
+                                response.body.username,
+                                response.body.email,
+                                response.body.profile_picture,
+                                response.body.network,
+                                response.body.profession,
+                                response.body.experience,
+                                response.body.is_verified,
+                                response.body.cover_picture,
+                                response.body.privacy,
+                                response.body.network_profile_picture,
+                                response.body.network_cover_picture,
+                                response.body.current_company
+                        )
+                )
+
+                // will return -1 if failure
+                val result = authTokenDao.insert(
+                        AuthToken(
+                                response.body.id,
+                                response.body.id
+                        )
+                )
+                if(result < 0){
+                    return onCompleteJob(DataState.error(
+                            Response(ERROR_SAVE_AUTH_TOKEN, ResponseType.Dialog()))
+                    )
+                }
+
+                saveAuthenticatedUserToPrefs(email)
 
                 onCompleteJob(
                         DataState.data(
@@ -74,6 +133,11 @@ constructor(
         }.asLiveData()
     }
 
+    private fun saveAuthenticatedUserToPrefs(email: String) {
+        sharedPrefsEditor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, email)
+        sharedPrefsEditor.apply()
+    }
+
     private fun returnErrorResponse(errorMessage: String, responseType: ResponseType): LiveData<DataState<AuthViewState>> {
         Log.d(TAG, "returnErrorResponse: ${errorMessage}")
 
@@ -90,10 +154,10 @@ constructor(
         }
     }
 
-    fun cancelActiveJobs() {
-        Log.d(TAG, "AuthRepository: Cancelling on-going jobs...")
-        repositoryJob?.cancel()
-    }
+//    fun cancelActiveJobs() {
+//        Log.d(TAG, "AuthRepository: Cancelling on-going jobs...")
+//        repositoryJob?.cancel()
+//    }
 
 
 }

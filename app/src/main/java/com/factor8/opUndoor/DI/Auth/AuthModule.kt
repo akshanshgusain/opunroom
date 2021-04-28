@@ -1,6 +1,7 @@
 package com.factor8.opUndoor.DI.Auth
 
 
+import android.content.SharedPreferences
 import com.factor8.opUndoor.API.Auth.OpUndoorAuthService
 import com.factor8.opUndoor.Persistence.AccountPropertiesDao
 import com.factor8.opUndoor.Persistence.AuthTokenDao
@@ -24,9 +25,9 @@ class AuthModule{
     @AuthScope
     @Provides
     fun provideAuthRepository(sessionManager: SessionManager, authTokenDao: AuthTokenDao, accountPropertiesDao: AccountPropertiesDao,
-                              openApiAuthService: OpUndoorAuthService
+                              openApiAuthService: OpUndoorAuthService, preference: SharedPreferences, editor: SharedPreferences.Editor
         ): AuthRepository {
-        return AuthRepository(authTokenDao, accountPropertiesDao, openApiAuthService, sessionManager)
+        return AuthRepository(authTokenDao, accountPropertiesDao, openApiAuthService, sessionManager,preference, editor)
     }
 
 }

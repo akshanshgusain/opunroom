@@ -6,28 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".UI.Main.MainActivity">
 
-    <!--    <com.google.android.material.appbar.AppBarLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:id="@+id/app_bar"-->
-    <!--        >-->
 
-    <!--        <androidx.appcompat.widget.Toolbar-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="?attr/actionBarSize"-->
-    <!--            android:id="@+id/tool_bar"-->
-    <!--            app:layout_scrollFlags="scroll|enterAlways"-->
-    <!--            >-->
-
-    <!--        </androidx.appcompat.widget.Toolbar>-->
-
-    <!--    </com.google.android.material.appbar.AppBarLayout>-->
-
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
-    <!--        >-->
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -43,8 +22,10 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:tag="main_fragment_tag"
+            app:navGraph="@navigation/main_nav_graph"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/main_nav_graph" />
+             />
     </FrameLayout>
 
     <ProgressBar

@@ -11,6 +11,8 @@
         <item name="android:buttonStyle">@style/GilroyButtonStyle</item>
         <item name="android:editTextStyle">@style/GilroyEditTextStyle</item>
 
+
+        <item name="md_color_button_text">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -30,5 +32,15 @@
         <item name="android:fontFamily">@font/gilroy_medium</item>
         <item name="android:lines">1</item>
     </style>
+
+
+<!--    Material Dialog Colors-->
+<!--    <style name="AppTheme.Custom" parent="Theme.AppCompat">-->
+
+<!--&lt;!&ndash;        <item name="md_color_title">@color/your_color</item>&ndash;&gt;-->
+<!--&lt;!&ndash;        <item name="md_color_content">@color/your_color</item>&ndash;&gt;-->
+<!--        <item name="md_color_button_text">@color/colorAccent</item>-->
+
+<!--    </style>-->
 
 </resources>

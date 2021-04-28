@@ -47,12 +47,12 @@ class AuthActivity : BaseActivity(), NavController.OnDestinationChangedListener{
 
             dataState.data?.let { data ->
                 data.data?.let { event ->
-                    event.getContentIfNotHandled()?.let {
-                        it.authToken?.let {
+                    event.getContentIfNotHandled()?.let {authViewState->
+                        authViewState.authToken?.let {
                             Log.d(TAG, "AuthToken: ${it.id}")
                             viewModel.setAuthToken(it)
                         }
-                        it.accountProperties?.let{
+                        authViewState.accountProperties?.let{
                             Log.d(TAG, "Account Properties of : ${it.f_name}")
                             viewModel.setAccountProperties(it)
                         }

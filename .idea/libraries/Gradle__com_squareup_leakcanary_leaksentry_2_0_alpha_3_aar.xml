@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1d525a7dc25d482f8aa505f916714ab5/jetified-leaksentry-2.0-alpha-3/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1d525a7dc25d482f8aa505f916714ab5/jetified-leaksentry-2.0-alpha-3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1d525a7dc25d482f8aa505f916714ab5/jetified-leaksentry-2.0-alpha-3/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leaksentry/2.0-alpha-3/4fe63034165428bfd294b1d4df07d60911c1a09/leaksentry-2.0-alpha-3-javadoc.jar!/" />

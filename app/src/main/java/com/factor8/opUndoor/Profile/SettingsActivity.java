@@ -128,6 +128,7 @@ public class SettingsActivity extends AppCompatActivity implements RestCalls.Upd
                 ImageCropper(2);
             }
         });
+
         binding.switchMakePublic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

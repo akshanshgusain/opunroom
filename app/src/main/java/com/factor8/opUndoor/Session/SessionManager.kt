@@ -34,19 +34,27 @@ constructor(
     val cachedToken: LiveData<AuthToken>
         get() = _cachedToken
 
+    val cachedAccountProperties: LiveData<AccountProperties>
+            get() = _cachedAccountProperties
+
     fun login(newValue: AuthToken) {
-        setValue(newValue,null)
+        setValue(newValue)
     }
     fun setAccountProps(newValue: AccountProperties){
-        setValue(null,accountProperties = newValue)
+        setValue2(accountProperties = newValue)
     }
 
-    fun setValue(newValue: AuthToken?, accountProperties: AccountProperties?) {
+    fun setValue(newValue: AuthToken?) {
         GlobalScope.launch(Dispatchers.Main) {
-            if (_cachedToken.value != newValue  && newValue!=null) {
+            if (_cachedToken.value != newValue) {
                 _cachedToken.value = newValue
             }
-            if(_cachedAccountProperties.value != accountProperties && accountProperties!=null){
+        }
+    }
+
+    fun setValue2(accountProperties: AccountProperties?) {
+        GlobalScope.launch(Dispatchers.Main) {
+            if(_cachedAccountProperties.value != accountProperties){
                 _cachedAccountProperties.value = accountProperties
             }
         }
@@ -63,6 +71,8 @@ constructor(
         }
     }
 
+
+
     fun logout() {
         Log.d(TAG, "logout: ")
 
@@ -72,6 +82,7 @@ constructor(
                 _cachedToken.value!!.id?.let {
                     authTokenDao.nullifyToken(it)
                 } ?: throw CancellationException("Token Error. Logging out user.")
+
             } catch (e: CancellationException) {
                 Log.e(TAG, "logout: ${e.message}")
                 errorMessage = e.message
@@ -83,7 +94,8 @@ constructor(
                     Log.e(TAG, "logout: ${errorMessage}")
                 }
                 Log.d(TAG, "logout: finally")
-                setValue(null,null)
+                setValue(null)
+                setValue2(null)
             }
         }
     }

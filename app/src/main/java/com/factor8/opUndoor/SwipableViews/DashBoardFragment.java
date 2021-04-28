@@ -113,6 +113,7 @@ public class DashBoardFragment extends Fragment{
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 buttonClickListener.buttonClickListener(2);
             }
         });

@@ -26,18 +26,11 @@ class MainModule{
                 .create(OpUndoorMainService::class.java)
     }
 
-//    @AuthScope
-//    @Provides
-//    fun provideAuthRepository(sessionManager: SessionManager, authTokenDao: AuthTokenDao, accountPropertiesDao: AccountPropertiesDao,
-//                              openApiAuthService: OpUndoorAuthService
-//    ): AuthRepository {
-//        return AuthRepository(authTokenDao, accountPropertiesDao, openApiAuthService, sessionManager)
-//    }
 
     @MainScope
     @Provides
-    fun provideAccountRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService) : AccountRepository{
-        return AccountRepository(opUndoorMainService, sessionManager)
+    fun provideAccountRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService,accountPropertiesDao:AccountPropertiesDao) : AccountRepository{
+        return AccountRepository(opUndoorMainService, sessionManager,accountPropertiesDao)
     }
 
     @MainScope

@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.factor8.opUndoor.Profile.SettingsActivity">
+
         <ImageView
             android:id="@+id/imageView_cover"
             android:layout_width="match_parent"

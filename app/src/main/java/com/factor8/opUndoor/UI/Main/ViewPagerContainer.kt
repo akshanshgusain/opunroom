@@ -10,12 +10,15 @@ import com.factor8.opUndoor.SwipableViews.SectionPagerAdapter
 import com.factor8.opUndoor.UI.Main.Camera.CameraFragment
 import com.factor8.opUndoor.UI.Main.Chat.ChatFragment
 import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
+import com.factor8.opUndoor.Util.Constants
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_view_pager_container.*
 import javax.inject.Inject
 
 
 class ViewPagerContainer : DaggerFragment() {
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +37,11 @@ class ViewPagerContainer : DaggerFragment() {
         sectionPagerAdapter.addFragments(CameraFragment(), "CameraFragment")
         sectionPagerAdapter.addFragments(FeedFragment(), "FeedFragment")
         viewPager_main.adapter = sectionPagerAdapter
-        viewPager_main.currentItem = 1
+        viewPager_main.currentItem = Constants.CAMERA_FRAGMENT_POSITION
 
+    }
+
+    fun setViewPagerPosition(position: Int){
+        viewPager_main.currentItem = position
     }
 }

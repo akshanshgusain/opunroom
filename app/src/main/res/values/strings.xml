@@ -60,4 +60,8 @@
     <string name="makeAccount_private">Making your account private will lose all of your subscribers.</string>
     <string name="field_of_work">Field of work</string>
     <string name="years_of_experience">Years of Experience</string>
+
+    <string name="text_info">Info</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="text_yes">yes</string>
 </resources>

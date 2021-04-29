@@ -13,6 +13,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 
 
@@ -24,6 +25,9 @@ abstract class BaseActivity: DaggerAppCompatActivity(),DataStateChangeListener, 
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var logger: HttpLoggingInterceptor
 
     override fun onUIMessageReceived(uiMessage: UIMessage) {
         when(uiMessage.uiMessageType){

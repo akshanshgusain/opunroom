@@ -17,8 +17,7 @@ sealed class AccountStateEvent {
             val email: String,
             val username: String,
             val makeAccountPublic: String,
-            val displayPicture: MultipartBody.Part,
-            val coverPicture: MultipartBody.Part
+            val images: List<MultipartBody.Part?>
     ): AccountStateEvent()
 
     class None: AccountStateEvent()

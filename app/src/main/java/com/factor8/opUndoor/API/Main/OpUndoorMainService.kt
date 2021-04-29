@@ -19,7 +19,7 @@ interface OpUndoorMainService {
     @Multipart
     @POST("update")
     fun updateUserProfile(
-            @Part("id") id: String,
+            @Part("id") id: RequestBody,
             @Part("f_name") f_name: RequestBody,
             @Part("l_name") l_name: RequestBody,
             @Part("username") username: RequestBody,
@@ -28,25 +28,8 @@ interface OpUndoorMainService {
             @Part("profession") profession: RequestBody,
             @Part("privacy") privacy: RequestBody,
             @Part("experience") experience: RequestBody,
-            @Part("current_company") current_company: RequestBody
-//            @Part image: MultipartBody.Part?,
-//            @Part image2: MultipartBody.Part?
+            @Part("current_company") current_company: RequestBody,
+            @Part image: List<MultipartBody.Part?>
     ): LiveData<GenericApiResponse<UpdatedUserProfileResponse>>
 
-//    @Multipart
-//    @POST("update")
-//    fun updateUserProfile(
-//            @Part("id") id: String,
-//            @Part("f_name") f_name: String,
-//            @Part("l_name") l_name: String,
-//            @Part("username") username: String,
-//            @Part("email") email: String,
-//            @Part("network") network: String,
-//            @Part("profession") profession: String,
-//            @Part("privacy") privacy: String,
-//            @Part("experience") experience: String,
-//            @Part("current_company") current_company: String
-//            //@Part image: MultipartBody.Part?,
-//            //@Part image2: MultipartBody.Part?
-//    ): LiveData<GenericApiResponse<UpdatedUserProfileResponse>>
 }

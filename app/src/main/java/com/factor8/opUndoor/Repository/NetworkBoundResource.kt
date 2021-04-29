@@ -78,7 +78,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         coroutineScope.launch {
 
             // simulate a network delay for testing
-            delay(TESTING_NETWORK_DELAY)
+            //delay(TESTING_NETWORK_DELAY)
 
             withContext(Main) {
 
@@ -141,8 +141,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         if (msg == null) {
             msg = ERROR_UNKNOWN
         } else if (ErrorHandling.isNetworkError(msg)) {
-            //msg = ERROR_CHECK_NETWORK_CONNECTION
-                msg = errorMessage
+            msg = ERROR_CHECK_NETWORK_CONNECTION
             useDialog = false
         }
         if (shouldUseToast) {

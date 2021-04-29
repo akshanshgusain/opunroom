@@ -405,19 +405,10 @@ class AccountSettingsFragment : BaseAccountFragment() {
             }
         }
 
-        fun <T, U, R> Pair<T?, U?>.bilet(body: (T, U) -> R): R? {
-            val first = first
-            val second = second
-            if (first != null && second != null) {
-                return body(first, second)
-            }
-            return null
-        }
+        //make a list of images
+        val images: List<MultipartBody.Part?> = listOf(multipartBody, multipartBody2)
 
-        (multipartBody to multipartBody2).bilet { part, part2 ->
-
-
-            viewModel.setStateEvent(AccountStateEvent.UpdateUserProfileEvent(
+        viewModel.setStateEvent(AccountStateEvent.UpdateUserProfileEvent(
                     firstName = editText_fullName.text.toString(),
                     lastName = editText_last_name.text.toString(),
                     currentCompany = editText_current_company.text.toString(),
@@ -427,13 +418,9 @@ class AccountSettingsFragment : BaseAccountFragment() {
                     username = editText_username.text.toString(),
                     makeAccountPublic = currentSwitchVal,
                     network = network,
-                    displayPicture = part,
-                    coverPicture = part2
-            )
-            )
+                    images = images
+            ))
 
-            stateChangeListener.hideSoftKeyboard()
-        }?: showErrorDialog(ERROR_MUST_SELECT_IMAGE)
 
     }
 

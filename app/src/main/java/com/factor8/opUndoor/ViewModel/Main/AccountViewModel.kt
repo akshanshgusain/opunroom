@@ -1,4 +1,4 @@
-package com.factor8.opUndoor.ViewModel.Main
+ package com.factor8.opUndoor.ViewModel.Main
 
 import android.net.Uri
 import android.util.Log
@@ -58,8 +58,7 @@ constructor(val accountRepository: AccountRepository, val sessionManager: Sessio
                             makeAccountPublic = makeAccountPublic,
                             totalWorkExperience = totalWorkExperience,
                             currentCompany = currentCompany,
-                            displayPicture = stateEvent.displayPicture,
-                            coverPicture = stateEvent.coverPicture
+                            images = stateEvent.images
                     )
 
                 } ?: AbsentLiveData.create()

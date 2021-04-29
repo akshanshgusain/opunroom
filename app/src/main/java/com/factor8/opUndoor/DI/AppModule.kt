@@ -19,6 +19,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -47,11 +49,27 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideRetrofitBuilder(gsonBuilder: Gson): Retrofit.Builder{
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor{
+        return HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
+        return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofitBuilder(gsonBuilder: Gson, client: OkHttpClient): Retrofit.Builder{
         return Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
+                .client(client)
     }
 
 

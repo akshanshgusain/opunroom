@@ -43,7 +43,6 @@ sealed class GenericApiResponse<T> {
             }
             else{
                 val msg = response.errorBody()?.string()
-                val errorCode = response.code()
                 val errorMsg = if (msg.isNullOrEmpty()) {
                     response.message()
                 } else {

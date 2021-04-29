@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.naz013:ColorSlider:2.0.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8646446c03b5eb4e686296c4e79ad5b7/jetified-ColorSlider-2.0.6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8646446c03b5eb4e686296c4e79ad5b7/jetified-ColorSlider-2.0.6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8646446c03b5eb4e686296c4e79ad5b7/jetified-ColorSlider-2.0.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114d207be97dfb2ec3250984083972c7/jetified-ColorSlider-2.0.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114d207be97dfb2ec3250984083972c7/jetified-ColorSlider-2.0.6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114d207be97dfb2ec3250984083972c7/jetified-ColorSlider-2.0.6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

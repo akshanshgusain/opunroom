@@ -1,8 +1,13 @@
 package com.factor8.opUndoor.UI.Main.Feed
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.RequestManager
+import com.factor8.opUndoor.UI.DataStateChangeListener
+import com.factor8.opUndoor.UI.UICommunicationListener
 import com.factor8.opUndoor.ViewModel.Main.FeedViewModel
 import com.factor8.opUndoor.ViewModel.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
@@ -15,7 +20,13 @@ abstract class BaseFeedFragment: DaggerFragment(){
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
+    @Inject
+    lateinit var requestManager: RequestManager
+
     lateinit var viewModel: FeedViewModel
+
+    lateinit var uiCommunicationListener: UICommunicationListener
+    lateinit var stateChangeListener: DataStateChangeListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -23,5 +34,32 @@ abstract class BaseFeedFragment: DaggerFragment(){
         viewModel = activity?.run {
             ViewModelProvider(this, providerFactory).get(FeedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+
+        // Cancels jobs when switching between fragments in the same graph
+        // ex: from AccountFragment to UpdateAccountFragment
+        // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
+        cancelActiveJobs()
+    }
+
+    fun cancelActiveJobs(){
+        // When a fragment is destroyed make sure to cancel any on-going requests.
+        // Note: If you wanted a particular request to continue even if the fragment was destroyed, you could write a
+        //       special condition in the repository or something.
+        viewModel.cancelActiveJobs()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try{
+            stateChangeListener = context as DataStateChangeListener
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement DataStateChangeListener" )
+        }
+
+        try{
+            uiCommunicationListener = context as UICommunicationListener
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement UICommunicationListener" )
+        }
     }
 }

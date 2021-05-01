@@ -13,9 +13,8 @@ data class AccountViewState(
 
         //Account Settings vars
         var accountSettings: AccountSettingsFields = AccountSettingsFields(),
-
-        //Account Setting ViewState
         var updatedProfileFields: UpdatedProfileFields = UpdatedProfileFields()
+
 ) {
     data class AccountSettingsFields(
             var firstName: String = "",

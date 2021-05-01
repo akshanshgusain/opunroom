@@ -47,7 +47,7 @@ class MainModule{
 
     @MainScope
     @Provides
-    fun provideFeedRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService) : FeedRepository{
-        return FeedRepository(opUndoorMainService, sessionManager)
+    fun provideFeedRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService,accountPropertiesDao: AccountPropertiesDao) : FeedRepository{
+        return FeedRepository(opUndoorMainService, sessionManager, accountPropertiesDao)
     }
 }

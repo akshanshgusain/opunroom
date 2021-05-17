@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: ja.burhanrashid52:photoeditor:1.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8be82284f81feeab7fa5600c0662d80a/jetified-photoeditor-1.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8be82284f81feeab7fa5600c0662d80a/jetified-photoeditor-1.0.0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8be82284f81feeab7fa5600c0662d80a/jetified-photoeditor-1.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/199d83720a56a65f4adab7ae21fa0102/jetified-photoeditor-1.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/199d83720a56a65f4adab7ae21fa0102/jetified-photoeditor-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/199d83720a56a65f4adab7ae21fa0102/jetified-photoeditor-1.0.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ja.burhanrashid52/photoeditor/1.0.0/f43932cedffeaab0abfe28ac95a36c46231ab22e/photoeditor-1.0.0-javadoc.jar!/" />

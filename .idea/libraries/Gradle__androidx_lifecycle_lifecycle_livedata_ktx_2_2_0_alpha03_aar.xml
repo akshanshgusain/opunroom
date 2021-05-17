@@ -3,8 +3,9 @@
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0edb79dad78773a8b75d8bc832e880c8/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6fa448ff5e531033e93019b539e000be/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6fa448ff5e531033e93019b539e000be/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6fa448ff5e531033e93019b539e000be/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab8eee8a3ac0776c43d9f387077fcbf4/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab8eee8a3ac0776c43d9f387077fcbf4/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab8eee8a3ac0776c43d9f387077fcbf4/jetified-lifecycle-livedata-ktx-2.2.0-alpha03/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

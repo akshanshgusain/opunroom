@@ -1,0 +1,806 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "b1706eaa9829a2fd9dcaa75411f725e2",
+    "entities": [
+      {
+        "tableName": "auth_token",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` INTEGER, `id` INTEGER, PRIMARY KEY(`account_id`), FOREIGN KEY(`account_id`) REFERENCES `account_properties`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "account_id",
+            "columnName": "account_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "account_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "account_properties",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "account_properties",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `f_name` TEXT NOT NULL, `l_name` TEXT NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `profile_picture` TEXT NOT NULL, `network` TEXT NOT NULL, `profession` TEXT NOT NULL, `experience` TEXT NOT NULL, `is_verified` TEXT NOT NULL, `cover_picture` TEXT NOT NULL, `privacy` TEXT NOT NULL, `network_profile_picture` TEXT NOT NULL, `network_cover_picture` TEXT NOT NULL, `current_company` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "f_name",
+            "columnName": "f_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "l_name",
+            "columnName": "l_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profile_picture",
+            "columnName": "profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profession",
+            "columnName": "profession",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "experience",
+            "columnName": "experience",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "is_verified",
+            "columnName": "is_verified",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover_picture",
+            "columnName": "cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "privacy",
+            "columnName": "privacy",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network_profile_picture",
+            "columnName": "network_profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network_cover_picture",
+            "columnName": "network_cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "current_company",
+            "columnName": "current_company",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_user_store",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_user_store_pk` INTEGER NOT NULL, `f_name` TEXT NOT NULL, `l_name` TEXT NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `network` TEXT NOT NULL, `profile_picture` TEXT NOT NULL, `cover_picture` TEXT NOT NULL, `profession` TEXT NOT NULL, `work_experience` TEXT NOT NULL, `current_company` TEXT NOT NULL, PRIMARY KEY(`feed_user_store_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "f_name",
+            "columnName": "f_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "l_name",
+            "columnName": "l_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "picture",
+            "columnName": "profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover_picture",
+            "columnName": "cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profession",
+            "columnName": "profession",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "work_experience",
+            "columnName": "work_experience",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "current_company",
+            "columnName": "current_company",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_user_store_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_story_picture",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_story_picture_pk` INTEGER NOT NULL, `feed_user_store_pk` INTEGER, `feed_friend_store_pk` INTEGER, `user_id` INTEGER NOT NULL, `story_picture` TEXT NOT NULL, `duration` TEXT NOT NULL, `type` INTEGER NOT NULL, `time_stamp` TEXT NOT NULL, PRIMARY KEY(`feed_story_picture_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_story_picture_pk",
+            "columnName": "feed_story_picture_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feed_friend_store_pk",
+            "columnName": "feed_friend_store_pk",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "story_picture",
+            "columnName": "story_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time_stamp",
+            "columnName": "time_stamp",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_story_picture_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_company",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_company_pk` INTEGER NOT NULL, `feed_user_store_pk` INTEGER NOT NULL, `company_name` TEXT NOT NULL, `network_name` TEXT NOT NULL, `display_picture` TEXT NOT NULL, `cover_picture` TEXT NOT NULL, `website` TEXT NOT NULL, `created_at` TEXT, PRIMARY KEY(`feed_company_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_company_pk",
+            "columnName": "feed_company_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "company_name",
+            "columnName": "company_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network_name",
+            "columnName": "network_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "display_picture",
+            "columnName": "display_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover_picture",
+            "columnName": "cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "website",
+            "columnName": "website",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created_at",
+            "columnName": "created_at",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_company_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_company_story_picture",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_company_story_picture_pk` INTEGER NOT NULL, `feed_company_pk` INTEGER, `feed_network_pk` INTEGER, `network_id` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `story_picture` TEXT NOT NULL, `duration` TEXT NOT NULL, `created_at` TEXT NOT NULL, `type` TEXT NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`feed_company_story_picture_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_company_story_picture",
+            "columnName": "feed_company_story_picture_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_company_pk",
+            "columnName": "feed_company_pk",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feed_network_pk",
+            "columnName": "feed_network_pk",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "network_id",
+            "columnName": "network_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "story_picture",
+            "columnName": "story_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created_at",
+            "columnName": "created_at",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_company_story_picture_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_friend_store",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_friend_store_pk` INTEGER NOT NULL, `feed_user_store_pk` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `friend_id` INTEGER NOT NULL, `f_name` TEXT NOT NULL, `l_name` TEXT NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `network` TEXT NOT NULL, `profession` TEXT NOT NULL, `profile_picture` TEXT NOT NULL, `cover_picture` TEXT NOT NULL, `work_experience` TEXT NOT NULL, `current_company` TEXT NOT NULL, PRIMARY KEY(`feed_friend_store_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_friend_store_pk",
+            "columnName": "feed_friend_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "friend_id",
+            "columnName": "friend_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "f_name",
+            "columnName": "f_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "l_name",
+            "columnName": "l_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profession",
+            "columnName": "profession",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profile_picture",
+            "columnName": "profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover_picture",
+            "columnName": "cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "work_experience",
+            "columnName": "work_experience",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "current_company",
+            "columnName": "current_company",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_friend_store_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_group_store",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_group_store_pk` INTEGER NOT NULL, `feed_user_store_pk` INTEGER NOT NULL, `group_admin_id` INTEGER NOT NULL, `group_title` TEXT NOT NULL, `group_user_ids` TEXT NOT NULL, `number_of_members` INTEGER NOT NULL, `admin_profile_picture` TEXT NOT NULL, `admin_name` TEXT NOT NULL, PRIMARY KEY(`feed_group_store_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_group_store_pk",
+            "columnName": "feed_group_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "group_admin_id",
+            "columnName": "group_admin_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "group_title",
+            "columnName": "group_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "group_user_ids",
+            "columnName": "group_user_ids",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number_of_members",
+            "columnName": "number_of_members",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "admin_profile_picture",
+            "columnName": "admin_profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "admin_name",
+            "columnName": "admin_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_group_store_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_group_story_picture",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_group_story_picture_pk` INTEGER NOT NULL, `feed_group_store_pk` INTEGER NOT NULL, `group_id` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `story_picture` TEXT NOT NULL, `duration` TEXT NOT NULL, `type` TEXT NOT NULL, `created_at` TEXT NOT NULL, PRIMARY KEY(`feed_group_story_picture_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_group_story_picture",
+            "columnName": "feed_group_story_picture_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_group_store_pk",
+            "columnName": "feed_group_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "group_id",
+            "columnName": "group_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "story_picture",
+            "columnName": "story_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created_at",
+            "columnName": "created_at",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_group_story_picture_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_network",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_network_pk` INTEGER NOT NULL, `feed_user_store_pk` INTEGER NOT NULL, `name` TEXT NOT NULL, `network` TEXT NOT NULL, `profile_picture` TEXT NOT NULL, `cover_picture` TEXT NOT NULL, `website` TEXT NOT NULL, `created_at` TEXT, PRIMARY KEY(`feed_network_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_network_pk",
+            "columnName": "feed_network_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_user_store_pk",
+            "columnName": "feed_user_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profile_picture",
+            "columnName": "profile_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover_picture",
+            "columnName": "cover_picture",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "website",
+            "columnName": "website",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created_at",
+            "columnName": "created_at",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_network_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_news_store",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_news_store_pk` INTEGER NOT NULL, `company_name` TEXT NOT NULL, PRIMARY KEY(`feed_news_store_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_news_store_pk",
+            "columnName": "feed_news_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "company_name",
+            "columnName": "company_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_news_store_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "feed_news_story_picture",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`feed_news_story_picture_pk` INTEGER NOT NULL, `feed_news_store_pk` INTEGER NOT NULL, `title` TEXT, `description` TEXT, `published_date` TEXT, `guid` TEXT, `image` TEXT, `company` TEXT, PRIMARY KEY(`feed_news_story_picture_pk`))",
+        "fields": [
+          {
+            "fieldPath": "feed_news_story_picture_pk",
+            "columnName": "feed_news_story_picture_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feed_news_store_pk",
+            "columnName": "feed_news_store_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "published_date",
+            "columnName": "published_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "guid",
+            "columnName": "guid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "image",
+            "columnName": "image",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "company",
+            "columnName": "company",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "feed_news_story_picture_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b1706eaa9829a2fd9dcaa75411f725e2')"
+    ]
+  }
+}

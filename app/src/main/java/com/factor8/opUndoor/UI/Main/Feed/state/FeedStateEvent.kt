@@ -4,8 +4,10 @@ import com.factor8.opUndoor.UI.Main.Account.state.AccountStateEvent
 
 sealed class FeedStateEvent {
 
-    class GetAccountPropertiesEvent: FeedStateEvent()
+    object GetAccountPropertiesEvent : FeedStateEvent()
 
-    class None: FeedStateEvent()
+    object GetFeedEvent : FeedStateEvent()
+
+    class None : FeedStateEvent()
 
 }

@@ -1,11 +1,8 @@
 package com.factor8.opUndoor.DI.Main
 
-import com.factor8.opUndoor.API.Auth.OpUndoorAuthService
 import com.factor8.opUndoor.API.Main.OpUndoorMainService
-import com.factor8.opUndoor.DI.Auth.AuthScope
 import com.factor8.opUndoor.Persistence.AccountPropertiesDao
-import com.factor8.opUndoor.Persistence.AuthTokenDao
-import com.factor8.opUndoor.Repository.Auth.AuthRepository
+import com.factor8.opUndoor.Persistence.FeedDao
 import com.factor8.opUndoor.Repository.Main.AccountRepository
 import com.factor8.opUndoor.Repository.Main.CameraRepository
 import com.factor8.opUndoor.Repository.Main.ChatRepository
@@ -16,38 +13,53 @@ import dagger.Provides
 import retrofit2.Retrofit
 
 @Module
-class MainModule{
+class MainModule {
 
     @MainScope
     @Provides
     fun provideOpUndoorMainService(retrofitBuilder: Retrofit.Builder): OpUndoorMainService {
         return retrofitBuilder
-                .build()
-                .create(OpUndoorMainService::class.java)
+            .build()
+            .create(OpUndoorMainService::class.java)
     }
 
 
     @MainScope
     @Provides
-    fun provideAccountRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService,accountPropertiesDao:AccountPropertiesDao) : AccountRepository{
-        return AccountRepository(opUndoorMainService, sessionManager,accountPropertiesDao)
+    fun provideAccountRepository(
+        sessionManager: SessionManager,
+        opUndoorMainService: OpUndoorMainService,
+        accountPropertiesDao: AccountPropertiesDao
+    ): AccountRepository {
+        return AccountRepository(opUndoorMainService, sessionManager, accountPropertiesDao)
     }
 
     @MainScope
     @Provides
-    fun provideCameraRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService) : CameraRepository{
+    fun provideCameraRepository(
+        sessionManager: SessionManager,
+        opUndoorMainService: OpUndoorMainService
+    ): CameraRepository {
         return CameraRepository(opUndoorMainService, sessionManager)
     }
 
     @MainScope
     @Provides
-    fun provideChatRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService) : ChatRepository{
+    fun provideChatRepository(
+        sessionManager: SessionManager,
+        opUndoorMainService: OpUndoorMainService
+    ): ChatRepository {
         return ChatRepository(opUndoorMainService, sessionManager)
     }
 
     @MainScope
     @Provides
-    fun provideFeedRepository(sessionManager: SessionManager, opUndoorMainService: OpUndoorMainService,accountPropertiesDao: AccountPropertiesDao) : FeedRepository{
-        return FeedRepository(opUndoorMainService, sessionManager, accountPropertiesDao)
+    fun provideFeedRepository(
+        sessionManager: SessionManager,
+        opUndoorMainService: OpUndoorMainService,
+        accountPropertiesDao: AccountPropertiesDao,
+        userFeedStoreDao: FeedDao
+    ): FeedRepository {
+        return FeedRepository(opUndoorMainService, sessionManager, accountPropertiesDao, userFeedStoreDao)
     }
 }

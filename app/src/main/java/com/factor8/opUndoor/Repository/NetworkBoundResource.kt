@@ -20,11 +20,11 @@ import kotlinx.coroutines.Dispatchers.Main
 
 
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
-(
-        isNetworkAvailable: Boolean, // is their a network Connection?
-        isNetworkRequest: Boolean,  // is this a network Request?
-        shouldCancelIfNoInternet: Boolean, // should this job be canceled if there is no network
-        shouldLoadFromCache: Boolean // should the cache data be loaded?
+    (
+    isNetworkAvailable: Boolean, // is their a network Connection?
+    isNetworkRequest: Boolean,  // is this a network Request?
+    shouldCancelIfNoInternet: Boolean, // should this job be canceled if there is no network
+    shouldLoadFromCache: Boolean // should the cache data be loaded?
 ) {
 
     private val TAG: String = "AppDebug"
@@ -46,17 +46,30 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             }
         }
 
+//        if (shouldLoadFromCache) {
+//            //view cache to start
+//            val dbSource = loadFromCache()
+//            result.addSource(dbSource) {
+//                result.removeSource(dbSource)
+//                setValue(DataState.loading(isLoading = true, cachedData = it))
+//            }
+//        }
+
         if (isNetworkRequest) {
             if (isNetworkAvailable) {
                 doNetworkRequest()
             } else {
                 if (shouldCancelIfNoInternet) {
-                    onErrorReturn(UNABLE_TODO_OPERATION_WO_INTERNET, shouldUseDialog = true, shouldUseToast = false)
-                }else{
+                    onErrorReturn(
+                        UNABLE_TODO_OPERATION_WO_INTERNET,
+                        shouldUseDialog = true,
+                        shouldUseToast = false
+                    )
+                } else {
                     doCacheRequest();
                 }
             }
-        }else{
+        } else {
             doCacheRequest()
         }
 
@@ -151,32 +164,36 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             responseType = ResponseType.Dialog()
         }
 
-        onCompleteJob(DataState.error(
+        onCompleteJob(
+            DataState.error(
                 response = Response(
-                        message = msg,
-                        responseType = responseType
+                    message = msg,
+                    responseType = responseType
                 )
-        ))
+            )
+        )
     }
 
     @UseExperimental(InternalCoroutinesApi::class)
-    private fun initNewJob(): Job{
+    private fun initNewJob(): Job {
         Log.d(TAG, "initNewJob: called.")
         job = Job() // create new job
-        job.invokeOnCompletion(onCancelling = true, invokeImmediately = true, handler = object: CompletionHandler{
-            override fun invoke(cause: Throwable?) {
-                if(job.isCancelled){
-                    Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
-                    cause?.let{
-                        onErrorReturn(it.message, false, true)
-                    }?: onErrorReturn("Unknown error.", false, true)
+        job.invokeOnCompletion(
+            onCancelling = true,
+            invokeImmediately = true,
+            handler = object : CompletionHandler {
+                override fun invoke(cause: Throwable?) {
+                    if (job.isCancelled) {
+                        Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
+                        cause?.let {
+                            onErrorReturn(it.message, false, true)
+                        } ?: onErrorReturn("Unknown error.", false, true)
+                    } else if (job.isCompleted) {
+                        Log.e(TAG, "NetworkBoundResource: Job has been completed.")
+                        // Do nothing? Should be handled already
+                    }
                 }
-                else if(job.isCompleted){
-                    Log.e(TAG, "NetworkBoundResource: Job has been completed.")
-                    // Do nothing? Should be handled already
-                }
-            }
-        })
+            })
         coroutineScope = CoroutineScope(IO + job)
         return job
     }

@@ -87,6 +87,15 @@
                             <option name="y" value="121" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_accountFragment_to_accountSettingsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -107,8 +116,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="230" />
-                            <option name="y" value="204" />
+                            <option name="x" value="142" />
+                            <option name="y" value="288" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -119,6 +128,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="viewStoryFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="477" />
+                            <option name="y" value="458" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

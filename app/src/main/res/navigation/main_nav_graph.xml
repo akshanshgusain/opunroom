@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_viewPagerContainer_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_viewPagerContainer_to_viewStoryFragment"
+            app:destination="@id/viewStoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
@@ -29,4 +32,8 @@
         android:name="com.factor8.opUndoor.UI.Main.Account.AccountSettingsFragment"
         android:label="fragment_account_settings"
         tools:layout="@layout/fragment_account_settings" />
+    <fragment
+        android:id="@+id/viewStoryFragment"
+        android:name="com.factor8.opUndoor.UI.Main.Feed.ViewStoryFragment"
+        android:label="ViewStoryFragment" />
 </navigation>

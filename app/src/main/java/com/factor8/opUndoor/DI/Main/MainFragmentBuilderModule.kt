@@ -6,6 +6,7 @@ import com.factor8.opUndoor.UI.Main.Account.AccountSettingsFragment
 import com.factor8.opUndoor.UI.Main.Camera.CameraFragment
 import com.factor8.opUndoor.UI.Main.Chat.ChatFragment
 import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
+import com.factor8.opUndoor.UI.Main.Feed.ViewStoryFragment
 import com.factor8.opUndoor.UI.Main.ViewPagerContainer
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -30,5 +31,8 @@ abstract class MainFragmentBuilderModule{
 
     @ContributesAndroidInjector()
     abstract fun contributeAccountSettingsFragment(): AccountSettingsFragment
+
+    @ContributesAndroidInjector()
+    abstract fun contributeViewStoryFragment(): ViewStoryFragment
 
     }

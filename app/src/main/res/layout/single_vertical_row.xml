@@ -50,14 +50,14 @@
                       android:weightSum="300">
 
                       <de.hdodenhof.circleimageview.CircleImageView
-                          android:id="@+id/imaegView_company_image"
+                          android:id="@+id/imageView_company_image"
                           android:layout_width="40dp"
                           android:layout_height="40dp"
                           android:scaleType="centerCrop"
                           android:src="@drawable/ic_avatar" />
 
                           <TextView
-                              android:id="@+id/textView_comapnt_title"
+                              android:id="@+id/textView_company_title"
                               android:layout_width="match_parent"
                               android:text="NovoStack"
                               android:textSize="16sp"

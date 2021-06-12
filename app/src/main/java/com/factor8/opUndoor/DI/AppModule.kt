@@ -11,6 +11,7 @@ import com.factor8.opUndoor.Persistence.AccountPropertiesDao
 import com.factor8.opUndoor.Persistence.AppDatabase
 import com.factor8.opUndoor.Persistence.AppDatabase.Companion.DATABASE_NAME
 import com.factor8.opUndoor.Persistence.AuthTokenDao
+import com.factor8.opUndoor.Persistence.FeedDao
 import com.factor8.opUndoor.R
 import com.factor8.opUndoor.Util.Constants
 import com.factor8.opUndoor.Util.LiveDataCallAdapterFactory
@@ -92,6 +93,12 @@ class AppModule {
     @Provides
     fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao {
         return db.accountPropertiesDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserFeedStoreDao(db: AppDatabase): FeedDao{
+        return db.userFeedStoreDao()
     }
 
     @Singleton

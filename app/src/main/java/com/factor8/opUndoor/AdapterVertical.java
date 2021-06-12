@@ -65,8 +65,8 @@ public class AdapterVertical extends RecyclerView.Adapter<AdapterVertical.ViewHo
         public ViewHolderV(View itemView, VerticalClickListener verticalClickListener) {
             super(itemView);
             banner=itemView.findViewById(R.id.imaegView_banner_image);
-            dp=itemView.findViewById(R.id.imaegView_company_image);
-            name = itemView.findViewById(R.id.textView_comapnt_title);
+            dp=itemView.findViewById(R.id.imageView_company_image);
+            name = itemView.findViewById(R.id.textView_company_title);
             this.verticalClickListener = verticalClickListener;
             itemView.setOnClickListener(this);
 

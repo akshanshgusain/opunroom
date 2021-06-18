@@ -58,17 +58,6 @@ constructor(
                 _cachedAccountProperties.value = accountProperties
             }
         }
-
-        //Setting AccountProperties in DB on IO thread
-        CoroutineScope(Dispatchers.IO).launch {
-            try{
-                _cachedAccountProperties.value?.let {
-                    accountPropertiesDao.insertAndReplace(it)
-                }
-            }catch (e: Exception){
-                Log.e(TAG, "Exception: storing account properties in DB ${e.toString()}" )
-            }
-        }
     }
 
 

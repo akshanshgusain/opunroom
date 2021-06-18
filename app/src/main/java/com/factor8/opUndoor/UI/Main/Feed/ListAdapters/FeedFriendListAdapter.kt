@@ -1,4 +1,4 @@
-package com.factor8.opUndoor.UI.Main.Feed
+package com.factor8.opUndoor.UI.Main.Feed.ListAdapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.*
 import com.bumptech.glide.RequestManager
 import com.factor8.opUndoor.Models.Relationships.FeedFriendStoreToFeedStoryPicture
 import com.factor8.opUndoor.R
+import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
 import com.factor8.opUndoor.Util.Constants
 import com.factor8.opUndoor.Util.Constants.Companion.VIEW_TYPE_ADD_STORY
 import kotlinx.android.synthetic.main.single_horizontal_row.view.*
@@ -132,6 +133,7 @@ class FeedFriendListAdapter(
         tempList.add(friendsList[0])
         tempList.addAll(friendsList)
         differ.submitList(tempList)
+
     }
 
     class FeedFriendViewHolder(

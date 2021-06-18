@@ -1,4 +1,4 @@
-package com.factor8.opUndoor.UI.Main.Feed
+package com.factor8.opUndoor.UI.Main.Feed.ListAdapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.*
 import com.bumptech.glide.RequestManager
 import com.factor8.opUndoor.Models.Relationships.FeedGroupStoreToFeedGroupStoryPicture
 import com.factor8.opUndoor.R
+import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
 import com.factor8.opUndoor.Util.Constants
 import com.factor8.opUndoor.Util.Constants.Companion.VIEW_TYPE_ADD_GROUP
 import com.factor8.opUndoor.Utils

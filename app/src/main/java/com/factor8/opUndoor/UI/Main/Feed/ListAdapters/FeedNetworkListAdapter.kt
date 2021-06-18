@@ -1,6 +1,5 @@
-package com.factor8.opUndoor.UI.Main.Feed
+package com.factor8.opUndoor.UI.Main.Feed.ListAdapters
 
-import android.net.Network
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.*
 import com.bumptech.glide.RequestManager
 import com.factor8.opUndoor.Models.Relationships.FeedNetworkStoreAndFeedCompanyStoryPicture
 import com.factor8.opUndoor.R
+import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
 import com.factor8.opUndoor.Util.Constants
 import kotlinx.android.synthetic.main.single_vertical_row.view.*
 

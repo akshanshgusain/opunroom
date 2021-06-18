@@ -22,6 +22,7 @@ import com.factor8.opUndoor.Util.*
 import com.factor8.opUndoor.Util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.factor8.opUndoor.Util.ErrorHandling.Companion.ERROR_UNKNOWN
 import com.factor8.opUndoor.Util.ErrorHandling.Companion.GENERIC_AUTH_ERROR
+import com.factor8.opUndoor.Util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import kotlinx.coroutines.Job
 
 class AuthRepository
@@ -110,7 +111,7 @@ constructor(
                     )
                 }
 
-                saveAuthenticatedUserToPrefs(email)
+                saveAuthenticatedUserToPrefs(response.body.email)
 
                 onCompleteJob(
                         DataState.data(
@@ -131,6 +132,92 @@ constructor(
             }
 
         }.asLiveData()
+    }
+
+    fun checkPreviousAuthUser(): LiveData<DataState<AuthViewState>>{
+
+        val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
+
+        if(previousAuthUserEmail.isNullOrBlank()){
+            Log.d(TAG, "checkPreviousAuthUser: No previously authenticated user found.")
+            return returnNoTokenFound()
+        }
+        else{
+            return object: NetworkBoundResource<Void, Any, AuthViewState>(
+                sessionManager.isConnectedToTheInternet(),
+                false,
+                false,
+                false
+            ){
+
+                // Ignore
+                override fun loadFromCache(): LiveData<AuthViewState> {
+                    return AbsentLiveData.create()
+                }
+
+                // Ignore
+                override suspend fun updateLocalDb(cacheObject: Any?) {
+
+                }
+
+                override suspend fun createCacheRequestAndReturn() {
+                    accountPropertiesDao.searchByEmail(previousAuthUserEmail).let { accountProperties ->
+                        Log.d(TAG, "createCacheRequestAndReturn: searching for token... account properties: ${accountProperties}")
+
+                        accountProperties?.let {
+                            if(accountProperties.id > -1){
+                                authTokenDao.searchByPk(accountProperties.id).let { authToken ->
+                                    if(authToken != null){
+                                        if(authToken.id != null){
+                                            onCompleteJob(
+                                                DataState.data(
+                                                    AuthViewState(authToken = authToken)
+                                                )
+                                            )
+                                            return
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Log.d(TAG, "createCacheRequestAndReturn: AuthToken not found...")
+                        onCompleteJob(
+                            DataState.data(
+                                null,
+                                Response(
+                                    RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                    ResponseType.None()
+                                )
+                            )
+                        )
+                    }
+                }
+
+                // not used in this case
+                override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<Void>) {
+                }
+
+                // not used in this case
+                override fun createCall(): LiveData<GenericApiResponse<Void>> {
+                    return AbsentLiveData.create()
+                }
+
+                override fun setJob(job: Job) {
+                    addJob("checkPreviousAuthUser", job)
+                }
+
+
+            }.asLiveData()
+        }
+    }
+
+    private fun returnNoTokenFound(): LiveData<DataState<AuthViewState>>{
+        return object: LiveData<DataState<AuthViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.data(null, Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE, ResponseType.None()))
+            }
+        }
     }
 
     private fun saveAuthenticatedUserToPrefs(email: String) {

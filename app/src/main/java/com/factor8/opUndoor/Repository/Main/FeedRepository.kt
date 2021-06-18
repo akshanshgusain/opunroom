@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
 import com.factor8.opUndoor.API.Main.OpUndoorMainService
+import com.factor8.opUndoor.API.Main.Responses.FeedCreateGroupResponse
 import com.factor8.opUndoor.API.Main.Responses.FeedResponse
 import com.factor8.opUndoor.Models.*
 import com.factor8.opUndoor.Models.Relationships.*
@@ -15,12 +16,18 @@ import com.factor8.opUndoor.Repository.JobManager
 import com.factor8.opUndoor.Repository.Main.Extensions.*
 import com.factor8.opUndoor.Repository.NetworkBoundResource
 import com.factor8.opUndoor.Session.SessionManager
+import com.factor8.opUndoor.UI.Auth.State.AuthViewState
 import com.factor8.opUndoor.UI.DataState
 import com.factor8.opUndoor.UI.Main.Account.state.AccountViewState
+import com.factor8.opUndoor.UI.Main.Feed.CreateGroupFragment
+import com.factor8.opUndoor.UI.Main.Feed.CreateGroupFragment.*
 import com.factor8.opUndoor.UI.Main.Feed.state.FeedViewState
+import com.factor8.opUndoor.UI.Response
+import com.factor8.opUndoor.UI.ResponseType
 import com.factor8.opUndoor.Util.AbsentLiveData
 import com.factor8.opUndoor.Util.ApiSuccessResponse
 import com.factor8.opUndoor.Util.GenericApiResponse
+import com.factor8.opUndoor.Util.SuccessHandling.Companion.SUCCESS_GROUP_CREATED
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
@@ -33,7 +40,7 @@ constructor(
 ) : JobManager("FeedRepository") {
 
     private val TAG: String = "AppDebug"
-
+    private var repositoryJob: Job? = null
 
     fun getFeed(
         authToken: AuthToken
@@ -409,5 +416,91 @@ constructor(
         }.asLiveData()
     }
 
+    fun attemptCreateGroup(
+        groupTitle: String,
+        groupParticipants: List<GroupParticipants>,
+        authToken: AuthToken
+    ): LiveData<DataState<FeedViewState>> {
+
+        Log.d(TAG, "attemptCreateGroup: groupTitle: ${groupTitle}, # of members: ${groupParticipants.size}")
+
+        val fieldErrors = FeedViewState.CreateGroupFields(groupTitle, groupParticipants).isValidGroup()
+
+        if(!fieldErrors.equals(FeedViewState.CreateGroupFields.CreateGroupFieldsError.none())){
+            return returnErrorResponse(fieldErrors, ResponseType.Dialog())
+        }else{
+            return object: NetworkBoundResource<FeedCreateGroupResponse, Any,FeedViewState>(
+                sessionManager.isConnectedToTheInternet(),
+                true,
+                true,
+                false
+            ){
+                override fun loadFromCache(): LiveData<FeedViewState> {
+                    //skip this
+                    return AbsentLiveData.create()
+                }
+
+                override suspend fun updateLocalDb(cacheObject: Any?) {
+                    //skip this
+                }
+
+                override suspend fun createCacheRequestAndReturn() {
+                    //Skip this
+                }
+
+                override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<FeedCreateGroupResponse>) {
+                    if(response.body.message.equals("ERROR")){
+                        return onErrorReturn("ERROR", true,false)
+                    }
+
+                    onCompleteJob(
+                        DataState.data(
+                            data = null,
+                            response = Response(response.body.message, ResponseType.Dialog())
+                        )
+                    )
+                }
+
+                override fun createCall(): LiveData<GenericApiResponse<FeedCreateGroupResponse>> {
+                    val userIds = userIdsToString(groupParticipants)
+                    return service.createGroup(
+                        groupTitle = groupTitle,
+                        groupAllUserIds = userIds,
+                        userId = authToken.id.toString()
+                    )
+                }
+
+                override fun setJob(job: Job) {
+                    repositoryJob?.cancel()
+                    repositoryJob = job
+                }
+            }.asLiveData()
+        }
+    }
+
+    private fun returnErrorResponse(errorMessage: String, responseType: ResponseType): LiveData<DataState<FeedViewState>> {
+        Log.d(TAG, "returnErrorResponse: ${errorMessage}")
+
+        return object : LiveData<DataState<FeedViewState>>() {
+            override fun onActive() {
+                super.onActive()
+                value = DataState.error(
+                    Response(
+                        errorMessage,
+                        responseType
+                    )
+                )
+            }
+        }
+    }
+
+    private fun userIdsToString(groupParticipants: List<GroupParticipants>): String{
+        return groupParticipants
+            .map{
+                it.id
+            }.
+            joinToString(separator = ",")
+
+    }
 
 }

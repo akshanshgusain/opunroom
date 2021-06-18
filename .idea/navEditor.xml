@@ -111,18 +111,35 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="createGroupFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="483" />
+                            <option name="y" value="751" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="viewPagerContainer">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="142" />
-                            <option name="y" value="288" />
+                            <option name="x" value="20" />
+                            <option name="y" value="470" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_viewPagerContainer_to_accountFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_viewPagerContainer_to_viewStoryFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

@@ -31,7 +31,7 @@ constructor(val authRepository: AuthRepository): BaseViewModel<AuthStateEvent, A
             }
 
             is CheckPreviousAuthEvent -> {
-                return AbsentLiveData.create()
+                return authRepository.checkPreviousAuthUser()
             }
 
 

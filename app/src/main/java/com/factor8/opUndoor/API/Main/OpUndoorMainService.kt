@@ -2,6 +2,7 @@ package com.factor8.opUndoor.API.Main
 
 import androidx.lifecycle.LiveData
 import com.factor8.opUndoor.API.Auth.Responses.RegistrationResponse
+import com.factor8.opUndoor.API.Main.Responses.FeedCreateGroupResponse
 import com.factor8.opUndoor.API.Main.Responses.FeedResponse
 import com.factor8.opUndoor.API.Main.Responses.UpdatedUserProfileResponse
 import com.factor8.opUndoor.Models.AccountProperties
@@ -35,5 +36,13 @@ interface OpUndoorMainService {
     fun getFeed(
         @Field("userid") userId: String
     ): LiveData<GenericApiResponse<FeedResponse>>
+
+    @POST("creategroup")
+    @FormUrlEncoded
+    fun createGroup(
+        @Field("userid") userId: String,
+        @Field("grouptitle") groupTitle: String,
+        @Field("groupalluserid") groupAllUserIds: String
+    ): LiveData<GenericApiResponse<FeedCreateGroupResponse>>
 
 }

@@ -1,11 +1,9 @@
-package com.factor8.opUndoor.UI.Main.Feed
+package com.factor8.opUndoor.UI.Main.Feed.ListAdapters
 
 import android.content.Context
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +14,7 @@ import com.factor8.opUndoor.Models.Relationships.FeedGroupStoreToFeedGroupStoryP
 import com.factor8.opUndoor.Models.Relationships.FeedNetworkStoreAndFeedCompanyStoryPicture
 import com.factor8.opUndoor.Models.Wrappers.FeedLoadFromCache
 import com.factor8.opUndoor.R
+import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
 import com.factor8.opUndoor.Util.Constants
 import kotlinx.android.synthetic.main.horizontal.view.*
 import kotlinx.android.synthetic.main.horizontal2.view.*

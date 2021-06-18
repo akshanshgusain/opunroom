@@ -11,10 +11,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.factor8.opUndoor.R
+import com.factor8.opUndoor.UI.Auth.State.AuthStateEvent
 import com.factor8.opUndoor.UI.Auth.State.AuthViewState
 import com.factor8.opUndoor.UI.BaseActivity
 import com.factor8.opUndoor.UI.Main.MainActivity
 import com.factor8.opUndoor.UI.ResponseType
+import com.factor8.opUndoor.Util.SuccessHandling
 import com.factor8.opUndoor.ViewModel.Auth.AuthViewModel
 import com.factor8.opUndoor.ViewModel.ViewModelProviderFactory
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -40,6 +42,7 @@ class AuthActivity : BaseActivity(), NavController.OnDestinationChangedListener{
 
 
     private fun subscribeObservers(){
+        Log.d(TAG, "subscribeObservers: ")
         viewModel.dataState.observe(this, Observer { dataState ->
 
             //Passing dataState to BaseActivity VIA DataStateChangeListener
@@ -58,6 +61,15 @@ class AuthActivity : BaseActivity(), NavController.OnDestinationChangedListener{
                         }
                     }
                 }// end of dataState.data
+                data.response?.let{event->
+                    event.peekContent().let{response->
+                        response.message?.let{message->
+                            if(message.equals(SuccessHandling.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                                onFinishCheckPreviousAuthUser()
+                            }
+                        }
+                    }
+                }
             }
         })
 
@@ -77,6 +89,7 @@ class AuthActivity : BaseActivity(), NavController.OnDestinationChangedListener{
         sessionManager.cachedToken.observe(this, Observer{ dataState ->
             Log.d(TAG, "AuthActivity, subscribeObservers: AuthDataState: ${dataState}")
             dataState.let{ authToken ->
+                Log.d(TAG, "AuthActivity, subscribeObservers: AuthToken: ${authToken}")
                 if(authToken != null && authToken.account_id != -1 && authToken.id != null){
                     navMainActivity()
                 }
@@ -103,6 +116,19 @@ class AuthActivity : BaseActivity(), NavController.OnDestinationChangedListener{
         else{
             progress_bar.visibility = View.GONE
         }
+    }
+
+    private fun onFinishCheckPreviousAuthUser(){
+        fragment_container.visibility = View.VISIBLE
+    }
+
+    private fun checkPreviousAuthUser(){
+        viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthEvent())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkPreviousAuthUser()
     }
 
 }

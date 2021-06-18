@@ -42,13 +42,23 @@ constructor(
                 } ?: AbsentLiveData.create()
             }
 
-            is FeedStateEvent.GetFeedEvent ->{
-                return sessionManager.cachedToken.value?.let{
+            is FeedStateEvent.GetFeedEvent -> {
+                return sessionManager.cachedToken.value?.let {
                     feedRepository.getFeed(it)
                 } ?: AbsentLiveData.create()
             }
 
-            is FeedStateEvent.None ->{
+            is FeedStateEvent.CreateGroup -> {
+                return sessionManager.cachedToken.value?.let{
+                    feedRepository.attemptCreateGroup(
+                        stateEvent.groupTitle,
+                        stateEvent.groupParticipants,
+                        it
+                    )
+                }?: AbsentLiveData.create()
+            }
+
+            is FeedStateEvent.None -> {
                 return object : LiveData<DataState<FeedViewState>>() {
                     override fun onActive() {
                         super.onActive()
@@ -56,7 +66,6 @@ constructor(
                     }
                 }
             }
-
         }
     }
 
@@ -74,9 +83,9 @@ constructor(
         setViewState(update)
     }
 
-    fun setFeedLoadFromCache(feedLoadFromCache: FeedLoadFromCache){
+    fun setFeedLoadFromCache(feedLoadFromCache: FeedLoadFromCache) {
         val update = getCurrentViewStateOrNew()
-        if(update.feedLoadFromCache == feedLoadFromCache){
+        if (update.feedLoadFromCache == feedLoadFromCache) {
             return
         }
         update.feedLoadFromCache = feedLoadFromCache
@@ -84,25 +93,25 @@ constructor(
     }
     // Update View State
 
-    fun setStoryList(listType: Int, storyObj: Any){
+    fun setStoryList(listType: Int, storyObj: Any) {
         val update = getCurrentViewStateOrNew()
         val storyList = FeedViewState.StoryList(listType = listType)
-        when(listType){
-            STORY_TYPE_FRIEND_STORY ->{
+        when (listType) {
+            STORY_TYPE_FRIEND_STORY -> {
                 storyList.friendStory = storyObj as FeedFriendStoreToFeedStoryPicture
             }
-            STORY_TYPE_GROUP_STORY->{
+            STORY_TYPE_GROUP_STORY -> {
                 storyList.groupStory = storyObj as FeedGroupStoreToFeedGroupStoryPicture
             }
-            STORY_TYPE_COMPANY_STORY->{
+            STORY_TYPE_COMPANY_STORY -> {
                 storyList.companyStory = storyObj as FeedCompanyToFeedCompanyStoryPicture
             }
-            else->{
+            else -> {
                 storyList.networkStory = storyObj as FeedNetworkStoreAndFeedCompanyStoryPicture
             }
         }
 
-        if(update.storyList == storyList){
+        if (update.storyList == storyList) {
             return
         }
 

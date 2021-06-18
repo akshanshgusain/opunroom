@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_viewPagerContainer_to_viewStoryFragment"
             app:destination="@id/viewStoryFragment" />
+        <action
+            android:id="@+id/action_viewPagerContainer_to_createGroupFragment"
+            app:destination="@id/createGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
@@ -35,5 +38,12 @@
     <fragment
         android:id="@+id/viewStoryFragment"
         android:name="com.factor8.opUndoor.UI.Main.Feed.ViewStoryFragment"
-        android:label="ViewStoryFragment" />
+        android:label="ViewStoryFragment"
+        tools:layout="@layout/fragment_view_story"/>
+
+    <fragment
+        android:id="@+id/createGroupFragment"
+        android:name="com.factor8.opUndoor.UI.Main.Feed.CreateGroupFragment"
+        android:label="CreateGroupFragment"
+        tools:layout="@layout/fragment_create_group"/>
 </navigation>

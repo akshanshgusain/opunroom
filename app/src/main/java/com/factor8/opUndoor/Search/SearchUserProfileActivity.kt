@@ -2,8 +2,6 @@ package com.factor8.opUndoor.Search
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +13,6 @@ import com.bumptech.glide.Glide
 import com.factor8.opUndoor.Network.RestCalls
 import com.factor8.opUndoor.Network.Responses.SearchResult
 import com.factor8.opUndoor.Network.Responses.SearchResultUserProfile
-import com.factor8.opUndoor.ProjectConstants
-import com.factor8.opUndoor.ProjectConstants.*
 import com.factor8.opUndoor.R
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_search_user_profile.*

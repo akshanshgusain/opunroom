@@ -1,7 +1,5 @@
 package com.factor8.opUndoor.Util
 
-import com.factor8.opUndoor.SingleHeadingList
-
 class Constants {
 
     companion object {

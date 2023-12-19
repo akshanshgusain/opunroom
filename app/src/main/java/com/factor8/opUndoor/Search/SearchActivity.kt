@@ -17,7 +17,6 @@ import com.factor8.opUndoor.Network.RestCalls
 import com.factor8.opUndoor.Network.Responses.SearchResult
 import com.factor8.opUndoor.Network.Responses.SearchResult.UserBean
 import com.factor8.opUndoor.R
-import com.factor8.opUndoor.Utils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_search.*
 

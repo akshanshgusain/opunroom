@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.factor8.opUndoor.Network.Responses.GetAllFriendRequest
 import com.factor8.opUndoor.Network.RestCalls
-import com.factor8.opUndoor.ProjectConstants
 import com.factor8.opUndoor.R
 import kotlinx.android.synthetic.main.activity_incoming_requests.*
 

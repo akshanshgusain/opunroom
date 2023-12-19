@@ -10,7 +10,6 @@ import com.factor8.opUndoor.R
 import com.factor8.opUndoor.UI.Main.Feed.FeedFragment
 import com.factor8.opUndoor.Util.Constants
 import com.factor8.opUndoor.Util.Constants.Companion.VIEW_TYPE_ADD_GROUP
-import com.factor8.opUndoor.Utils
 import kotlinx.android.synthetic.main.single_horizontal_row2.view.*
 
 class FeedGroupListAdapter(

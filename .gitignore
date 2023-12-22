@@ -1,2 +1,148 @@
 # Project exclude paths
 /.gradle/
+# Built application files
+*.apk
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (e.g., proguard-rules.pro)
+proguard-rules.pro
+
+# Signing files
+signing/
+
+# Local configuration file (e.g., local.properties)
+local.properties
+
+# Android Studio files
+.idea/
+
+# User-specific files
+*.iml
+.gradle
+*.log
+build/
+
+# Emulator-specific files
+*.snap
+
+# Keystore files
+*.jks
+
+# External native build folder generated in Android Studio 2.2 and later
+.cmake/
+
+# Google Services (e.g., google-services.json)
+google-services.json
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains IDEs (e.g., IntelliJ IDEA, PyCharm, RubyMine, PhpStorm)
+.idea/
+
+# User-specific stuff
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains IDEs (e.g., IntelliJ IDEA, PyCharm, RubyMine, PhpStorm)
+.idea/
+
+# User-specific stuff
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains IDEs (e.g., IntelliJ IDEA, PyCharm, RubyMine, PhpStorm)
+.idea/
+
+# User-specific stuff
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
